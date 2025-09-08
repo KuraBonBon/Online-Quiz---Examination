@@ -1,0 +1,131 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}SPIST - Student Registration{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 600px; margin: 0 auto;">
+    <div class="text-center">
+        <h2>Student Registration</h2>
+        <p>Create your student account to access SPIST portal</p>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label for="{{ form.first_name.id_for_label }}">First Name:</label>
+                {{ form.first_name }}
+                {% if form.first_name.errors %}
+                    <div style="color: red; font-size: 14px;">
+                        {{ form.first_name.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.last_name.id_for_label }}">Last Name:</label>
+                {{ form.last_name }}
+                {% if form.last_name.errors %}
+                    <div style="color: red; font-size: 14px;">
+                        {{ form.last_name.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.email.id_for_label }}">Email:</label>
+            {{ form.email }}
+            {% if form.email.errors %}
+                <div style="color: red; font-size: 14px;">
+                    {{ form.email.errors }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.username.id_for_label }}">Username:</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+                <div style="color: red; font-size: 14px;">
+                    {{ form.username.errors }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.phone_number.id_for_label }}">Phone Number (Optional):</label>
+            {{ form.phone_number }}
+            {% if form.phone_number.errors %}
+                <div style="color: red; font-size: 14px;">
+                    {{ form.phone_number.errors }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label for="{{ form.student_id.id_for_label }}">Student ID:</label>
+                {{ form.student_id }}
+                {% if form.student_id.errors %}
+                    <div style="color: red; font-size: 14px;">
+                        {{ form.student_id.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.year_level.id_for_label }}">Year Level:</label>
+                {{ form.year_level }}
+                {% if form.year_level.errors %}
+                    <div style="color: red; font-size: 14px;">
+                        {{ form.year_level.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.course.id_for_label }}">Course:</label>
+            {{ form.course }}
+            {% if form.course.errors %}
+                <div style="color: red; font-size: 14px;">
+                    {{ form.course.errors }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label for="{{ form.password1.id_for_label }}">Password:</label>
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                    <div style="color: red; font-size: 14px;">
+                        {{ form.password1.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.password2.id_for_label }}">Confirm Password:</label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                    <div style="color: red; font-size: 14px;">
+                        {{ form.password2.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="form-group text-center">
+            <button type="submit" class="btn">Register as Student</button>
+        </div>
+    </form>
+    
+    <div class="text-center" style="margin-top: 2rem;">
+        <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+        <a href="{% url 'home' %}">← Back to Portal Selection</a>
+    </div>
+</div>
+{% endblock %}

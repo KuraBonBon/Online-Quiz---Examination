@@ -1,0 +1,32 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}SPIST - Portal Selection{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="text-center">
+        <h2>Welcome to SPIST Online Portal</h2>
+        <p>Please select your portal to continue</p>
+    </div>
+    
+    <div class="portal-selection">
+        <div class="portal-card">
+            <h3>Student Portal</h3>
+            <p>Access your student dashboard, view grades, course materials, and more.</p>
+            <a href="{% url 'login' %}?next={% url 'student_dashboard' %}" class="btn">Student Login</a>
+            <div style="margin-top: 1rem;">
+                <a href="{% url 'student_register' %}">Don't have an account? Register here</a>
+            </div>
+        </div>
+        
+        <div class="portal-card">
+            <h3>Teacher Portal</h3>
+            <p>Manage your classes, create assignments, track student progress, and more.</p>
+            <a href="{% url 'login' %}?next={% url 'teacher_dashboard' %}" class="btn">Teacher Login</a>
+            <div style="margin-top: 1rem;">
+                <a href="{% url 'teacher_register' %}">Don't have an account? Register here</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

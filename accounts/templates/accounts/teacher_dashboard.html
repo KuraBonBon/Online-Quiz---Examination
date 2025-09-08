@@ -1,0 +1,48 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}SPIST - Teacher Dashboard{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="text-center">
+        <h2>Welcome, {{ user.first_name }}!</h2>
+        <p>Teacher Dashboard - {{ user.teacher_profile.department }}</p>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+    <div class="card">
+        <h3>Teacher Information</h3>
+        <p><strong>Employee ID:</strong> {{ user.teacher_profile.employee_id }}</p>
+        <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Department:</strong> {{ user.teacher_profile.department }}</p>
+        {% if user.teacher_profile.specialization %}
+        <p><strong>Specialization:</strong> {{ user.teacher_profile.specialization }}</p>
+        {% endif %}
+        <p><strong>Hire Date:</strong> {{ user.teacher_profile.hire_date }}</p>
+    </div>
+    
+    <div class="card">
+        <h3>Quick Actions</h3>
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <a href="#" class="btn">Create Quiz</a>
+            <a href="#" class="btn">Manage Courses</a>
+            <a href="#" class="btn">View Student Progress</a>
+            <a href="#" class="btn">Grade Submissions</a>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h3>Recent Activity</h3>
+        <p>No recent activity yet.</p>
+        <p><em>This section will show recent quiz submissions, student activity, and system updates once you start using the platform.</em></p>
+    </div>
+    
+    <div class="card">
+        <h3>Course Management</h3>
+        <p>No courses assigned yet.</p>
+        <p><em>Once you're assigned to courses, you'll be able to manage them from here.</em></p>
+    </div>
+</div>
+{% endblock %}

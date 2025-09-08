@@ -1,0 +1,46 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}SPIST - Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="text-center">
+        <h2>Welcome, {{ user.first_name }}!</h2>
+        <p>Student Dashboard - {{ user.student_profile.course }}</p>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+    <div class="card">
+        <h3>Student Information</h3>
+        <p><strong>Student ID:</strong> {{ user.student_profile.student_id }}</p>
+        <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Course:</strong> {{ user.student_profile.course }}</p>
+        <p><strong>Year Level:</strong> {{ user.student_profile.year_level }}</p>
+        <p><strong>Date Enrolled:</strong> {{ user.student_profile.date_enrolled }}</p>
+    </div>
+    
+    <div class="card">
+        <h3>Quick Actions</h3>
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <a href="#" class="btn">View Courses</a>
+            <a href="#" class="btn">Take Quiz</a>
+            <a href="#" class="btn">View Grades</a>
+            <a href="#" class="btn">Course Materials</a>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h3>Recent Activity</h3>
+        <p>No recent activity yet.</p>
+        <p><em>This section will show your recent quiz attempts, submissions, and updates once you start using the system.</em></p>
+    </div>
+    
+    <div class="card">
+        <h3>Announcements</h3>
+        <p>Welcome to the SPIST Student Portal!</p>
+        <p><em>Check back here for important announcements from your teachers and the administration.</em></p>
+    </div>
+</div>
+{% endblock %}

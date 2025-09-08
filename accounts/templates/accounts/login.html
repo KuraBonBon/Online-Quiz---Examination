@@ -1,0 +1,56 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}SPIST - Login{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 500px; margin: 0 auto;">
+    <div class="text-center">
+        <h2>Login to SPIST Portal</h2>
+        <p>Enter your credentials to access your account</p>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+            <div class="alert alert-error">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+        
+        <div class="form-group">
+            <label for="{{ form.username.id_for_label }}">Email:</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+                <div style="color: red; font-size: 14px;">
+                    {{ form.username.errors }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.password.id_for_label }}">Password:</label>
+            {{ form.password }}
+            {% if form.password.errors %}
+                <div style="color: red; font-size: 14px;">
+                    {{ form.password.errors }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group text-center">
+            <button type="submit" class="btn">Login</button>
+        </div>
+    </form>
+    
+    <div class="text-center" style="margin-top: 2rem;">
+        <p>Don't have an account?</p>
+        <a href="{% url 'student_register' %}" class="btn btn-secondary" style="margin-right: 10px;">Register as Student</a>
+        <a href="{% url 'teacher_register' %}" class="btn btn-secondary">Register as Teacher</a>
+    </div>
+    
+    <div class="text-center" style="margin-top: 1rem;">
+        <a href="{% url 'home' %}">← Back to Portal Selection</a>
+    </div>
+</div>
+{% endblock %}
