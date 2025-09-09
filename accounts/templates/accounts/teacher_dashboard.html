@@ -3,46 +3,268 @@
 {% block title %}SPIST - Teacher Dashboard{% endblock %}
 
 {% block content %}
-<div class="card">
-    <div class="text-center">
-        <h2>Welcome, {{ user.first_name }}!</h2>
-        <p>Teacher Dashboard - {{ user.teacher_profile.department }}</p>
+<!-- Welcome Banner -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="modern-card bg-gradient" style="background: linear-gradient(135deg, #1976d2 0%, #2196f3 100%); color: white;">
+            <div class="card-body text-center py-5">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 class="mb-3"><i class="fas fa-chalkboard-teacher me-3"></i>Welcome Back, Prof. {{ user.last_name }}!</h2>
+                        <p class="lead mb-0">{{ user.teacher_profile.department }} Department</p>
+                        <small class="opacity-75">Employee ID: {{ user.teacher_profile.employee_id }}</small>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card bg-white bg-opacity-20 border-0" style="backdrop-filter: blur(10px);">
+                            <div class="text-center text-white">
+                                <h3 class="mb-1">{{ active_courses|default:0 }}</h3>
+                                <small>Active Courses</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
-    <div class="card">
-        <h3>Teacher Information</h3>
-        <p><strong>Employee ID:</strong> {{ user.teacher_profile.employee_id }}</p>
-        <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
-        <p><strong>Email:</strong> {{ user.email }}</p>
-        <p><strong>Department:</strong> {{ user.teacher_profile.department }}</p>
-        {% if user.teacher_profile.specialization %}
-        <p><strong>Specialization:</strong> {{ user.teacher_profile.specialization }}</p>
-        {% endif %}
-        <p><strong>Hire Date:</strong> {{ user.teacher_profile.hire_date }}</p>
-    </div>
-    
-    <div class="card">
-        <h3>Quick Actions</h3>
-        <div style="display: flex; flex-direction: column; gap: 1rem;">
-            <a href="#" class="btn">Create Quiz</a>
-            <a href="#" class="btn">Manage Courses</a>
-            <a href="#" class="btn">View Student Progress</a>
-            <a href="#" class="btn">Grade Submissions</a>
+<!-- Quick Stats -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="stat-card stat-card-primary text-center">
+            <div class="stat-number">{{ total_students|default:60 }}</div>
+            <div class="stat-label">Total Students</div>
         </div>
     </div>
-    
-    <div class="card">
-        <h3>Recent Activity</h3>
-        <p>No recent activity yet.</p>
-        <p><em>This section will show recent quiz submissions, student activity, and system updates once you start using the platform.</em></p>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card stat-card-info text-center">
+            <div class="stat-number">{{ active_assessments|default:4 }}</div>
+            <div class="stat-label">Active Assessments</div>
+        </div>
     </div>
-    
-    <div class="card">
-        <h3>Course Management</h3>
-        <p>No courses assigned yet.</p>
-        <p><em>Once you're assigned to courses, you'll be able to manage them from here.</em></p>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card stat-card-warning text-center">
+            <div class="stat-number">{{ pending_grades|default:8 }}</div>
+            <div class="stat-label">Pending Grades</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card stat-card-success text-center">
+            <div class="stat-number">{{ course_offerings|default:3 }}</div>
+            <div class="stat-label">Course Offerings</div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content Grid -->
+<div class="row">
+    <!-- Left Column -->
+    <div class="col-lg-8">
+        <!-- Quick Actions -->
+        <div class="modern-card mb-4">
+            <div class="card-header">
+                <h5><i class="fas fa-rocket me-2"></i>Teaching Tools</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <a href="{% url 'assessments:assessment_selection' %}" class="btn btn-modern btn-primary-modern w-100">
+                            <i class="fas fa-plus-circle"></i>Create Assessment
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{% url 'assessments:my_assessments' %}" class="btn btn-modern w-100" style="background: linear-gradient(135deg, var(--success-color) 0%, #388e3c 100%); color: white;">
+                            <i class="fas fa-list-check"></i>My Assessments
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{% url 'courses:dashboard' %}" class="btn btn-modern w-100" style="background: linear-gradient(135deg, var(--secondary-color) 0%, #1976d2 100%); color: white;">
+                            <i class="fas fa-cogs"></i>Manage Courses
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{% url 'courses:enrollment_management' %}" class="btn btn-modern w-100" style="background: linear-gradient(135deg, var(--accent-color) 0%, #f57c00 100%); color: white;">
+                            <i class="fas fa-users"></i>View Enrollments
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{% url 'courses:course_offerings' %}" class="btn btn-modern w-100" style="background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%); color: white;">
+                            <i class="fas fa-calendar-alt"></i>Course Offerings
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="#" class="btn btn-modern w-100" style="background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%); color: white;">
+                            <i class="fas fa-chart-line"></i>Analytics
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="modern-card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="fas fa-clock me-2"></i>Recent Activity</h5>
+                <span class="badge bg-success">Real-time</span>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-primary rounded-circle p-2 me-3">
+                        <i class="fas fa-user-check text-white"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-0">New Student Enrollment</h6>
+                        <small class="text-muted">John Doe enrolled in Mathematics 101</small>
+                    </div>
+                    <small class="text-muted ms-auto">30 min ago</small>
+                </div>
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-success rounded-circle p-2 me-3">
+                        <i class="fas fa-clipboard-check text-white"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-0">Assessment Submitted</h6>
+                        <small class="text-muted">Physics Quiz 2 - 25 submissions received</small>
+                    </div>
+                    <small class="text-muted ms-auto">2 hours ago</small>
+                </div>
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-warning rounded-circle p-2 me-3">
+                        <i class="fas fa-exclamation-triangle text-white"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-0">Grade Reminder</h6>
+                        <small class="text-muted">5 assessments need grading</small>
+                    </div>
+                    <small class="text-muted ms-auto">1 day ago</small>
+                </div>
+                <div class="text-center">
+                    <a href="#" class="btn btn-sm btn-outline-primary">View All Activity</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Course Overview -->
+        <div class="modern-card">
+            <div class="card-header">
+                <h5><i class="fas fa-graduation-cap me-2"></i>My Courses This Semester</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="border rounded p-3 h-100">
+                            <h6 class="text-primary">Mathematics 101</h6>
+                            <p class="small text-muted mb-2">Section A • MWF 8:00-9:00 AM</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-success">32 Students</span>
+                                <a href="#" class="btn btn-sm btn-outline-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="border rounded p-3 h-100">
+                            <h6 class="text-primary">Physics 102</h6>
+                            <p class="small text-muted mb-2">Section B • TTh 10:00-11:30 AM</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-success">28 Students</span>
+                                <a href="#" class="btn btn-sm btn-outline-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <a href="{% url 'courses:course_offerings' %}" class="btn btn-primary">View All Courses</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="col-lg-4">
+        <!-- Teacher Profile -->
+        <div class="modern-card mb-4">
+            <div class="card-header">
+                <h5><i class="fas fa-user-tie me-2"></i>Faculty Profile</h5>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <div class="bg-info rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                        <i class="fas fa-chalkboard-teacher fa-2x text-white"></i>
+                    </div>
+                </div>
+                <table class="table table-borderless small">
+                    <tr>
+                        <td><strong>Name:</strong></td>
+                        <td>{{ user.get_full_name }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Email:</strong></td>
+                        <td>{{ user.email }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Department:</strong></td>
+                        <td>{{ user.teacher_profile.department }}</td>
+                    </tr>
+                    {% if user.teacher_profile.specialization %}
+                    <tr>
+                        <td><strong>Specialization:</strong></td>
+                        <td>{{ user.teacher_profile.specialization }}</td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <td><strong>Since:</strong></td>
+                        <td>{{ user.teacher_profile.hire_date|date:"M Y" }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="modern-card mb-4">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-pie me-2"></i>This Week</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="small">Assessments Created</span>
+                    <strong class="text-primary">3</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="small">Students Graded</span>
+                    <strong class="text-success">87</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="small">Course Hours</span>
+                    <strong class="text-info">12</strong>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="small">Avg. Class Attendance</span>
+                    <strong class="text-warning">92%</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Notifications -->
+        <div class="modern-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="fas fa-bell me-2"></i>Notifications</h5>
+                <span class="badge bg-danger">3</span>
+            </div>
+            <div class="card-body">
+                <div class="notification-item mb-3 p-2 bg-light rounded">
+                    <h6 class="mb-1 small">📋 Grade Submission Reminder</h6>
+                    <p class="small mb-0 text-muted">Final grades due by March 20th</p>
+                </div>
+                <div class="notification-item mb-3 p-2 bg-light rounded">
+                    <h6 class="mb-1 small">👥 Faculty Meeting</h6>
+                    <p class="small mb-0 text-muted">Department meeting tomorrow 2:00 PM</p>
+                </div>
+                <div class="notification-item p-2 bg-light rounded">
+                    <h6 class="mb-1 small">🎓 Graduation Review</h6>
+                    <p class="small mb-0 text-muted">Review graduating students list</p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

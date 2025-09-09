@@ -1,0 +1,165 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}SPIST - Create {{ assessment_type_display }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="text-center">
+        <h2>Create {{ assessment_type_display }}</h2>
+        <p>Set up the basic information for your {{ assessment_type|lower }}</p>
+    </div>
+</div>
+
+<div class="card" style="max-width: 800px; margin: 2rem auto;">
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="{{ form.title.id_for_label }}">{{ assessment_type_display }} Title *</label>
+            {{ form.title }}
+            {% if form.title.errors %}
+                <div style="color: red; font-size: 14px;">
+                    {{ form.title.errors }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ form.description.id_for_label }}">Description</label>
+            {{ form.description }}
+            {% if form.description.errors %}
+                <div style="color: red; font-size: 14px;">
+                    {{ form.description.errors }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label for="{{ form.time_limit.id_for_label }}">Time Limit (minutes)</label>
+                {{ form.time_limit }}
+                <small style="color: #666;">Leave blank for no time limit</small>
+                {% if form.time_limit.errors %}
+                    <div style="color: red; font-size: 14px;">
+                        {{ form.time_limit.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.passing_score.id_for_label }}">Passing Score (%)</label>
+                {{ form.passing_score }}
+                {% if form.passing_score.errors %}
+                    <div style="color: red; font-size: 14px;">
+                        {{ form.passing_score.errors }}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+                <label for="{{ form.max_attempts.id_for_label }}">Maximum Attempts</label>
+                {{ form.max_attempts }}
+                {% if form.max_attempts.errors %}
+                    <div style="color: red; font-size: 14px;">
+                        {{ form.max_attempts.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <div style="margin-top: 2rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                        {{ form.show_correct_answers }}
+                        Show correct answers after completion
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card" style="background-color: #f5f5f5; margin: 1.5rem 0;">
+            <h4>Display Options</h4>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div>
+                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                        {{ form.randomize_questions }}
+                        Randomize question order
+                    </label>
+                    <small style="color: #666;">Questions appear in random order for each student</small>
+                </div>
+                
+                <div>
+                    <label style="display: flex; align-items: center; gap: 0.5rem;">
+                        {{ form.randomize_choices }}
+                        Randomize answer choices
+                    </label>
+                    <small style="color: #666;">Answer options appear in random order</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card" style="background-color: #f5f5f5; margin: 1.5rem 0;">
+            <h4>Availability Schedule (Optional)</h4>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="{{ form.available_from.id_for_label }}">Available From</label>
+                    {{ form.available_from }}
+                    {% if form.available_from.errors %}
+                        <div style="color: red; font-size: 14px;">
+                            {{ form.available_from.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.available_until.id_for_label }}">Available Until</label>
+                    {{ form.available_until }}
+                    {% if form.available_until.errors %}
+                        <div style="color: red; font-size: 14px;">
+                            {{ form.available_until.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <small style="color: #666;">Leave blank to make available immediately and indefinitely</small>
+        </div>
+        
+        <div class="form-group text-center" style="margin-top: 2rem;">
+            <button type="submit" class="btn">Create {{ assessment_type_display }} →</button>
+            <a href="{% url 'assessments:assessment_selection' %}" class="btn" style="background-color: #666; margin-left: 1rem;">← Back</a>
+        </div>
+    </form>
+</div>
+
+<style>
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #2e7d32;
+}
+
+.form-group label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.form-group input, .form-group textarea, .form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+    outline: none;
+    border-color: #2e7d32;
+    box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.2);
+}
+</style>
+{% endblock %}

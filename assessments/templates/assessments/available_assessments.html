@@ -1,0 +1,83 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}SPIST - Available Assessments{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="text-center">
+        <h2>Available Assessments</h2>
+        <p>Take quizzes and exams assigned by your teachers</p>
+    </div>
+</div>
+
+{% if assessments %}
+    <div style="display: grid; gap: 1rem;">
+        {% for assessment in assessments %}
+        <div class="card" style="padding: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div style="flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                        <h3 style="margin: 0;">{{ assessment.title }}</h3>
+                        <span style="padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase;
+                                     background-color: #e3f2fd; color: #1976d2;">
+                            {{ assessment.get_assessment_type_display }}
+                        </span>
+                    </div>
+                    
+                    {% if assessment.description %}
+                    <p style="color: #666; margin-bottom: 1rem;">{{ assessment.description }}</p>
+                    {% endif %}
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; font-size: 14px; color: #666;">
+                        <div>
+                            <strong>Questions:</strong> {{ assessment.questions.count }}
+                        </div>
+                        {% if assessment.time_limit %}
+                        <div>
+                            <strong>Time Limit:</strong> {{ assessment.time_limit }} min
+                        </div>
+                        {% else %}
+                        <div>
+                            <strong>Time Limit:</strong> No limit
+                        </div>
+                        {% endif %}
+                        <div>
+                            <strong>Max Attempts:</strong> {{ assessment.max_attempts }}
+                        </div>
+                        <div>
+                            <strong>Passing Score:</strong> {{ assessment.passing_score }}%
+                        </div>
+                        <div>
+                            <strong>Teacher:</strong> {{ assessment.creator.get_full_name }}
+                        </div>
+                        {% if assessment.available_until %}
+                        <div>
+                            <strong>Available Until:</strong> {{ assessment.available_until|date:"M d, Y H:i" }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-left: 2rem;">
+                    <a href="{% url 'assessments:take_assessment' assessment.id %}" class="btn" style="font-size: 14px; padding: 0.75rem 1.5rem; background-color: #2e7d32;">
+                        Take {{ assessment.get_assessment_type_display }}
+                    </a>
+                    
+                    <!-- Show previous attempts info (placeholder for future implementation) -->
+                    <div style="font-size: 12px; color: #666; text-align: center;">
+                        Attempts: 0/{{ assessment.max_attempts }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+{% else %}
+    <div class="card" style="text-align: center; padding: 3rem;">
+        <h3 style="color: #666; margin-bottom: 1rem;">No Assessments Available</h3>
+        <p style="color: #888; margin-bottom: 2rem;">There are currently no published assessments available for you to take.</p>
+        <a href="{% url 'student_dashboard' %}" class="btn">← Back to Dashboard</a>
+    </div>
+{% endif %}
+{% endblock %}

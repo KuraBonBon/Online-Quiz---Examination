@@ -1,0 +1,76 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}SPIST - Create Assessment{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="text-center">
+        <h2>Create New Assessment</h2>
+        <p>Choose the type of assessment you want to create</p>
+    </div>
+</div>
+
+<div class="card" style="max-width: 500px; margin: 2rem auto;">
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <h3 style="margin-bottom: 1.5rem; text-align: center;">Assessment Type</h3>
+            
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                {% for choice in form.assessment_type %}
+                    <div style="display: flex; align-items: center; padding: 1rem; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
+                        {{ choice.tag }}
+                        <label for="{{ choice.id_for_label }}" style="margin-left: 1rem; cursor: pointer; flex: 1;">
+                            <strong>{{ choice.choice_label }}</strong>
+                            {% if choice.choice_value == 'quiz' %}
+                                <div style="font-size: 14px; color: #666; margin-top: 0.5rem;">
+                                    Short assessment with immediate feedback. Typically used for practice or quick knowledge checks.
+                                </div>
+                            {% else %}
+                                <div style="font-size: 14px; color: #666; margin-top: 0.5rem;">
+                                    Comprehensive assessment for formal evaluation. Usually longer with stricter time limits.
+                                </div>
+                            {% endif %}
+                        </label>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            {% if form.assessment_type.errors %}
+                <div style="color: red; font-size: 14px; margin-top: 0.5rem;">
+                    {{ form.assessment_type.errors }}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="form-group text-center" style="margin-top: 2rem;">
+            <button type="submit" class="btn">Continue →</button>
+            <a href="{% url 'teacher_dashboard' %}" class="btn" style="background-color: #666; margin-left: 1rem;">Cancel</a>
+        </div>
+    </form>
+</div>
+
+<style>
+input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #2e7d32;
+}
+
+input[type="radio"]:checked + label {
+    color: #2e7d32;
+    font-weight: bold;
+}
+
+.form-group > div > div:has(input[type="radio"]:checked) {
+    border-color: #2e7d32;
+    background-color: #f1f8e9;
+}
+
+.form-group > div > div:hover {
+    border-color: #4caf50;
+    background-color: #f9f9f9;
+}
+</style>
+{% endblock %}

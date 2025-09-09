@@ -1,0 +1,281 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Course Details - {{ course.code }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Course Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2>{{ course.code }} - {{ course.title }}</h2>
+                    <p class="lead text-muted mb-0">{{ course.department.name }}</p>
+                </div>
+                <div class="text-end">
+                    <span class="badge bg-primary fs-6">{{ course.units }} unit{{ course.units|pluralize }}</span>
+                    <span class="badge bg-secondary fs-6">{{ course.get_course_type_display }}</span>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Course Information -->
+                <div class="col-md-8">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5><i class="fas fa-info-circle"></i> Course Information</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if course.description %}
+                            <div class="mb-3">
+                                <h6>Description:</h6>
+                                <p>{{ course.description }}</p>
+                            </div>
+                            {% endif %}
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Course Details:</h6>
+                                    <ul class="list-unstyled">
+                                        <li><strong>Course Code:</strong> {{ course.code }}</li>
+                                        <li><strong>Units:</strong> {{ course.units }}</li>
+                                        <li><strong>Type:</strong> {{ course.get_course_type_display }}</li>
+                                        <li><strong>Department:</strong> {{ course.department.name }}</li>
+                                        <li><strong>Status:</strong> 
+                                            <span class="badge bg-{% if course.is_active %}success{% else %}danger{% endif %}">
+                                                {% if course.is_active %}Active{% else %}Inactive{% endif %}
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    {% if course.prerequisites.exists %}
+                                    <h6>Prerequisites:</h6>
+                                    <div class="mb-3">
+                                        {% for prereq in course.prerequisites.all %}
+                                        <a href="{% url 'courses:course_detail' prereq.id %}" class="badge bg-warning text-dark text-decoration-none me-1 mb-1">
+                                            {{ prereq.code }}
+                                        </a>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+
+                                    {% if dependent_courses %}
+                                    <h6>Required For:</h6>
+                                    <div class="mb-3">
+                                        {% for dependent in dependent_courses %}
+                                        <a href="{% url 'courses:course_detail' dependent.id %}" class="badge bg-info text-decoration-none me-1 mb-1">
+                                            {{ dependent.code }}
+                                        </a>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Current Offerings -->
+                    <div class="card mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5><i class="fas fa-calendar-alt"></i> Current Offerings</h5>
+                            {% if user.is_staff %}
+                            <a href="{% url 'admin:courses_courseoffering_add' %}?course={{ course.id }}" class="btn btn-sm btn-success">
+                                <i class="fas fa-plus"></i> Add Offering
+                            </a>
+                            {% endif %}
+                        </div>
+                        <div class="card-body">
+                            {% if current_offerings %}
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Section</th>
+                                            <th>Semester</th>
+                                            <th>Instructor</th>
+                                            <th>Schedule</th>
+                                            <th>Room</th>
+                                            <th>Enrollment</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for offering in current_offerings %}
+                                        <tr>
+                                            <td><strong>{{ offering.section }}</strong></td>
+                                            <td>{{ offering.semester }}</td>
+                                            <td>{{ offering.instructor.get_full_name|default:"TBA" }}</td>
+                                            <td>{{ offering.schedule|default:"TBA" }}</td>
+                                            <td>{{ offering.room|default:"TBA" }}</td>
+                                            <td>
+                                                <div class="progress" style="height: 20px; min-width: 80px;">
+                                                    {% widthratio offering.current_enrollment offering.max_students 100 as enrollment_percent %}
+                                                    <div class="progress-bar {% if enrollment_percent >= 90 %}bg-danger{% elif enrollment_percent >= 70 %}bg-warning{% else %}bg-success{% endif %}" 
+                                                         style="width: {{ enrollment_percent }}%;">
+                                                        {{ offering.current_enrollment }}/{{ offering.max_students }}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-{% if offering.status == 'open' %}success{% elif offering.status == 'closed' %}secondary{% else %}danger{% endif %}">
+                                                    {{ offering.get_status_display }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <div class="alert alert-info text-center">
+                                <i class="fas fa-calendar-times fa-2x mb-2"></i>
+                                <h5>No Current Offerings</h5>
+                                <p>This course is not currently being offered this semester.</p>
+                                {% if user.is_staff %}
+                                <a href="{% url 'admin:courses_courseoffering_add' %}?course={{ course.id }}" class="btn btn-primary">
+                                    Create New Offering
+                                </a>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="col-md-4">
+                    <!-- Quick Actions -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5><i class="fas fa-cog"></i> Actions</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                {% if user.is_staff %}
+                                <a href="{% url 'admin:courses_course_change' course.id %}" class="btn btn-primary">
+                                    <i class="fas fa-edit"></i> Edit Course
+                                </a>
+                                <a href="{% url 'admin:courses_courseoffering_add' %}?course={{ course.id }}" class="btn btn-success">
+                                    <i class="fas fa-plus"></i> Add Offering
+                                </a>
+                                {% endif %}
+                                
+                                {% if user.user_type == 'student' %}
+                                <a href="{% url 'courses:student_enrollment' %}" class="btn btn-info">
+                                    <i class="fas fa-user-plus"></i> View Enrollment Options
+                                </a>
+                                {% endif %}
+                                
+                                <a href="{% url 'courses:course_list' %}" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> Back to Course List
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statistics -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5><i class="fas fa-chart-bar"></i> Course Statistics</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <div class="border-end">
+                                        <h4 class="text-primary mb-0">{{ total_offerings }}</h4>
+                                        <small class="text-muted">Total Offerings</small>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <h4 class="text-success mb-0">{{ total_students }}</h4>
+                                    <small class="text-muted">Enrolled Students</small>
+                                </div>
+                            </div>
+                            
+                            <hr>
+                            
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <div class="border-end">
+                                        <h5 class="text-warning mb-0">{{ avg_enrollment|floatformat:1 }}%</h5>
+                                        <small class="text-muted">Avg. Capacity</small>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <h5 class="text-info mb-0">{{ completion_rate|floatformat:1 }}%</h5>
+                                    <small class="text-muted">Completion Rate</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Curriculum Information -->
+                    {% if curricula %}
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="fas fa-graduation-cap"></i> Part of Curricula</h5>
+                        </div>
+                        <div class="card-body">
+                            {% for curriculum_course in curricula %}
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ curriculum_course.curriculum.code }}</strong><br>
+                                        <small class="text-muted">{{ curriculum_course.curriculum.name }}</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="badge bg-info">Year {{ curriculum_course.year_level }}</span><br>
+                                        <small class="text-muted">{{ curriculum_course.get_semester_display }}</small>
+                                    </div>
+                                </div>
+                                {% if curriculum_course.is_required %}
+                                <span class="badge bg-danger">Required</span>
+                                {% else %}
+                                <span class="badge bg-success">Elective</span>
+                                {% endif %}
+                            </div>
+                            {% if not forloop.last %}<hr class="my-2">{% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<style>
+.progress {
+    background-color: #e9ecef;
+}
+
+.progress-bar {
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.badge {
+    font-size: 0.75em;
+}
+
+.border-end {
+    border-right: 1px solid #dee2e6 !important;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    background-color: #f8f9fa;
+}
+</style>
+{% endblock %}

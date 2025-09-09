@@ -1,32 +1,148 @@
 {% extends 'accounts/base.html' %}
 
-{% block title %}SPIST - Portal Selection{% endblock %}
+{% block title %}SPIST - Online Learning Portal{% endblock %}
 
 {% block content %}
-<div class="card">
-    <div class="text-center">
-        <h2>Welcome to SPIST Online Portal</h2>
-        <p>Please select your portal to continue</p>
-    </div>
-    
-    <div class="portal-selection">
-        <div class="portal-card">
-            <h3>Student Portal</h3>
-            <p>Access your student dashboard, view grades, course materials, and more.</p>
-            <a href="{% url 'login' %}?next={% url 'student_dashboard' %}" class="btn">Student Login</a>
-            <div style="margin-top: 1rem;">
-                <a href="{% url 'student_register' %}">Don't have an account? Register here</a>
-            </div>
-        </div>
-        
-        <div class="portal-card">
-            <h3>Teacher Portal</h3>
-            <p>Manage your classes, create assignments, track student progress, and more.</p>
-            <a href="{% url 'login' %}?next={% url 'teacher_dashboard' %}" class="btn">Teacher Login</a>
-            <div style="margin-top: 1rem;">
-                <a href="{% url 'teacher_register' %}">Don't have an account? Register here</a>
+<!-- Hero Section -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="modern-card bg-gradient text-white text-center py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <div class="container">
+                <h1 class="display-4 fw-bold mb-4">
+                    <i class="fas fa-graduation-cap me-3"></i>
+                    SPIST Online Learning Portal
+                </h1>
+                <p class="lead mb-4">Empowering Education Through Technology</p>
+                <p class="mb-0 opacity-75">Your gateway to academic excellence and digital learning</p>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Portal Selection -->
+<div class="row mb-5">
+    <div class="col-12 text-center mb-4">
+        <h2 class="fw-bold">Choose Your Portal</h2>
+        <p class="text-muted">Select the appropriate portal to access your academic resources</p>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <!-- Student Portal -->
+    <div class="col-lg-6">
+        <div class="modern-card h-100 text-center portal-hover" style="transition: all 0.3s ease;">
+            <div class="card-body p-5">
+                <div class="mb-4">
+                    <div class="bg-primary rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                        <i class="fas fa-user-graduate fa-3x text-white"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold text-primary mb-3">Student Portal</h3>
+                <p class="text-muted mb-4">Access your personalized learning dashboard with course materials, assignments, grades, and academic progress tracking.</p>
+                
+                <div class="mb-4">
+                    <h6 class="fw-semibold mb-2">Features Include:</h6>
+                    <ul class="list-unstyled text-start small">
+                        <li><i class="fas fa-check text-success me-2"></i>Interactive Assessments & Quizzes</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Real-time Grade Tracking</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Course Enrollment Management</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Academic Calendar & Announcements</li>
+                    </ul>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <a href="{% url 'login' %}?next={% url 'student_dashboard' %}" class="btn btn-modern btn-primary-modern btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Student Login
+                    </a>
+                    <a href="{% url 'student_register' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-user-plus me-2"></i>Create Student Account
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teacher Portal -->
+    <div class="col-lg-6">
+        <div class="modern-card h-100 text-center portal-hover" style="transition: all 0.3s ease;">
+            <div class="card-body p-5">
+                <div class="mb-4">
+                    <div class="bg-info rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                        <i class="fas fa-chalkboard-teacher fa-3x text-white"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold text-info mb-3">Faculty Portal</h3>
+                <p class="text-muted mb-4">Comprehensive teaching tools for course management, student assessment, and academic administration with advanced analytics.</p>
+                
+                <div class="mb-4">
+                    <h6 class="fw-semibold mb-2">Features Include:</h6>
+                    <ul class="list-unstyled text-start small">
+                        <li><i class="fas fa-check text-success me-2"></i>Assessment Creation & Management</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Student Progress Analytics</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Course Offering Administration</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Enrollment & Grade Management</li>
+                    </ul>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <a href="{% url 'login' %}?next={% url 'teacher_dashboard' %}" class="btn btn-modern btn-lg" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); color: white;">
+                        <i class="fas fa-sign-in-alt me-2"></i>Faculty Login
+                    </a>
+                    <a href="{% url 'teacher_register' %}" class="btn btn-outline-info">
+                        <i class="fas fa-user-tie me-2"></i>Create Faculty Account
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="modern-card">
+            <div class="card-header text-center">
+                <h4><i class="fas fa-star me-2"></i>Platform Highlights</h4>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <div class="col-md-4 text-center">
+                        <div class="p-3">
+                            <div class="bg-success rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                <i class="fas fa-mobile-alt fa-lg text-white"></i>
+                            </div>
+                            <h6 class="fw-bold">Mobile Responsive</h6>
+                            <p class="small text-muted mb-0">Access your portal from any device, anywhere, anytime with our responsive design.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <div class="p-3">
+                            <div class="bg-warning rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                <i class="fas fa-shield-alt fa-lg text-white"></i>
+                            </div>
+                            <h6 class="fw-bold">Secure & Reliable</h6>
+                            <p class="small text-muted mb-0">Your data is protected with enterprise-level security and regular backups.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <div class="p-3">
+                            <div class="bg-danger rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                <i class="fas fa-headset fa-lg text-white"></i>
+                            </div>
+                            <h6 class="fw-bold">24/7 Support</h6>
+                            <p class="small text-muted mb-0">Our technical support team is available to assist you with any platform issues.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.portal-hover:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+}
+</style>
 {% endblock %}

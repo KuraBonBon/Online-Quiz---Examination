@@ -3,44 +3,192 @@
 {% block title %}SPIST - Student Dashboard{% endblock %}
 
 {% block content %}
-<div class="card">
-    <div class="text-center">
-        <h2>Welcome, {{ user.first_name }}!</h2>
-        <p>Student Dashboard - {{ user.student_profile.course }}</p>
+<!-- Welcome Banner -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="modern-card bg-gradient" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%); color: white;">
+            <div class="card-body text-center py-5">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 class="mb-3"><i class="fas fa-user-graduate me-3"></i>Welcome Back, {{ user.first_name }}!</h2>
+                        <p class="lead mb-0">{{ user.student_profile.course }} - Year {{ user.student_profile.year_level }}</p>
+                        <small class="opacity-75">Student ID: {{ user.student_profile.student_id }}</small>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card bg-white bg-opacity-20 border-0" style="backdrop-filter: blur(10px);">
+                            <div class="text-center text-white">
+                                <h3 class="mb-1">{{ current_semester|default:"No Active" }}</h3>
+                                <small>Current Semester</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
-    <div class="card">
-        <h3>Student Information</h3>
-        <p><strong>Student ID:</strong> {{ user.student_profile.student_id }}</p>
-        <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
-        <p><strong>Email:</strong> {{ user.email }}</p>
-        <p><strong>Course:</strong> {{ user.student_profile.course }}</p>
-        <p><strong>Year Level:</strong> {{ user.student_profile.year_level }}</p>
-        <p><strong>Date Enrolled:</strong> {{ user.student_profile.date_enrolled }}</p>
-    </div>
-    
-    <div class="card">
-        <h3>Quick Actions</h3>
-        <div style="display: flex; flex-direction: column; gap: 1rem;">
-            <a href="#" class="btn">View Courses</a>
-            <a href="#" class="btn">Take Quiz</a>
-            <a href="#" class="btn">View Grades</a>
-            <a href="#" class="btn">Course Materials</a>
+<!-- Quick Stats -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="stat-card stat-card-primary text-center">
+            <div class="stat-number">{{ enrolled_courses|default:5 }}</div>
+            <div class="stat-label">Enrolled Courses</div>
         </div>
     </div>
-    
-    <div class="card">
-        <h3>Recent Activity</h3>
-        <p>No recent activity yet.</p>
-        <p><em>This section will show your recent quiz attempts, submissions, and updates once you start using the system.</em></p>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card stat-card-info text-center">
+            <div class="stat-number">{{ pending_assessments|default:3 }}</div>
+            <div class="stat-label">Pending Assessments</div>
+        </div>
     </div>
-    
-    <div class="card">
-        <h3>Announcements</h3>
-        <p>Welcome to the SPIST Student Portal!</p>
-        <p><em>Check back here for important announcements from your teachers and the administration.</em></p>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card stat-card-success text-center">
+            <div class="stat-number">{{ completed_assessments|default:12 }}</div>
+            <div class="stat-label">Completed</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card stat-card-warning text-center">
+            <div class="stat-number">85%</div>
+            <div class="stat-label">Average Grade</div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content Grid -->
+<div class="row">
+    <!-- Left Column -->
+    <div class="col-lg-8">
+        <!-- Quick Actions -->
+        <div class="modern-card mb-4">
+            <div class="card-header">
+                <h5><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <a href="{% url 'assessments:available_assessments' %}" class="btn btn-modern btn-primary-modern w-100">
+                            <i class="fas fa-clipboard-check"></i>Take Assessments
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{% url 'courses:student_enrollment' %}" class="btn btn-modern w-100" style="background: linear-gradient(135deg, var(--secondary-color) 0%, #1976d2 100%); color: white;">
+                            <i class="fas fa-graduation-cap"></i>My Enrollment
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="#" class="btn btn-modern w-100" style="background: linear-gradient(135deg, var(--accent-color) 0%, #f57c00 100%); color: white;">
+                            <i class="fas fa-chart-bar"></i>View Grades
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="#" class="btn btn-modern w-100" style="background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%); color: white;">
+                            <i class="fas fa-book-open"></i>Course Materials
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="modern-card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="fas fa-history me-2"></i>Recent Activity</h5>
+                <span class="badge bg-primary">Live</span>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-success rounded-circle p-2 me-3">
+                        <i class="fas fa-check text-white"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-0">Assessment Completed</h6>
+                        <small class="text-muted">Mathematics Quiz 1 - Score: 95%</small>
+                    </div>
+                    <small class="text-muted ms-auto">2 hours ago</small>
+                </div>
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-info rounded-circle p-2 me-3">
+                        <i class="fas fa-bell text-white"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-0">New Assignment</h6>
+                        <small class="text-muted">Physics Lab Report due next week</small>
+                    </div>
+                    <small class="text-muted ms-auto">1 day ago</small>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="bg-warning rounded-circle p-2 me-3">
+                        <i class="fas fa-calendar text-white"></i>
+                    </div>
+                    <div>
+                        <h6 class="mb-0">Upcoming Exam</h6>
+                        <small class="text-muted">Chemistry Midterm - March 15</small>
+                    </div>
+                    <small class="text-muted ms-auto">3 days ago</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="col-lg-4">
+        <!-- Student Profile -->
+        <div class="modern-card mb-4">
+            <div class="card-header">
+                <h5><i class="fas fa-user me-2"></i>Student Profile</h5>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                        <i class="fas fa-user fa-2x text-white"></i>
+                    </div>
+                </div>
+                <table class="table table-borderless small">
+                    <tr>
+                        <td><strong>Name:</strong></td>
+                        <td>{{ user.get_full_name }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Email:</strong></td>
+                        <td>{{ user.email }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Course:</strong></td>
+                        <td>{{ user.student_profile.course }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Year Level:</strong></td>
+                        <td>{{ user.student_profile.year_level }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Enrolled:</strong></td>
+                        <td>{{ user.student_profile.date_enrolled|date:"M d, Y" }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Announcements -->
+        <div class="modern-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="fas fa-bullhorn me-2"></i>Announcements</h5>
+                <span class="badge bg-danger">2 New</span>
+            </div>
+            <div class="card-body">
+                <div class="announcement-item mb-3 p-3 bg-light rounded">
+                    <h6 class="mb-1">🎉 Welcome to SPIST Portal!</h6>
+                    <p class="small mb-0 text-muted">Your academic journey starts here. Explore all the features available.</p>
+                    <small class="text-primary">Today</small>
+                </div>
+                <div class="announcement-item p-3 bg-light rounded">
+                    <h6 class="mb-1">📚 Semester Registration</h6>
+                    <p class="small mb-0 text-muted">Don't forget to register for next semester. Deadline: March 20.</p>
+                    <small class="text-primary">2 days ago</small>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
