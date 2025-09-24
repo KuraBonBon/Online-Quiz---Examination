@@ -3,6 +3,8 @@
 {% block title %}SPIST - Student Dashboard{% endblock %}
 
 {% block content %}
+<!-- Feature not implemented notification -->
+{% include 'accounts/partials/feature_notification.html' %}
 <!-- Welcome Banner -->
 <div class="row mb-4">
     <div class="col-12">
@@ -78,14 +80,16 @@
                         </a>
                     </div>
                     <div class="col-md-6">
-                        <a href="#" class="btn btn-modern w-100" style="background: linear-gradient(135deg, var(--accent-color) 0%, #f57c00 100%); color: white;">
+                        <button onclick="showFeatureNotImplemented('View Grades', 'Grade viewing functionality is currently under development.')" 
+                                class="btn btn-modern w-100" style="background: linear-gradient(135deg, var(--accent-color) 0%, #f57c00 100%); color: white;">
                             <i class="fas fa-chart-bar"></i>View Grades
-                        </a>
+                        </button>
                     </div>
                     <div class="col-md-6">
-                        <a href="#" class="btn btn-modern w-100" style="background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%); color: white;">
+                        <button onclick="showFeatureNotImplemented('Course Materials', 'Course materials functionality is currently under development.')" 
+                                class="btn btn-modern w-100" style="background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%); color: white;">
                             <i class="fas fa-book-open"></i>Course Materials
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>

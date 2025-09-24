@@ -1,0 +1,632 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}System Analytics - SPIST School Management{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-0">System Analytics</h2>
+            <p class="text-muted">Comprehensive system performance and usage insights</p>
+        </div>
+        <div class="d-flex gap-2">
+            <select class="form-select" id="timeRangeFilter" style="width: auto;">
+                <option value="7">Last 7 Days</option>
+                <option value="30" selected>Last 30 Days</option>
+                <option value="90">Last 90 Days</option>
+                <option value="365">Last Year</option>
+            </select>
+            <button class="btn btn-outline-primary" onclick="refreshData()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+            <button class="btn btn-outline-success" onclick="exportSystemReport()">
+                <i class="fas fa-download"></i> Export Report
+            </button>
+        </div>
+    </div>
+
+    <!-- System Health Overview -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">System Health Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <div class="health-indicator bg-success text-white rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                    <i class="fas fa-heartbeat fa-2x"></i>
+                                </div>
+                                <h6>System Status</h6>
+                                <span class="badge bg-success">Healthy</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <div class="health-indicator bg-info text-white rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                    <i class="fas fa-database fa-2x"></i>
+                                </div>
+                                <h6>Database</h6>
+                                <span class="badge bg-success">Online</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <div class="health-indicator bg-warning text-white rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                    <i class="fas fa-server fa-2x"></i>
+                                </div>
+                                <h6>Server Load</h6>
+                                <span class="badge bg-warning">{{ server_load }}%</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <div class="health-indicator bg-primary text-white rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                    <i class="fas fa-clock fa-2x"></i>
+                                </div>
+                                <h6>Uptime</h6>
+                                <span class="badge bg-primary">{{ uptime_days }} days</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Metrics Row -->
+    <div class="row mb-4">
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-users fa-2x mb-2"></i>
+                    <h3 class="mb-0">{{ total_users }}</h3>
+                    <p class="mb-0">Total Users</p>
+                    <small class="opacity-75">+{{ new_users_today }} today</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-sign-in-alt fa-2x mb-2"></i>
+                    <h3 class="mb-0">{{ daily_logins }}</h3>
+                    <p class="mb-0">Daily Logins</p>
+                    <small class="opacity-75">{{ active_users }} active</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-clipboard-list fa-2x mb-2"></i>
+                    <h3 class="mb-0">{{ total_assessments }}</h3>
+                    <p class="mb-0">Assessments</p>
+                    <small class="opacity-75">{{ published_assessments }} published</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="card bg-warning text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-book fa-2x mb-2"></i>
+                    <h3 class="mb-0">{{ total_courses }}</h3>
+                    <p class="mb-0">Courses</p>
+                    <small class="opacity-75">{{ active_courses }} active</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="card bg-danger text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-exclamation-triangle fa-2x mb-2"></i>
+                    <h3 class="mb-0">{{ system_errors }}</h3>
+                    <p class="mb-0">Errors (24h)</p>
+                    <small class="opacity-75">{{ error_rate }}% rate</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-4 col-sm-6">
+            <div class="card bg-secondary text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-tachometer-alt fa-2x mb-2"></i>
+                    <h3 class="mb-0">{{ avg_response_time }}</h3>
+                    <p class="mb-0">Avg Response</p>
+                    <small class="opacity-75">milliseconds</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <!-- User Activity Trends -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">User Activity Trends</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="userActivityChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- System Resources -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">System Resources</h5>
+                </div>
+                <div class="card-body">
+                    <div class="resource-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span>CPU Usage</span>
+                            <span class="badge bg-{{ cpu_usage|floatformat:0|add:0 > 80|yesno:'danger,warning' }}">{{ cpu_usage|floatformat:1 }}%</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-{{ cpu_usage|floatformat:0|add:0 > 80|yesno:'danger,warning' }}" style="width: {{ cpu_usage }}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="resource-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span>Memory Usage</span>
+                            <span class="badge bg-{{ memory_usage|floatformat:0|add:0 > 85|yesno:'danger,warning' }}">{{ memory_usage|floatformat:1 }}%</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-{{ memory_usage|floatformat:0|add:0 > 85|yesno:'danger,warning' }}" style="width: {{ memory_usage }}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="resource-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span>Disk Usage</span>
+                            <span class="badge bg-{{ disk_usage|floatformat:0|add:0 > 90|yesno:'danger,warning' }}">{{ disk_usage|floatformat:1 }}%</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-{{ disk_usage|floatformat:0|add:0 > 90|yesno:'danger,warning' }}" style="width: {{ disk_usage }}%"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="resource-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span>Network I/O</span>
+                            <span class="badge bg-info">{{ network_io }} MB/s</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-info" style="width: {{ network_io_percentage }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Metrics and Error Logs -->
+    <div class="row mb-4">
+        <!-- Performance Metrics -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Performance Metrics</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="performanceMetricsChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Error Logs -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Recent Error Logs</h5>
+                    <button class="btn btn-sm btn-outline-primary" onclick="viewAllLogs()">
+                        View All
+                    </button>
+                </div>
+                <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                    {% for error in recent_errors %}
+                    <div class="error-log-item border-bottom pb-2 mb-2">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <span class="badge bg-{{ error.severity|lower }}">{{ error.severity }}</span>
+                                <h6 class="mb-1 mt-1">{{ error.message|truncatechars:60 }}</h6>
+                                <small class="text-muted">
+                                    <i class="fas fa-clock"></i> {{ error.timestamp|timesince }} ago
+                                    {% if error.user %} • {{ error.user.username }}{% endif %}
+                                </small>
+                            </div>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="viewErrorDetails('{{ error.id }}')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-check-circle fa-3x mb-3 d-block text-success"></i>
+                        No recent errors. System running smoothly!
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Database and Security Stats -->
+    <div class="row mb-4">
+        <!-- Database Statistics -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Database Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="stat-item text-center mb-3">
+                                <h4 class="text-primary">{{ db_size }}</h4>
+                                <p class="mb-0">Database Size</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-item text-center mb-3">
+                                <h4 class="text-success">{{ total_records }}</h4>
+                                <p class="mb-0">Total Records</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-item text-center mb-3">
+                                <h4 class="text-info">{{ avg_query_time }}</h4>
+                                <p class="mb-0">Avg Query Time</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-item text-center mb-3">
+                                <h4 class="text-warning">{{ db_connections }}</h4>
+                                <p class="mb-0">Active Connections</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h6 class="mt-3 mb-2">Table Statistics</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Table</th>
+                                    <th>Records</th>
+                                    <th>Size</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for table_stat in table_stats %}
+                                <tr>
+                                    <td>{{ table_stat.name }}</td>
+                                    <td>{{ table_stat.records|floatformat:0 }}</td>
+                                    <td>{{ table_stat.size }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Security Overview -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Security Overview</h5>
+                </div>
+                <div class="card-body">
+                    <div class="security-stats">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span>Failed Login Attempts (24h)</span>
+                            <span class="badge bg-{{ failed_logins > 50|yesno:'danger,warning' }}">{{ failed_logins }}</span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span>Suspicious Activities</span>
+                            <span class="badge bg-{{ suspicious_activities > 10|yesno:'danger,success' }}">{{ suspicious_activities }}</span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span>Blocked IPs</span>
+                            <span class="badge bg-secondary">{{ blocked_ips }}</span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span>Security Score</span>
+                            <span class="badge bg-{{ security_score > 80|yesno:'success,warning' }}">{{ security_score }}%</span>
+                        </div>
+                    </div>
+                    
+                    <h6 class="mt-4 mb-2">Recent Security Events</h6>
+                    <div class="security-events" style="max-height: 200px; overflow-y: auto;">
+                        {% for event in security_events %}
+                        <div class="security-event-item d-flex align-items-center mb-2">
+                            <div class="event-icon bg-{{ event.severity|lower }} text-white rounded-circle me-2 d-flex align-items-center justify-content-center" style="width: 24px; height: 24px; font-size: 10px;">
+                                <i class="fas fa-{% if event.type == 'login' %}sign-in-alt{% elif event.type == 'blocked' %}ban{% else %}shield-alt{% endif %}"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <small class="d-block">{{ event.message }}</small>
+                                <small class="text-muted">{{ event.timestamp|timesince }} ago</small>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center text-muted py-3">
+                            <i class="fas fa-shield-alt fa-2x mb-2 d-block text-success"></i>
+                            <small>No security events to report</small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Usage Analytics -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Usage Analytics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <canvas id="deviceUsageChart"></canvas>
+                        </div>
+                        <div class="col-md-6">
+                            <canvas id="browserUsageChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Error Details Modal -->
+<div class="modal fade" id="errorDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Error Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="errorDetailsContent">
+                <!-- Content will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// User Activity Chart
+const activityCtx = document.getElementById('userActivityChart').getContext('2d');
+new Chart(activityCtx, {
+    type: 'line',
+    data: {
+        labels: {{ activity_labels|safe }},
+        datasets: [{
+            label: 'Logins',
+            data: {{ login_data|safe }},
+            borderColor: '#007bff',
+            backgroundColor: 'rgba(0, 123, 255, 0.1)',
+            borderWidth: 2,
+            fill: true
+        }, {
+            label: 'Registrations',
+            data: {{ registration_data|safe }},
+            borderColor: '#28a745',
+            backgroundColor: 'rgba(40, 167, 69, 0.1)',
+            borderWidth: 2,
+            fill: true
+        }, {
+            label: 'Assessments Taken',
+            data: {{ assessment_data|safe }},
+            borderColor: '#ffc107',
+            backgroundColor: 'rgba(255, 193, 7, 0.1)',
+            borderWidth: 2,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+            intersect: false,
+            mode: 'index'
+        },
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+// Performance Metrics Chart
+const performanceCtx = document.getElementById('performanceMetricsChart').getContext('2d');
+new Chart(performanceCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ performance_labels|safe }},
+        datasets: [{
+            label: 'Response Time (ms)',
+            data: {{ response_times|safe }},
+            backgroundColor: ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6c757d']
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+// Device Usage Chart
+const deviceCtx = document.getElementById('deviceUsageChart').getContext('2d');
+new Chart(deviceCtx, {
+    type: 'pie',
+    data: {
+        labels: {{ device_labels|safe }},
+        datasets: [{
+            data: {{ device_data|safe }},
+            backgroundColor: ['#007bff', '#28a745', '#ffc107']
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            title: {
+                display: true,
+                text: 'Device Usage Distribution'
+            }
+        }
+    }
+});
+
+// Browser Usage Chart
+const browserCtx = document.getElementById('browserUsageChart').getContext('2d');
+new Chart(browserCtx, {
+    type: 'doughnut',
+    data: {
+        labels: {{ browser_labels|safe }},
+        datasets: [{
+            data: {{ browser_data|safe }},
+            backgroundColor: ['#007bff', '#28a745', '#ffc107', '#dc3545', '#6c757d']
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            title: {
+                display: true,
+                text: 'Browser Usage Distribution'
+            }
+        }
+    }
+});
+
+// Functions
+function refreshData() {
+    window.location.reload();
+}
+
+function exportSystemReport() {
+    const timeRange = document.getElementById('timeRangeFilter').value;
+    window.open(`/analytics/system-report/?days=${timeRange}&export=pdf`, '_blank');
+}
+
+function viewAllLogs() {
+    window.open('/analytics/error-logs/', '_blank');
+}
+
+function viewErrorDetails(errorId) {
+    fetch(`/analytics/error-details/${errorId}/`)
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('errorDetailsContent').innerHTML = html;
+            new bootstrap.Modal(document.getElementById('errorDetailsModal')).show();
+        });
+}
+
+// Time range filter
+document.getElementById('timeRangeFilter').addEventListener('change', function() {
+    const timeRange = this.value;
+    const url = new URL(window.location);
+    url.searchParams.set('days', timeRange);
+    window.location.href = url.toString();
+});
+
+// Auto-refresh every 5 minutes for real-time data
+setInterval(function() {
+    // Update key metrics without full page reload
+    fetch(`/analytics/system-metrics/`)
+        .then(response => response.json())
+        .then(data => {
+            // Update metrics here
+            console.log('Metrics updated:', data);
+        });
+}, 300000); // 5 minutes
+</script>
+
+<style>
+.health-indicator {
+    transition: all 0.3s ease;
+}
+
+.health-indicator:hover {
+    transform: scale(1.1);
+}
+
+.resource-item {
+    transition: all 0.3s ease;
+}
+
+.resource-item:hover {
+    background-color: #f8f9fa;
+    border-radius: 0.375rem;
+    padding: 0.5rem;
+    margin: -0.5rem;
+}
+
+.error-log-item {
+    transition: all 0.3s ease;
+}
+
+.error-log-item:hover {
+    background-color: #f8f9fa;
+    border-radius: 0.375rem;
+    padding: 0.75rem;
+    margin: -0.25rem;
+}
+
+.security-event-item {
+    transition: all 0.3s ease;
+}
+
+.security-event-item:hover {
+    background-color: #f8f9fa;
+    border-radius: 0.375rem;
+    padding: 0.5rem;
+    margin: -0.25rem;
+}
+
+.stat-item h4 {
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+</style>
+{% endblock %}

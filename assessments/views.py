@@ -1,27 +1,26 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import JsonResponse
 from django.urls import reverse
 from django.utils import timezone
-from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, Count, Avg
+from django.db import models
 from django.forms import formset_factory
-import json
 
 from .models import Assessment, Question, Choice, CorrectAnswer, StudentAttempt, StudentAnswer
 from .forms import (
     AssessmentForm, AssessmentCreationForm, QuestionForm, ChoiceForm, CorrectAnswerForm,
-    ChoiceFormSet, CorrectAnswerFormSet, AssessmentSelectionForm, TrueFalseForm,
-    ReferenceAnswerForm, ReferenceAnswerFormSet
+    ChoiceFormSet, CorrectAnswerFormSet, EnhancedCorrectAnswerFormSet, AssessmentSelectionForm, TrueFalseForm,
+    ReferenceAnswerForm, ReferenceAnswerFormSet, EnhancedCorrectAnswerForm, AssessmentFilterForm
 )
+from accounts.feature_utils import feature_not_implemented
 
 @login_required
 def assessment_selection_view(request):
     """View for selecting assessment type (Quiz or Exam)"""
     if request.user.user_type != 'teacher':
         messages.error(request, 'Only teachers can create assessments.')
-        return redirect('teacher_dashboard')
+        return redirect('accounts:teacher_dashboard')
     
     if request.method == 'POST':
         form = AssessmentSelectionForm(request.POST)
@@ -38,7 +37,7 @@ def create_assessment_view(request, assessment_type):
     """View for creating a new assessment"""
     if request.user.user_type != 'teacher':
         messages.error(request, 'Only teachers can create assessments.')
-        return redirect('teacher_dashboard')
+        return redirect('accounts:teacher_dashboard')
     
     if assessment_type not in ['quiz', 'exam']:
         messages.error(request, 'Invalid assessment type.')
@@ -268,7 +267,11 @@ def edit_question_view(request, question_id):
 def manage_questions_view(request, assessment_id):
     """View for managing all questions in an assessment"""
     assessment = get_object_or_404(Assessment, id=assessment_id, creator=request.user)
-    questions = Question.objects.filter(assessment=assessment).order_by('order')
+    
+    # Optimize query with prefetch_related for related objects
+    questions = Question.objects.filter(assessment=assessment).prefetch_related(
+        'choices', 'correct_answers'
+    ).order_by('order')
     
     context = {
         'assessment': assessment,
@@ -290,17 +293,142 @@ def delete_question_view(request, question_id):
 
 @login_required
 def my_assessments_view(request):
-    """View for teachers to see their created assessments"""
+    """Enhanced view for teachers to see their created assessments with filtering and pagination"""
     if request.user.user_type != 'teacher':
         messages.error(request, 'Only teachers can view this page.')
-        return redirect('student_dashboard')
+        return redirect('accounts:student_dashboard')
     
-    assessments = Assessment.objects.filter(creator=request.user).order_by('-created_at')
+    # Initialize filter form with GET data
+    filter_form = AssessmentFilterForm(request.GET or None)
+    
+    # Get base queryset
+    assessments = Assessment.objects.filter(creator=request.user).select_related('creator').annotate(
+        question_count=models.Count('questions'),
+        attempt_count=models.Count('attempts'),
+        avg_score=models.Avg('attempts__percentage')
+    ).order_by('-created_at')
+    
+    # Apply filters if form is valid
+    if filter_form.is_valid():
+        cleaned_data = filter_form.cleaned_data
+        
+        if cleaned_data.get('status'):
+            assessments = assessments.filter(status=cleaned_data['status'])
+        
+        if cleaned_data.get('assessment_type'):
+            assessments = assessments.filter(assessment_type=cleaned_data['assessment_type'])
+        
+        if cleaned_data.get('search'):
+            search_query = cleaned_data['search']
+            assessments = assessments.filter(
+                models.Q(title__icontains=search_query) |
+                models.Q(description__icontains=search_query)
+            )
+        
+        # Sort
+        sort_by = cleaned_data.get('sort_by', '-created_at')
+        valid_sorts = ['-created_at', 'created_at', 'title', '-title', 'status', '-status']
+        if sort_by in valid_sorts:
+            assessments = assessments.order_by(sort_by)
+    
+    # Calculate statistics  
+    user_assessments = Assessment.objects.filter(creator=request.user)
+    stats = {
+        'total': user_assessments.count(),
+        'published': user_assessments.filter(status='published').count(),
+        'draft': user_assessments.filter(status='draft').count(),
+        'total_attempts': user_assessments.aggregate(
+            total=models.Count('attempts')
+        )['total'] or 0,
+        # Template compatibility
+        'total_assessments': user_assessments.count(),
+        'published_assessments': user_assessments.filter(status='published').count(),
+        'draft_assessments': user_assessments.filter(status='draft').count(),
+    }
+    
+    # Pagination
+    from django.core.paginator import Paginator
+    paginator = Paginator(assessments, 12)  # Show 12 assessments per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    # Handle bulk actions
+    if request.method == 'POST' and request.POST.get('bulk_action'):
+        return handle_bulk_assessment_actions(request)
     
     context = {
-        'assessments': assessments,
+        'assessments': assessments,  # For backward compatibility
+        'page_obj': page_obj,
+        'filter_form': filter_form,
+        'stats': stats,
+        'current_filters': {
+            'status': request.GET.get('status'),
+            'type': request.GET.get('assessment_type'), 
+            'search': request.GET.get('search'),
+            'sort_by': request.GET.get('sort_by', '-created_at')
+        },
+        'status_choices': Assessment.STATUS_CHOICES,
+        'type_choices': Assessment.ASSESSMENT_TYPES,
     }
     return render(request, 'assessments/my_assessments.html', context)
+
+def handle_bulk_assessment_actions(request):
+    """Handle bulk actions for assessments (publish, archive, duplicate, delete)"""
+    try:
+        action = request.POST.get('action')
+        assessment_ids = request.POST.get('assessment_ids', '').split(',')
+        assessment_ids = [int(id) for id in assessment_ids if id.isdigit()]
+        
+        if not assessment_ids:
+            messages.error(request, 'No assessments selected.')
+            return redirect('assessments:my_assessments')
+        
+        # Get assessments belonging to the current user
+        assessments = Assessment.objects.filter(
+            id__in=assessment_ids, 
+            creator=request.user
+        )
+        
+        if not assessments.exists():
+            messages.error(request, 'No valid assessments found.')
+            return redirect('assessments:my_assessments')
+        
+        count = assessments.count()
+        
+        if action == 'publish':
+            assessments.update(status='published')
+            messages.success(request, f'Successfully published {count} assessment(s).')
+        
+        elif action == 'archive':
+            assessments.update(status='archived')
+            messages.success(request, f'Successfully archived {count} assessment(s).')
+        
+        elif action == 'duplicate':
+            for assessment in assessments:
+                try:
+                    new_assessment = assessment.duplicate()
+                    new_assessment.title = f"{assessment.title} (Copy)"
+                    new_assessment.save()
+                except Exception as e:
+                    messages.warning(request, f'Could not duplicate "{assessment.title}": {str(e)}')
+            messages.success(request, f'Successfully duplicated {count} assessment(s).')
+        
+        elif action == 'delete':
+            assessment_titles = [a.title for a in assessments[:3]]  # Get first 3 titles for feedback
+            assessments.delete()
+            if count <= 3:
+                title_list = ', '.join(assessment_titles)
+                messages.success(request, f'Successfully deleted: {title_list}')
+            else:
+                messages.success(request, f'Successfully deleted {count} assessments.')
+        
+        else:
+            messages.error(request, 'Invalid action.')
+            
+    except Exception as e:
+        messages.error(request, f'An error occurred: {str(e)}')
+    
+    return redirect('assessments:my_assessments')
 
 @login_required
 def assessment_detail_view(request, assessment_id):
@@ -373,7 +501,7 @@ def available_assessments_view(request):
     """View for students to see available assessments"""
     if request.user.user_type != 'student':
         messages.error(request, 'Only students can view this page.')
-        return redirect('teacher_dashboard')
+        return redirect('accounts:teacher_dashboard')
       # Get published assessments that are currently available
     now = timezone.now()
     assessments = Assessment.objects.filter(
@@ -390,25 +518,19 @@ def available_assessments_view(request):
     return render(request, 'assessments/available_assessments.html', context)
 
 @login_required
+@feature_not_implemented("Assessment Taking", redirect_url='assessments:available_assessments')
 def take_assessment_view(request, assessment_id):
     """View for students to take an assessment"""
-    # This is a placeholder for the assessment taking functionality
-    # Will be implemented in the next phase
-    messages.info(request, 'Assessment taking feature will be implemented soon.')
-    return redirect('assessments:available_assessments')
+    pass  # This won't be executed due to decorator
 
 @login_required
+@feature_not_implemented("Assessment Submission", redirect_url='assessments:available_assessments')
 def submit_assessment_view(request, assessment_id):
     """View for submitting an assessment"""
-    # This is a placeholder for the assessment submission functionality
-    # Will be implemented in the next phase
-    messages.info(request, 'Assessment submission feature will be implemented soon.')
-    return redirect('assessments:available_assessments')
+    pass  # This won't be executed due to decorator
 
 @login_required
+@feature_not_implemented("Assessment Results", redirect_url='assessments:available_assessments')
 def assessment_results_view(request, attempt_id):
     """View for showing assessment results"""
-    # This is a placeholder for the assessment results functionality
-    # Will be implemented in the next phase
-    messages.info(request, 'Assessment results feature will be implemented soon.')
-    return redirect('assessments:available_assessments')
+    pass  # This won't be executed due to decorator

@@ -1,0 +1,589 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Settings - SPIST{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <!-- Settings Sidebar -->
+        <div class="col-lg-3 col-md-4 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-cog me-2"></i>Settings
+                    </h6>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="#general" class="list-group-item list-group-item-action active" data-tab="general">
+                        <i class="fas fa-user-cog me-2"></i>General
+                    </a>
+                    <a href="#notifications" class="list-group-item list-group-item-action" data-tab="notifications">
+                        <i class="fas fa-bell me-2"></i>Notifications
+                    </a>
+                    <a href="#privacy" class="list-group-item list-group-item-action" data-tab="privacy">
+                        <i class="fas fa-shield-alt me-2"></i>Privacy
+                    </a>
+                    <a href="#appearance" class="list-group-item list-group-item-action" data-tab="appearance">
+                        <i class="fas fa-palette me-2"></i>Appearance
+                    </a>
+                    <a href="#account" class="list-group-item list-group-item-action" data-tab="account">
+                        <i class="fas fa-user-times me-2"></i>Account
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Settings Content -->
+        <div class="col-lg-9 col-md-8">
+            <!-- General Settings Tab -->
+            <div class="tab-content active" id="general-tab">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-user-cog me-2"></i>General Settings
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="text-primary mb-3">Language & Region</h6>
+                                <form method="post" id="languageForm">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="language">
+                                    <div class="mb-3">
+                                        <label class="form-label">Language</label>
+                                        <select name="language" class="form-select" onchange="updateLanguage(this.value)">
+                                            <option value="en" {% if settings.language == 'en' %}selected{% endif %}>English</option>
+                                            <option value="fil" {% if settings.language == 'fil' %}selected{% endif %}>Filipino</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Timezone</label>
+                                        <select name="timezone" class="form-select" onchange="updateTimezone(this.value)">
+                                            <option value="Asia/Manila" {% if settings.timezone == 'Asia/Manila' %}selected{% endif %}>Asia/Manila (GMT+8)</option>
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-primary mb-3">Quick Actions</h6>
+                                <div class="d-grid gap-2">
+                                    <a href="{% url 'accounts:profile_edit' %}" class="btn btn-outline-primary">
+                                        <i class="fas fa-edit me-2"></i>Edit Profile
+                                    </a>
+                                    <a href="{% url 'accounts:change_password' %}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-key me-2"></i>Change Password
+                                    </a>
+                                    <a href="{% url 'accounts:export_data' %}" class="btn btn-outline-info">
+                                        <i class="fas fa-download me-2"></i>Export My Data
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Notifications Tab -->
+            <div class="tab-content" id="notifications-tab">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-bell me-2"></i>Notification Preferences
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" id="notificationsForm">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="notifications">
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6 class="text-primary mb-3">Email Notifications</h6>
+                                    
+                                    <div class="form-check form-switch mb-3">
+                                        {{ notification_form.email_notifications }}
+                                        <label class="form-check-label" for="{{ notification_form.email_notifications.id_for_label }}">
+                                            General Email Notifications
+                                        </label>
+                                        <div class="form-text">Receive important updates via email</div>
+                                    </div>
+                                    
+                                    <div class="form-check form-switch mb-3">
+                                        {{ notification_form.assignment_reminders }}
+                                        <label class="form-check-label" for="{{ notification_form.assignment_reminders.id_for_label }}">
+                                            Assignment Reminders
+                                        </label>
+                                        <div class="form-text">Get reminded about upcoming assignments and deadlines</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <h6 class="text-primary mb-3">Academic Notifications</h6>
+                                    
+                                    <div class="form-check form-switch mb-3">
+                                        {{ notification_form.grade_notifications }}
+                                        <label class="form-check-label" for="{{ notification_form.grade_notifications.id_for_label }}">
+                                            Grade Notifications
+                                        </label>
+                                        <div class="form-text">Be notified when grades are posted</div>
+                                    </div>
+                                    
+                                    <div class="form-check form-switch mb-3">
+                                        {{ notification_form.course_updates }}
+                                        <label class="form-check-label" for="{{ notification_form.course_updates.id_for_label }}">
+                                            Course Updates
+                                        </label>
+                                        <div class="form-text">Receive updates about your enrolled courses</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 pt-3 border-top">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Save Notification Settings
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Privacy Tab -->
+            <div class="tab-content" id="privacy-tab">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-shield-alt me-2"></i>Privacy Settings
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" id="privacyForm">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="privacy">
+                            
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h6 class="text-primary mb-3">Profile Visibility</h6>
+                                    
+                                    <div class="mb-3">
+                                        <label for="{{ privacy_form.profile_visibility.id_for_label }}" class="form-label">
+                                            Who can see your profile?
+                                        </label>
+                                        {{ privacy_form.profile_visibility }}
+                                        <div class="form-text">Control who can view your basic profile information</div>
+                                    </div>
+                                    
+                                    <h6 class="text-primary mb-3 mt-4">Contact Information</h6>
+                                    
+                                    <div class="form-check form-switch mb-3">
+                                        {{ privacy_form.show_email }}
+                                        <label class="form-check-label" for="{{ privacy_form.show_email.id_for_label }}">
+                                            Show Email Address
+                                        </label>
+                                        <div class="form-text">Allow others to see your email address</div>
+                                    </div>
+                                    
+                                    <div class="form-check form-switch mb-3">
+                                        {{ privacy_form.show_phone }}
+                                        <label class="form-check-label" for="{{ privacy_form.show_phone.id_for_label }}">
+                                            Show Phone Number
+                                        </label>
+                                        <div class="form-text">Allow others to see your phone number</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="alert alert-info">
+                                        <h6 class="alert-heading">
+                                            <i class="fas fa-info-circle me-2"></i>Privacy Tips
+                                        </h6>
+                                        <ul class="mb-0 small">
+                                            <li>Choose "Private" for maximum privacy</li>
+                                            <li>Your academic information is only visible to authorized personnel</li>
+                                            <li>Administrators can always access your profile</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 pt-3 border-top">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Save Privacy Settings
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Appearance Tab -->
+            <div class="tab-content" id="appearance-tab">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-palette me-2"></i>Appearance Settings
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" id="themeForm">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="theme">
+                            
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h6 class="text-primary mb-3">Theme Preference</h6>
+                                    
+                                    <div class="theme-options">
+                                        <div class="form-check theme-option">
+                                            <input class="form-check-input" type="radio" name="theme_preference" id="theme-auto" 
+                                                   value="auto" {% if settings.theme_preference == 'auto' %}checked{% endif %}>
+                                            <label class="form-check-label theme-card" for="theme-auto">
+                                                <div class="theme-preview auto-theme">
+                                                    <div class="theme-header"></div>
+                                                    <div class="theme-body">
+                                                        <div class="theme-text"></div>
+                                                        <div class="theme-text short"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="theme-info">
+                                                    <strong>Auto (System)</strong>
+                                                    <p class="small text-muted mb-0">Follow your device's system preference</p>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        
+                                        <div class="form-check theme-option">
+                                            <input class="form-check-input" type="radio" name="theme_preference" id="theme-light" 
+                                                   value="light" {% if settings.theme_preference == 'light' %}checked{% endif %}>
+                                            <label class="form-check-label theme-card" for="theme-light">
+                                                <div class="theme-preview light-theme">
+                                                    <div class="theme-header"></div>
+                                                    <div class="theme-body">
+                                                        <div class="theme-text"></div>
+                                                        <div class="theme-text short"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="theme-info">
+                                                    <strong>Light Mode</strong>
+                                                    <p class="small text-muted mb-0">Classic bright appearance</p>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        
+                                        <div class="form-check theme-option">
+                                            <input class="form-check-input" type="radio" name="theme_preference" id="theme-dark" 
+                                                   value="dark" {% if settings.theme_preference == 'dark' %}checked{% endif %}>
+                                            <label class="form-check-label theme-card" for="theme-dark">
+                                                <div class="theme-preview dark-theme">
+                                                    <div class="theme-header"></div>
+                                                    <div class="theme-body">
+                                                        <div class="theme-text"></div>
+                                                        <div class="theme-text short"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="theme-info">
+                                                    <strong>Dark Mode</strong>
+                                                    <p class="small text-muted mb-0">Easy on the eyes, great for low light</p>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class="alert alert-success">
+                                        <h6 class="alert-heading">
+                                            <i class="fas fa-lightbulb me-2"></i>Theme Benefits
+                                        </h6>
+                                        <ul class="mb-0 small">
+                                            <li><strong>Auto:</strong> Adapts to your device</li>
+                                            <li><strong>Light:</strong> Better for daytime use</li>
+                                            <li><strong>Dark:</strong> Reduces eye strain</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-4 pt-3 border-top">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Apply Theme
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary ms-2" onclick="previewTheme()">
+                                    <i class="fas fa-eye me-2"></i>Preview
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Account Tab -->
+            <div class="tab-content" id="account-tab">
+                <div class="card mb-4 border-warning">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Danger Zone
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h6 class="text-danger mb-3">Account Deactivation</h6>
+                                <p class="text-muted">
+                                    Deactivating your account will disable your access to the system. 
+                                    Your data will be preserved but you won't be able to log in. 
+                                    Contact an administrator to reactivate your account.
+                                </p>
+                                
+                                <div class="alert alert-warning">
+                                    <strong>Warning:</strong> This action cannot be undone by yourself. 
+                                    You will need administrator assistance to reactivate your account.
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4 text-center">
+                                <a href="{% url 'accounts:deactivate_account' %}" class="btn btn-outline-danger btn-lg">
+                                    <i class="fas fa-user-times me-2"></i>Deactivate Account
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.list-group-item-action {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.list-group-item-action:hover {
+    background-color: var(--hover-bg-color);
+    transform: translateX(5px);
+}
+
+.list-group-item-action.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.form-switch .form-check-input {
+    width: 2.5rem;
+    height: 1.25rem;
+}
+
+.form-switch .form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.theme-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.theme-option {
+    margin-bottom: 0;
+}
+
+.theme-card {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    width: 100%;
+}
+
+.theme-card:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-check-input:checked + .theme-card {
+    border-color: var(--primary-color);
+    background-color: rgba(var(--primary-color-rgb), 0.1);
+}
+
+.theme-preview {
+    width: 60px;
+    height: 40px;
+    border-radius: 4px;
+    margin-right: 1rem;
+    overflow: hidden;
+    border: 1px solid #dee2e6;
+}
+
+.theme-header {
+    height: 12px;
+    width: 100%;
+}
+
+.theme-body {
+    padding: 4px;
+    height: 28px;
+}
+
+.theme-text {
+    height: 3px;
+    border-radius: 2px;
+    margin-bottom: 2px;
+}
+
+.theme-text.short {
+    width: 70%;
+}
+
+.light-theme .theme-header {
+    background: #e9ecef;
+}
+
+.light-theme .theme-body {
+    background: #ffffff;
+}
+
+.light-theme .theme-text {
+    background: #6c757d;
+}
+
+.dark-theme .theme-header {
+    background: #495057;
+}
+
+.dark-theme .theme-body {
+    background: #212529;
+}
+
+.dark-theme .theme-text {
+    background: #adb5bd;
+}
+
+.auto-theme {
+    background: linear-gradient(45deg, #ffffff 50%, #212529 50%);
+}
+
+.auto-theme .theme-header {
+    background: linear-gradient(45deg, #e9ecef 50%, #495057 50%);
+}
+
+.auto-theme .theme-text {
+    background: linear-gradient(45deg, #6c757d 50%, #adb5bd 50%);
+}
+
+/* Dark mode compatibility */
+[data-theme="dark"] .theme-card {
+    border-color: var(--border-color-dark);
+    background-color: var(--card-bg-dark);
+}
+
+[data-theme="dark"] .theme-card:hover {
+    background-color: var(--hover-bg-color-dark);
+}
+
+[data-theme="dark"] .form-check-input:checked + .theme-card {
+    background-color: rgba(var(--primary-color-rgb), 0.2);
+}
+
+[data-theme="dark"] .form-control {
+    background-color: var(--input-bg-dark);
+    border-color: var(--border-color-dark);
+    color: var(--text-color-dark);
+}
+
+[data-theme="dark"] .form-select {
+    background-color: var(--input-bg-dark);
+    border-color: var(--border-color-dark);
+    color: var(--text-color-dark);
+}
+</style>
+
+<script>
+// Tab switching
+document.addEventListener('DOMContentLoaded', function() {
+    const tabButtons = document.querySelectorAll('[data-tab]');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Remove active class from all tabs
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Add active class to clicked tab
+            this.classList.add('active');
+            const tabId = this.getAttribute('data-tab');
+            document.getElementById(tabId + '-tab').classList.add('active');
+        });
+    });
+});
+
+// Auto-save for some settings
+function updateLanguage(language) {
+    // Auto-submit language form
+    document.getElementById('languageForm').submit();
+}
+
+function updateTimezone(timezone) {
+    // Auto-submit timezone form
+    document.getElementById('languageForm').submit();
+}
+
+// Theme preview
+function previewTheme() {
+    const selectedTheme = document.querySelector('input[name="theme_preference"]:checked').value;
+    
+    // Apply theme temporarily
+    if (selectedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+    } else if (selectedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+        // Auto theme - detect system preference
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+        }
+    }
+    
+    // Show confirmation
+    setTimeout(() => {
+        if (confirm('Do you like this theme? Click OK to save, Cancel to revert.')) {
+            document.getElementById('themeForm').submit();
+        } else {
+            // Revert to original theme
+            location.reload();
+        }
+    }, 1000);
+}
+
+// Form validation and feedback
+document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        const submitButton = this.querySelector('button[type="submit"]');
+        if (submitButton) {
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+            submitButton.disabled = true;
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,453 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}Profile - SPIST{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Profile Sidebar -->
+        <div class="col-lg-3 col-md-4 mb-4">
+            <div class="card profile-sidebar">
+                <div class="card-body text-center">
+                    <!-- Profile Picture -->
+                    <div class="profile-avatar-container mb-3">
+                        <div class="profile-avatar">
+                            {% if user.get_avatar_url %}
+                                <img src="{{ user.get_avatar_url }}" alt="Profile Picture" id="profileImage">
+                            {% else %}
+                                <div class="default-avatar" id="profileImage">
+                                    {{ user.get_avatar_initials }}
+                                </div>
+                            {% endif %}
+                            <div class="avatar-overlay">
+                                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#avatarModal">
+                                    <i class="fas fa-camera"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- User Info -->
+                    <h5 class="card-title mb-1">{{ user.get_full_name }}</h5>
+                    <p class="text-muted mb-2">
+                        <span class="badge badge-user-type">{{ user.get_user_type_display }}</span>
+                    </p>
+                    
+                    {% if user.user_type == 'student' and profile %}
+                        <p class="small text-muted mb-1">{{ profile.student_id }}</p>
+                        <p class="small text-muted">{{ profile.course }}</p>
+                    {% elif user.user_type == 'teacher' and profile %}
+                        <p class="small text-muted mb-1">{{ profile.employee_id }}</p>
+                        <p class="small text-muted">{{ profile.department }}</p>
+                    {% endif %}
+                </div>
+                
+                <!-- Profile Navigation -->
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'accounts:profile' %}" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-user me-2"></i>Profile Overview
+                    </a>
+                    <a href="{% url 'accounts:profile_edit' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-edit me-2"></i>Edit Profile
+                    </a>
+                    <a href="{% url 'accounts:settings' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-cog me-2"></i>Settings
+                    </a>
+                    <a href="{% url 'accounts:security' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-shield-alt me-2"></i>Security
+                    </a>
+                    <a href="{% url 'accounts:activity_log' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-history me-2"></i>Activity Log
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-lg-9 col-md-8">
+            <!-- Profile Overview -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-user me-2"></i>Profile Overview
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Personal Information -->
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">Personal Information</h6>
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td class="fw-bold text-muted">Full Name:</td>
+                                    <td>{{ user.get_full_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold text-muted">Email:</td>
+                                    <td>{{ user.email }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold text-muted">Phone:</td>
+                                    <td>{{ user.phone_number|default:"Not provided" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold text-muted">Joined:</td>
+                                    <td>{{ user.date_joined|date:"F d, Y" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold text-muted">Last Updated:</td>
+                                    <td>{{ user.date_updated|date:"F d, Y g:i A" }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <!-- Academic/Professional Information -->
+                        <div class="col-md-6">
+                            {% if user.user_type == 'student' and profile %}
+                                <h6 class="text-primary mb-3">Academic Information</h6>
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td class="fw-bold text-muted">Student ID:</td>
+                                        <td>{{ profile.student_id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold text-muted">Course:</td>
+                                        <td>{{ profile.course }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold text-muted">Year Level:</td>
+                                        <td>{{ profile.year_level }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold text-muted">Enrolled Since:</td>
+                                        <td>{{ profile.date_enrolled|date:"F d, Y" }}</td>
+                                    </tr>
+                                    {% if profile.gpa %}
+                                    <tr>
+                                        <td class="fw-bold text-muted">GPA:</td>
+                                        <td>{{ profile.gpa }}</td>
+                                    </tr>
+                                    {% endif %}
+                                </table>
+                            {% elif user.user_type == 'teacher' and profile %}
+                                <h6 class="text-primary mb-3">Professional Information</h6>
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td class="fw-bold text-muted">Employee ID:</td>
+                                        <td>{{ profile.employee_id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold text-muted">Department:</td>
+                                        <td>{{ profile.department }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold text-muted">Specialization:</td>
+                                        <td>{{ profile.specialization|default:"Not specified" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="fw-bold text-muted">Hire Date:</td>
+                                        <td>{{ profile.hire_date|date:"F d, Y" }}</td>
+                                    </tr>
+                                    {% if profile.office_hours %}
+                                    <tr>
+                                        <td class="fw-bold text-muted">Office Hours:</td>
+                                        <td>{{ profile.office_hours }}</td>
+                                    </tr>
+                                    {% endif %}
+                                </table>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Bio Section -->
+                    {% if user.bio %}
+                    <div class="mt-4">
+                        <h6 class="text-primary mb-3">About</h6>
+                        <p class="text-muted">{{ user.bio|linebreaksbr }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Recent Activity -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-history me-2"></i>Recent Activity
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_activities %}
+                        <div class="activity-timeline">
+                            {% for activity in recent_activities %}
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    <i class="fas fa-circle"></i>
+                                </div>
+                                <div class="activity-content">
+                                    <p class="mb-1">{{ activity.action }}</p>
+                                    <small class="text-muted">{{ activity.timestamp|date:"M d, Y g:i A" }}</small>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="{% url 'accounts:activity_log' %}" class="btn btn-outline-primary btn-sm">
+                                View Full Activity Log
+                            </a>
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center py-3">No recent activity found.</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <a href="{% url 'accounts:profile_edit' %}" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-edit me-2"></i>Edit Profile
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{% url 'accounts:change_password' %}" class="btn btn-outline-secondary w-100">
+                                <i class="fas fa-key me-2"></i>Change Password
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{% url 'accounts:export_data' %}" class="btn btn-outline-info w-100">
+                                <i class="fas fa-download me-2"></i>Export My Data
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="{% url 'accounts:settings' %}" class="btn btn-outline-success w-100">
+                                <i class="fas fa-cog me-2"></i>Preferences
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Avatar Upload Modal -->
+<div class="modal fade" id="avatarModal" tabindex="-1" aria-labelledby="avatarModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="avatarModalLabel">Update Profile Picture</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'accounts:avatar_upload' %}" enctype="multipart/form-data" id="avatarForm">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="avatarInput" class="form-label">Choose new profile picture</label>
+                        <input type="file" class="form-control" id="avatarInput" name="avatar" accept="image/*" required>
+                        <div class="form-text">Maximum file size: 5MB. Accepted formats: JPG, PNG, GIF</div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload me-2"></i>Upload
+                        </button>
+                        {% if user.avatar %}
+                        <button type="button" class="btn btn-outline-danger" onclick="removeAvatar()">
+                            <i class="fas fa-trash me-2"></i>Remove Current
+                        </button>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Remove Avatar Form (Hidden) -->
+<form method="post" action="{% url 'accounts:remove_avatar' %}" id="removeAvatarForm" style="display: none;">
+    {% csrf_token %}
+</form>
+
+<style>
+.profile-sidebar {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.profile-avatar-container {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-avatar {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid var(--primary-color);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.default-avatar {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    font-size: 2.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.avatar-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.profile-avatar:hover .avatar-overlay {
+    opacity: 1;
+}
+
+.badge-user-type {
+    background: var(--primary-color);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+}
+
+.list-group-item-action {
+    border: none;
+    padding: 0.75rem 1.25rem;
+    transition: all 0.3s ease;
+}
+
+.list-group-item-action:hover {
+    background-color: var(--hover-bg-color);
+    transform: translateX(5px);
+}
+
+.list-group-item-action.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.activity-timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.activity-timeline::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border-color);
+}
+
+.activity-item {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.activity-icon {
+    position: absolute;
+    left: -25px;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.activity-icon i {
+    font-size: 8px;
+    color: white;
+}
+
+.activity-content p {
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+}
+
+/* Dark mode compatibility */
+[data-theme="dark"] .profile-sidebar {
+    background-color: var(--card-bg-dark);
+    border-color: var(--border-color-dark);
+}
+
+[data-theme="dark"] .list-group-item-action {
+    background-color: var(--card-bg-dark);
+    color: var(--text-color-dark);
+    border-color: var(--border-color-dark);
+}
+
+[data-theme="dark"] .list-group-item-action:hover {
+    background-color: var(--hover-bg-color-dark);
+}
+
+[data-theme="dark"] .activity-timeline::before {
+    background: var(--border-color-dark);
+}
+
+[data-theme="dark"] .table {
+    color: var(--text-color-dark);
+}
+
+[data-theme="dark"] .text-muted {
+    color: var(--text-muted-dark) !important;
+}
+</style>
+
+<script>
+function removeAvatar() {
+    if (confirm('Are you sure you want to remove your profile picture?')) {
+        document.getElementById('removeAvatarForm').submit();
+    }
+}
+
+// Preview uploaded avatar
+document.getElementById('avatarInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('profileImage').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+</script>
+{% endblock %}

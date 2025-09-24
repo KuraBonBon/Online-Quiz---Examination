@@ -1,0 +1,11 @@
+# Default Avatar Placeholder
+# This file serves as a placeholder for the default avatar image.
+# In a production environment, you would replace this with an actual image file (default-avatar.png)
+# 
+# The image should be:
+# - 200x200 pixels or larger
+# - PNG, JPG, or WebP format
+# - Generic silhouette or icon design
+# - Light theme compatible with dark mode
+# 
+# For now, the profile system will gracefully handle missing images by showing a CSS-generated avatar

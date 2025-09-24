@@ -1,0 +1,577 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}Assessment Analytics - SPIST School Management{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="mb-0">Assessment Analytics</h2>
+            <p class="text-muted">Detailed assessment performance and insights</p>
+        </div>
+        <div class="d-flex gap-2">
+            <select class="form-select" id="assessmentFilter" style="width: auto;">
+                <option value="">All Assessments</option>
+                {% for assessment in assessments %}
+                <option value="{{ assessment.id }}">{{ assessment.title }}</option>
+                {% endfor %}
+            </select>
+            <select class="form-select" id="difficultyFilter" style="width: auto;">
+                <option value="">All Difficulties</option>
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+            </select>
+            <button class="btn btn-outline-primary" onclick="exportAnalytics()">
+                <i class="fas fa-download"></i> Export
+            </button>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="card bg-gradient-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0">{{ total_assessments }}</h3>
+                            <p class="mb-0">Total Assessments</p>
+                        </div>
+                        <i class="fas fa-clipboard-list fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card bg-gradient-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0">{{ total_attempts }}</h3>
+                            <p class="mb-0">Total Attempts</p>
+                        </div>
+                        <i class="fas fa-users fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card bg-gradient-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0">{{ average_score|floatformat:1 }}%</h3>
+                            <p class="mb-0">Average Score</p>
+                        </div>
+                        <i class="fas fa-chart-line fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="card bg-gradient-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0">{{ completion_rate|floatformat:1 }}%</h3>
+                            <p class="mb-0">Completion Rate</p>
+                        </div>
+                        <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <!-- Score Distribution -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Score Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="scoreDistributionChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Difficulty Analysis -->
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Performance by Difficulty</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="difficultyAnalysisChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assessment Performance Table -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">Assessment Performance Details</h5>
+                    <div class="input-group" style="width: 300px;">
+                        <input type="text" class="form-control" placeholder="Search assessments..." id="assessmentSearch">
+                        <button class="btn btn-outline-secondary" type="button">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="assessmentTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Assessment</th>
+                                    <th>Course</th>
+                                    <th>Attempts</th>
+                                    <th>Avg Score</th>
+                                    <th>Difficulty</th>
+                                    <th>Completion Time</th>
+                                    <th>Pass Rate</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for assessment in assessment_details %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="assessment-icon bg-primary text-white rounded me-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                <i class="fas fa-{% if assessment.assessment_type == 'quiz' %}question-circle{% elif assessment.assessment_type == 'exam' %}clipboard-check{% else %}file-alt{% endif %}"></i>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">{{ assessment.title }}</h6>
+                                                <small class="text-muted">{{ assessment.assessment_type|title }} • {{ assessment.questions_count }} questions</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-dark">{{ assessment.course.title }}</span>
+                                    </td>
+                                    <td>{{ assessment.attempt_count }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge bg-{% if assessment.avg_score >= 85 %}success{% elif assessment.avg_score >= 70 %}warning{% else %}danger{% endif %} me-2">
+                                                {{ assessment.avg_score|floatformat:1 }}%
+                                            </span>
+                                            <div class="progress flex-grow-1" style="height: 6px;">
+                                                <div class="progress-bar bg-{% if assessment.avg_score >= 85 %}success{% elif assessment.avg_score >= 70 %}warning{% else %}danger{% endif %}" 
+                                                     style="width: {{ assessment.avg_score }}%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{% if assessment.difficulty_level == 'easy' %}success{% elif assessment.difficulty_level == 'medium' %}warning{% else %}danger{% endif %}">
+                                            {{ assessment.difficulty_level|title }}
+                                        </span>
+                                    </td>
+                                    <td>{{ assessment.avg_completion_time|floatformat:0 }} min</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <span class="me-2">{{ assessment.pass_rate|floatformat:1 }}%</span>
+                                            <div class="progress flex-grow-1" style="height: 6px;">
+                                                <div class="progress-bar bg-info" style="width: {{ assessment.pass_rate }}%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-sm btn-outline-primary" 
+                                                    onclick="viewAssessmentDetails({{ assessment.id }})">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary" 
+                                                    onclick="viewQuestionAnalysis({{ assessment.id }})">
+                                                <i class="fas fa-chart-bar"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-info" 
+                                                    onclick="downloadReport({{ assessment.id }})">
+                                                <i class="fas fa-download"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted py-4">
+                                        <i class="fas fa-search fa-3x mb-3 d-block"></i>
+                                        No assessments found matching your criteria.
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Time Analysis and Question Performance -->
+    <div class="row mb-4">
+        <!-- Time Spent Analysis -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Time Spent Analysis</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="timeAnalysisChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Question Performance -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Question Type Performance</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="questionPerformanceChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Assessment Activity -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Recent Assessment Activity</h5>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        {% for activity in recent_activities %}
+                        <div class="timeline-item">
+                            <div class="timeline-marker bg-{% cycle 'primary' 'success' 'info' 'warning' %}"></div>
+                            <div class="timeline-content">
+                                <h6 class="mb-1">{{ activity.student.get_full_name }}</h6>
+                                <p class="mb-1">{{ activity.action }} "{{ activity.assessment.title }}"</p>
+                                <small class="text-muted">
+                                    <i class="fas fa-clock"></i> {{ activity.timestamp|timesince }} ago
+                                    {% if activity.score %}
+                                    • Score: {{ activity.score }}%
+                                    {% endif %}
+                                </small>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <div class="text-center text-muted py-4">
+                            <i class="fas fa-history fa-3x mb-3 d-block"></i>
+                            No recent activity to display.
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Assessment Details Modal -->
+<div class="modal fade" id="assessmentDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Assessment Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="assessmentDetailsContent">
+                <!-- Content will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Question Analysis Modal -->
+<div class="modal fade" id="questionAnalysisModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Question Analysis</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="questionAnalysisContent">
+                <!-- Content will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Score Distribution Chart
+const scoreCtx = document.getElementById('scoreDistributionChart').getContext('2d');
+new Chart(scoreCtx, {
+    type: 'bar',
+    data: {
+        labels: {{ score_ranges|safe }},
+        datasets: [{
+            label: 'Number of Students',
+            data: {{ score_distribution|safe }},
+            backgroundColor: [
+                '#dc3545', '#fd7e14', '#ffc107', '#28a745', '#20c997'
+            ],
+            borderWidth: 0
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        }
+    }
+});
+
+// Difficulty Analysis Chart
+const difficultyCtx = document.getElementById('difficultyAnalysisChart').getContext('2d');
+new Chart(difficultyCtx, {
+    type: 'radar',
+    data: {
+        labels: ['Easy', 'Medium', 'Hard'],
+        datasets: [{
+            label: 'Average Score',
+            data: {{ difficulty_scores|safe }},
+            backgroundColor: 'rgba(0, 123, 255, 0.2)',
+            borderColor: '#007bff',
+            borderWidth: 2,
+            pointBackgroundColor: '#007bff'
+        }, {
+            label: 'Completion Rate',
+            data: {{ difficulty_completion|safe }},
+            backgroundColor: 'rgba(40, 167, 69, 0.2)',
+            borderColor: '#28a745',
+            borderWidth: 2,
+            pointBackgroundColor: '#28a745'
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        scales: {
+            r: {
+                beginAtZero: true,
+                max: 100
+            }
+        }
+    }
+});
+
+// Time Analysis Chart
+const timeCtx = document.getElementById('timeAnalysisChart').getContext('2d');
+new Chart(timeCtx, {
+    type: 'line',
+    data: {
+        labels: {{ time_labels|safe }},
+        datasets: [{
+            label: 'Average Time (minutes)',
+            data: {{ time_data|safe }},
+            borderColor: '#6c757d',
+            backgroundColor: 'rgba(108, 117, 125, 0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    callback: function(value) {
+                        return value + ' min';
+                    }
+                }
+            }
+        }
+    }
+});
+
+// Question Performance Chart
+const questionCtx = document.getElementById('questionPerformanceChart').getContext('2d');
+new Chart(questionCtx, {
+    type: 'horizontalBar',
+    data: {
+        labels: {{ question_types|safe }},
+        datasets: [{
+            label: 'Correct Rate (%)',
+            data: {{ question_performance|safe }},
+            backgroundColor: [
+                '#007bff', '#28a745', '#ffc107', '#dc3545', '#6f42c1'
+            ]
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            x: {
+                beginAtZero: true,
+                max: 100,
+                ticks: {
+                    callback: function(value) {
+                        return value + '%';
+                    }
+                }
+            }
+        }
+    }
+});
+
+// Filter functionality
+document.getElementById('assessmentFilter').addEventListener('change', function() {
+    applyFilters();
+});
+
+document.getElementById('difficultyFilter').addEventListener('change', function() {
+    applyFilters();
+});
+
+function applyFilters() {
+    const assessmentId = document.getElementById('assessmentFilter').value;
+    const difficulty = document.getElementById('difficultyFilter').value;
+    
+    const url = new URL(window.location);
+    if (assessmentId) {
+        url.searchParams.set('assessment', assessmentId);
+    } else {
+        url.searchParams.delete('assessment');
+    }
+    if (difficulty) {
+        url.searchParams.set('difficulty', difficulty);
+    } else {
+        url.searchParams.delete('difficulty');
+    }
+    
+    window.location.href = url.toString();
+}
+
+// Search functionality
+document.getElementById('assessmentSearch').addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    const tableRows = document.querySelectorAll('#assessmentTable tbody tr');
+    
+    tableRows.forEach(row => {
+        const assessmentName = row.querySelector('h6').textContent.toLowerCase();
+        const courseName = row.querySelector('.badge').textContent.toLowerCase();
+        
+        if (assessmentName.includes(searchTerm) || courseName.includes(searchTerm)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+});
+
+function viewAssessmentDetails(assessmentId) {
+    fetch(`/analytics/assessment-details/${assessmentId}/`)
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('assessmentDetailsContent').innerHTML = html;
+            new bootstrap.Modal(document.getElementById('assessmentDetailsModal')).show();
+        });
+}
+
+function viewQuestionAnalysis(assessmentId) {
+    fetch(`/analytics/question-analysis/${assessmentId}/`)
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById('questionAnalysisContent').innerHTML = html;
+            new bootstrap.Modal(document.getElementById('questionAnalysisModal')).show();
+        });
+}
+
+function downloadReport(assessmentId) {
+    window.open(`/analytics/assessment-report/${assessmentId}/`, '_blank');
+}
+
+function exportAnalytics() {
+    const params = new URLSearchParams(window.location.search);
+    params.set('export', 'csv');
+    window.open(`${window.location.pathname}?${params.toString()}`, '_blank');
+}
+</script>
+
+<style>
+.timeline {
+    position: relative;
+    padding-left: 30px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -35px;
+    top: 5px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.timeline-item:not(:last-child)::before {
+    content: '';
+    position: absolute;
+    left: -29px;
+    top: 17px;
+    width: 2px;
+    height: calc(100% + 10px);
+    background-color: #dee2e6;
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+}
+
+.bg-gradient-success {
+    background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+}
+
+.bg-gradient-info {
+    background: linear-gradient(135deg, #17a2b8 0%, #117a8b 100%);
+}
+
+.bg-gradient-warning {
+    background: linear-gradient(135deg, #ffc107 0%, #d39e00 100%);
+}
+</style>
+{% endblock %}

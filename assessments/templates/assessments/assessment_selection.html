@@ -3,74 +3,386 @@
 {% block title %}SPIST - Create Assessment{% endblock %}
 
 {% block content %}
-<div class="card">
-    <div class="text-center">
-        <h2>Create New Assessment</h2>
-        <p>Choose the type of assessment you want to create</p>
+<div class="assessment-creation-container">
+    <div class="header-card">
+        <div class="text-center">
+            <div class="icon-wrapper">
+                <i class="fas fa-clipboard-list"></i>
+            </div>
+            <h2 class="header-title">Create New Assessment</h2>
+            <p class="header-subtitle">Choose the type of assessment you want to create</p>
+        </div>
+    </div>
+
+    <div class="selection-card">
+        <form method="post" class="assessment-form">
+            {% csrf_token %}
+            
+            <div class="form-section">
+                <h3 class="section-title">Assessment Type</h3>
+                
+                <div class="selection-container">
+                    {% for choice in form.assessment_type %}
+                        <div class="selection-option" data-value="{{ choice.choice_value }}">
+                            <div class="option-content">
+                                {{ choice.tag }}
+                                <div class="option-details">
+                                    <div class="option-header">
+                                        <i class="{% if choice.choice_value == 'quiz' %}fas fa-question-circle{% else %}fas fa-file-alt{% endif %} option-icon"></i>
+                                        <label for="{{ choice.id_for_label }}" class="option-title">{{ choice.choice_label }}</label>
+                                    </div>
+                                    <div class="option-description">
+                                        {% if choice.choice_value == 'quiz' %}
+                                            Short assessment with immediate feedback. Typically used for practice or quick knowledge checks.
+                                        {% else %}
+                                            Comprehensive assessment for formal evaluation. Usually longer with stricter time limits.
+                                        {% endif %}
+                                    </div>
+                                    <div class="option-features">
+                                        {% if choice.choice_value == 'quiz' %}
+                                            <span class="feature-tag">✓ Quick Feedback</span>
+                                            <span class="feature-tag">✓ Practice Mode</span>
+                                            <span class="feature-tag">✓ Multiple Attempts</span>
+                                        {% else %}
+                                            <span class="feature-tag">✓ Formal Evaluation</span>
+                                            <span class="feature-tag">✓ Time Controlled</span>
+                                            <span class="feature-tag">✓ Secure Assessment</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                {% if form.assessment_type.errors %}
+                    <div class="error-message">
+                        {{ form.assessment_type.errors }}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="action-buttons">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-arrow-right me-2"></i>Continue
+                </button>
+                <a href="{% url 'accounts:teacher_dashboard' %}" class="btn btn-secondary">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </a>
+            </div>
+        </form>
     </div>
 </div>
 
-<div class="card" style="max-width: 500px; margin: 2rem auto;">
-    <form method="post">
-        {% csrf_token %}
-        
-        <div class="form-group">
-            <h3 style="margin-bottom: 1.5rem; text-align: center;">Assessment Type</h3>
-            
-            <div style="display: flex; flex-direction: column; gap: 1rem;">
-                {% for choice in form.assessment_type %}
-                    <div style="display: flex; align-items: center; padding: 1rem; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
-                        {{ choice.tag }}
-                        <label for="{{ choice.id_for_label }}" style="margin-left: 1rem; cursor: pointer; flex: 1;">
-                            <strong>{{ choice.choice_label }}</strong>
-                            {% if choice.choice_value == 'quiz' %}
-                                <div style="font-size: 14px; color: #666; margin-top: 0.5rem;">
-                                    Short assessment with immediate feedback. Typically used for practice or quick knowledge checks.
-                                </div>
-                            {% else %}
-                                <div style="font-size: 14px; color: #666; margin-top: 0.5rem;">
-                                    Comprehensive assessment for formal evaluation. Usually longer with stricter time limits.
-                                </div>
-                            {% endif %}
-                        </label>
-                    </div>
-                {% endfor %}
-            </div>
-            
-            {% if form.assessment_type.errors %}
-                <div style="color: red; font-size: 14px; margin-top: 0.5rem;">
-                    {{ form.assessment_type.errors }}
-                </div>
-            {% endif %}
-        </div>
-        
-        <div class="form-group text-center" style="margin-top: 2rem;">
-            <button type="submit" class="btn">Continue →</button>
-            <a href="{% url 'teacher_dashboard' %}" class="btn" style="background-color: #666; margin-left: 1rem;">Cancel</a>
-        </div>
-    </form>
-</div>
-
 <style>
-input[type="radio"] {
+:root {
+    --primary-color: #2e7d32;
+    --primary-light: #4caf50;
+    --primary-dark: #1b5e20;
+    --secondary-color: #666;
+    --success-color: #4caf50;
+    --border-color: #e0e0e0;
+    --text-primary: #333;
+    --text-secondary: #666;
+    --bg-light: #f9f9f9;
+    --bg-card: #ffffff;
+    --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+[data-bs-theme="dark"] {
+    --primary-color: #4caf50;
+    --primary-light: #66bb6a;
+    --primary-dark: #2e7d32;
+    --secondary-color: #999;
+    --success-color: #66bb6a;
+    --border-color: #444;
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --bg-light: #2a2a2a;
+    --bg-card: #1e1e1e;
+    --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.assessment-creation-container {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.header-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-light);
+    border: 1px solid var(--border-color);
+}
+
+.icon-wrapper {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.icon-wrapper i {
+    font-size: 1.8rem;
+    color: white;
+}
+
+.header-title {
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.header-subtitle {
+    color: var(--text-secondary);
+    margin: 0;
+    font-size: 1rem;
+}
+
+.selection-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: var(--shadow-light);
+    border: 1px solid var(--border-color);
+}
+
+.section-title {
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.selection-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.selection-option {
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--bg-card);
+    position: relative;
+    overflow: hidden;
+}
+
+.selection-option:hover {
+    border-color: var(--primary-light);
+    box-shadow: var(--shadow-medium);
+    transform: translateY(-2px);
+}
+
+.selection-option:has(input[type="radio"]:checked) {
+    border-color: var(--primary-color);
+    background: var(--primary-color);
+    color: white;
+}
+
+[data-bs-theme="dark"] .selection-option:has(input[type="radio"]:checked) {
+    background: var(--primary-dark);
+    border-color: var(--primary-light);
+}
+
+.option-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.option-content input[type="radio"] {
     width: 20px;
     height: 20px;
-    accent-color: #2e7d32;
+    margin-top: 4px;
+    accent-color: var(--primary-color);
+    flex-shrink: 0;
 }
 
-input[type="radio"]:checked + label {
-    color: #2e7d32;
-    font-weight: bold;
+.selection-option:has(input[type="radio"]:checked) input[type="radio"] {
+    accent-color: white;
 }
 
-.form-group > div > div:has(input[type="radio"]:checked) {
-    border-color: #2e7d32;
-    background-color: #f1f8e9;
+.option-details {
+    flex: 1;
 }
 
-.form-group > div > div:hover {
-    border-color: #4caf50;
-    background-color: #f9f9f9;
+.option-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.option-icon {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    flex-shrink: 0;
+}
+
+.selection-option:has(input[type="radio"]:checked) .option-icon {
+    color: white;
+}
+
+.option-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    cursor: pointer;
+    margin: 0;
+}
+
+.selection-option:has(input[type="radio"]:checked) .option-title {
+    color: white;
+}
+
+.option-description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.selection-option:has(input[type="radio"]:checked) .option-description {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.option-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.feature-tag {
+    background: var(--bg-light);
+    color: var(--text-secondary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.selection-option:has(input[type="radio"]:checked) .feature-tag {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.btn {
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+.btn-secondary {
+    background: var(--secondary-color);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #555;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+.error-message {
+    color: #f44336;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: rgba(244, 67, 54, 0.1);
+    border: 1px solid rgba(244, 67, 54, 0.3);
+    border-radius: 8px;
+}
+
+[data-bs-theme="dark"] .error-message {
+    background: rgba(244, 67, 54, 0.2);
+    border-color: rgba(244, 67, 54, 0.4);
+    color: #ff6b6b;
+}
+
+@media (max-width: 768px) {
+    .assessment-creation-container {
+        margin: 1rem auto;
+        padding: 0 0.5rem;
+    }
+    
+    .header-card, .selection-card {
+        padding: 1.5rem;
+    }
+    
+    .option-content {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .option-content input[type="radio"] {
+        align-self: flex-start;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
 }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click handling for entire option divs
+    const options = document.querySelectorAll('.selection-option');
+    
+    options.forEach(option => {
+        option.addEventListener('click', function(e) {
+            if (e.target.type !== 'radio') {
+                const radio = this.querySelector('input[type="radio"]');
+                if (radio) {
+                    radio.checked = true;
+                    // Trigger change event for any listeners
+                    radio.dispatchEvent(new Event('change'));
+                }
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

@@ -51,10 +51,10 @@
                 </div>
                 
                 <div class="d-grid gap-2">
-                    <a href="{% url 'login' %}?next={% url 'student_dashboard' %}" class="btn btn-modern btn-primary-modern btn-lg">
+                    <a href="{% url 'accounts:login' %}?next={% url 'accounts:student_dashboard' %}" class="btn btn-modern btn-primary-modern btn-lg">
                         <i class="fas fa-sign-in-alt me-2"></i>Student Login
                     </a>
-                    <a href="{% url 'student_register' %}" class="btn btn-outline-primary">
+                    <a href="{% url 'accounts:student_register' %}" class="btn btn-outline-primary">
                         <i class="fas fa-user-plus me-2"></i>Create Student Account
                     </a>
                 </div>
@@ -85,10 +85,10 @@
                 </div>
                 
                 <div class="d-grid gap-2">
-                    <a href="{% url 'login' %}?next={% url 'teacher_dashboard' %}" class="btn btn-modern btn-lg" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); color: white;">
+                    <a href="{% url 'accounts:login' %}?next={% url 'accounts:teacher_dashboard' %}" class="btn btn-modern btn-lg" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); color: white;">
                         <i class="fas fa-sign-in-alt me-2"></i>Faculty Login
                     </a>
-                    <a href="{% url 'teacher_register' %}" class="btn btn-outline-info">
+                    <a href="{% url 'accounts:teacher_register' %}" class="btn btn-outline-info">
                         <i class="fas fa-user-tie me-2"></i>Create Faculty Account
                     </a>
                 </div>

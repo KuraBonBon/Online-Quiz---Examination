@@ -1,155 +1,768 @@
 {% extends 'accounts/base.html' %}
+{% load static %}
 
-{% block title %}SPIST - Course Management{% endblock %}
+{% block title %}Course Management - SPIST{% endblock %}
 
 {% block content %}
-<div class="card">
-    <div class="text-center">
-        <h2>Course Management Dashboard</h2>
-        <p>Manage courses, enrollments, and academic curriculum</p>
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card modern-card">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2 class="fw-bold mb-2 text-primary">
+                                <i class="fas fa-graduation-cap me-2"></i>Course Management Dashboard
+                            </h2>
+                            <p class="text-muted mb-0">Comprehensive academic course and enrollment management system</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            {% if current_semester %}
+                                <div class="current-semester-badge">
+                                    <span class="badge bg-primary fs-6">
+                                        <i class="fas fa-calendar-alt me-1"></i>{{ current_semester }}
+                                    </span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
-<!-- Quick Stats -->
-<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0;">
-    <div class="card text-center" style="background: linear-gradient(135deg, #4CAF50, #45a049);">
-        <h3 style="color: white; margin: 0;">{{ stats.total_courses }}</h3>
-        <p style="color: white; margin: 0;">Active Courses</p>
-    </div>
-    <div class="card text-center" style="background: linear-gradient(135deg, #2196F3, #1976D2);">
-        <h3 style="color: white; margin: 0;">{{ stats.total_students }}</h3>
-        <p style="color: white; margin: 0;">Total Students</p>
-    </div>
-    <div class="card text-center" style="background: linear-gradient(135deg, #FF9800, #F57C00);">
-        <h3 style="color: white; margin: 0;">{{ stats.current_enrollments }}</h3>
-        <p style="color: white; margin: 0;">Current Enrollments</p>
-    </div>
-    <div class="card text-center" style="background: linear-gradient(135deg, #9C27B0, #7B1FA2);">
-        <h3 style="color: white; margin: 0;">{{ stats.active_offerings }}</h3>
-        <p style="color: white; margin: 0;">Active Offerings</p>
-    </div>
-</div>
-
-<!-- Current Semester Info -->
-{% if current_semester %}
-<div class="card" style="background-color: #f0f8ff; border-left: 4px solid #2196F3;">
-    <h4 style="color: #1976D2; margin: 0 0 0.5rem 0;">Current Semester</h4>
-    <p style="margin: 0; font-size: 18px;">{{ current_semester }}</p>
-    <small style="color: #666;">{{ current_semester.start_date }} - {{ current_semester.end_date }}</small>
-</div>
-{% endif %}
-
-<!-- Quick Actions -->
-<div class="card">
-    <h4>Quick Actions</h4>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem;">
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stats-card gradient-success">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h5 class="text-white-75 text-uppercase">Active Courses</h5>
+                            <h2 class="text-white mb-0">{{ stats.total_courses|default:0 }}</h2>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-book fa-3x text-white-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         
-        <div style="border: 1px solid #ddd; border-radius: 8px; padding: 1rem;">
-            <h5 style="color: #4CAF50; margin-bottom: 1rem;">📚 Course Management</h5>
-            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                <a href="{% url 'courses:course_list' %}" class="btn" style="font-size: 14px;">View All Courses</a>
-                <a href="{% url 'courses:course_create' %}" class="btn" style="font-size: 14px;">Create New Course</a>
-                <a href="{% url 'courses:curriculum_list' %}" class="btn" style="font-size: 14px;">Manage Curricula</a>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stats-card gradient-info">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h5 class="text-white-75 text-uppercase">Total Students</h5>
+                            <h2 class="text-white mb-0">{{ stats.total_students|default:0 }}</h2>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-3x text-white-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stats-card gradient-warning">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h5 class="text-white-75 text-uppercase">Current Enrollments</h5>
+                            <h2 class="text-white mb-0">{{ stats.current_enrollments|default:0 }}</h2>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-clipboard-list fa-3x text-white-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stats-card gradient-purple">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h5 class="text-white-75 text-uppercase">Active Offerings</h5>
+                            <h2 class="text-white mb-0">{{ stats.active_offerings|default:0 }}</h2>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar-check fa-3x text-white-50"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Current Semester Information -->
+    {% if current_semester %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card modern-card semester-info-card">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h5 class="fw-bold text-primary mb-2">
+                                <i class="fas fa-calendar-alt me-2"></i>Current Academic Period
+                            </h5>
+                            <h3 class="mb-1">{{ current_semester }}</h3>
+                            <p class="text-muted mb-0">
+                                <i class="fas fa-clock me-1"></i>
+                                {{ current_semester.start_date|date:"F j, Y" }} - {{ current_semester.end_date|date:"F j, Y" }}
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            {% if enrollment_period %}
+                                <div class="enrollment-status">
+                                    <span class="badge bg-success fs-6">
+                                        <i class="fas fa-door-open me-1"></i>Enrollment Open
+                                    </span>
+                                    <p class="small text-muted mt-1 mb-0">
+                                        Until {{ enrollment_period.end_date|date:"M j" }}
+                                    </p>
+                                </div>
+                            {% else %}
+                                <span class="badge bg-secondary fs-6">
+                                    <i class="fas fa-door-closed me-1"></i>Enrollment Closed
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Quick Actions Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card modern-card">
+                <div class="card-header">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <!-- Course Management -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="action-card gradient-success">
+                                <div class="action-icon">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <h6 class="action-title">Course Management</h6>
+                                <p class="action-desc">Manage courses, curriculum, and academic programs</p>
+                                <div class="action-buttons">
+                                    <a href="{% url 'courses:course_list' %}" class="btn btn-light btn-sm">
+                                        <i class="fas fa-list me-1"></i>View Courses
+                                    </a>
+                                    <a href="{% url 'courses:course_create' %}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-plus me-1"></i>Add Course
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Enrollment Management -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="action-card gradient-info">
+                                <div class="action-icon">
+                                    <i class="fas fa-clipboard-list"></i>
+                                </div>
+                                <h6 class="action-title">Enrollment Management</h6>
+                                <p class="action-desc">Handle student enrollments and approvals</p>
+                                <div class="action-buttons">
+                                    <a href="{% url 'courses:enrollment_management' %}" class="btn btn-light btn-sm">
+                                        <i class="fas fa-users me-1"></i>Manage
+                                    </a>
+                                    <a href="{% url 'courses:bulk_enrollment' %}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-upload me-1"></i>Bulk Enroll
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Course Offerings -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="action-card gradient-warning">
+                                <div class="action-icon">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <h6 class="action-title">Course Offerings</h6>
+                                <p class="action-desc">Schedule and manage course sections</p>
+                                <div class="action-buttons">
+                                    <a href="{% url 'courses:course_offerings' %}" class="btn btn-light btn-sm">
+                                        <i class="fas fa-eye me-1"></i>View All
+                                    </a>
+                                    <a href="{% url 'courses:create_offering' %}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-plus me-1"></i>Create
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Reports & Analytics -->
+                        <div class="col-lg-3 col-md-6">
+                            <div class="action-card gradient-purple">
+                                <div class="action-icon">
+                                    <i class="fas fa-chart-bar"></i>
+                                </div>
+                                <h6 class="action-title">Reports & Analytics</h6>
+                                <p class="action-desc">Generate reports and view analytics</p>
+                                <div class="action-buttons">
+                                    <a href="{% url 'courses:export_enrollments' %}" class="btn btn-light btn-sm">
+                                        <i class="fas fa-download me-1"></i>Export
+                                    </a>
+                                    <a href="#analyticsModal" class="btn btn-primary btn-sm" data-bs-toggle="modal">
+                                        <i class="fas fa-chart-line me-1"></i>Analytics
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity & Analytics -->
+    <div class="row">
+        <!-- Recent Enrollments -->
+        <div class="col-lg-8 mb-4">
+            <div class="card modern-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fas fa-clock me-2"></i>Recent Enrollments
+                    </h5>
+                    <a href="{% url 'courses:enrollment_management' %}" class="btn btn-sm btn-outline-primary">
+                        View All <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if recent_enrollments %}
+                        <div class="table-responsive">
+                            <table class="table table-hover modern-table">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Course</th>
+                                        <th>Section</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for enrollment in recent_enrollments %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-sm me-2">
+                                                    {{ enrollment.student.first_name|first }}{{ enrollment.student.last_name|first }}
+                                                </div>
+                                                <div>
+                                                    <div class="fw-semibold">{{ enrollment.student.get_full_name }}</div>
+                                                    <small class="text-muted">{{ enrollment.student.student_profile.student_id|default:"N/A" }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="fw-semibold">{{ enrollment.course_offering.course.code }}</div>
+                                            <small class="text-muted">{{ enrollment.course_offering.course.title|truncatechars:30 }}</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-light text-dark">{{ enrollment.course_offering.section }}</span>
+                                        </td>
+                                        <td>
+                                            {% if enrollment.status == 'enrolled' %}
+                                                <span class="badge bg-success">Enrolled</span>
+                                            {% elif enrollment.status == 'pending' %}
+                                                <span class="badge bg-warning">Pending</span>
+                                            {% elif enrollment.status == 'waitlisted' %}
+                                                <span class="badge bg-info">Waitlisted</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">{{ enrollment.get_status_display }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <small>{{ enrollment.enrolled_at|date:"M j" }}<br>{{ enrollment.enrolled_at|time:"g:i A" }}</small>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <a href="{% url 'courses:offering_detail' enrollment.course_offering.id %}" class="btn btn-outline-primary" title="View Details">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                {% if enrollment.status == 'pending' %}
+                                                <a href="{% url 'courses:approve_enrollment' enrollment.id %}" class="btn btn-outline-success" title="Approve">
+                                                    <i class="fas fa-check"></i>
+                                                </a>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                            <h6 class="text-muted">No Recent Enrollments</h6>
+                            <p class="text-muted mb-0">Enrollment activity will appear here</p>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
 
-        <div style="border: 1px solid #ddd; border-radius: 8px; padding: 1rem;">
-            <h5 style="color: #2196F3; margin-bottom: 1rem;">📝 Enrollment Management</h5>
-            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                <a href="{% url 'courses:enrollment_management' %}" class="btn" style="font-size: 14px;">Manage Enrollments</a>
-                <a href="{% url 'courses:bulk_enrollment' %}" class="btn" style="font-size: 14px;">Bulk Enrollment</a>
-                <a href="{% url 'courses:export_enrollments' %}" class="btn" style="font-size: 14px;">Export Data</a>
+        <!-- Quick Stats & Admin Panel -->
+        <div class="col-lg-4 mb-4">
+            <!-- Enrollment Progress -->
+            <div class="card modern-card mb-4">
+                <div class="card-header">
+                    <h6 class="fw-bold mb-0">
+                        <i class="fas fa-chart-pie me-2"></i>Enrollment Progress
+                    </h6>
+                </div>
+                <div class="card-body">
+                    {% if enrollment_stats %}
+                        <div class="progress-item mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span class="small fw-semibold">Pending Approvals</span>
+                                <span class="small text-muted">{{ enrollment_stats.pending_count }}</span>
+                            </div>
+                            <div class="progress mt-1" style="height: 6px;">
+                                <div class="progress-bar bg-warning" style="width: {{ enrollment_stats.pending_percentage }}%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="progress-item mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span class="small fw-semibold">Enrolled Students</span>
+                                <span class="small text-muted">{{ enrollment_stats.enrolled_count }}</span>
+                            </div>
+                            <div class="progress mt-1" style="height: 6px;">
+                                <div class="progress-bar bg-success" style="width: {{ enrollment_stats.enrolled_percentage }}%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="progress-item">
+                            <div class="d-flex justify-content-between">
+                                <span class="small fw-semibold">Capacity Utilization</span>
+                                <span class="small text-muted">{{ enrollment_stats.capacity_percentage }}%</span>
+                            </div>
+                            <div class="progress mt-1" style="height: 6px;">
+                                <div class="progress-bar bg-info" style="width: {{ enrollment_stats.capacity_percentage }}%"></div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-3">
+                            <i class="fas fa-chart-pie fa-2x text-muted mb-2"></i>
+                            <p class="text-muted mb-0">No enrollment data</p>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
-        </div>
 
-        <div style="border: 1px solid #ddd; border-radius: 8px; padding: 1rem;">
-            <h5 style="color: #FF9800; margin-bottom: 1rem;">🏫 Course Offerings</h5>
-            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                <a href="{% url 'courses:course_offerings' %}" class="btn" style="font-size: 14px;">View Offerings</a>
-                <a href="{% url 'courses:create_offering' %}" class="btn" style="font-size: 14px;">Create Offering</a>
+            <!-- Quick Admin Functions -->
+            {% if user.is_staff %}
+            <div class="card modern-card">
+                <div class="card-header">
+                    <h6 class="fw-bold mb-0">
+                        <i class="fas fa-cog me-2"></i>Admin Functions
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'admin:courses_department_changelist' %}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-building me-2"></i>Manage Departments
+                        </a>
+                        <a href="{% url 'admin:courses_semester_changelist' %}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-calendar me-2"></i>Manage Semesters
+                        </a>
+                        <a href="{% url 'admin:courses_curriculum_changelist' %}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-list-alt me-2"></i>Manage Curricula
+                        </a>
+                        <a href="{% url 'admin:index' %}" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-tools me-2"></i>Django Admin
+                        </a>
+                    </div>
+                </div>
             </div>
+            {% endif %}
         </div>
-
-        {% if user.is_staff %}
-        <div style="border: 1px solid #ddd; border-radius: 8px; padding: 1rem;">
-            <h5 style="color: #9C27B0; margin-bottom: 1rem;">⚙️ Admin Functions</h5>
-            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                <a href="{% url 'admin:index' %}" class="btn" style="font-size: 14px;">Django Admin</a>
-                <a href="{% url 'admin:courses_department_changelist' %}" class="btn" style="font-size: 14px;">Manage Departments</a>
-                <a href="{% url 'admin:courses_semester_changelist' %}" class="btn" style="font-size: 14px;">Manage Semesters</a>
-            </div>
-        </div>
-        {% endif %}
     </div>
 </div>
 
-<!-- Recent Enrollments -->
-{% if recent_enrollments %}
-<div class="card">
-    <h4>Recent Enrollments</h4>
-    <div style="overflow-x: auto;">
-        <table style="width: 100%; border-collapse: collapse;">
-            <thead>
-                <tr style="background-color: #f5f5f5;">
-                    <th style="padding: 0.75rem; text-align: left; border-bottom: 1px solid #ddd;">Student</th>
-                    <th style="padding: 0.75rem; text-align: left; border-bottom: 1px solid #ddd;">Course</th>
-                    <th style="padding: 0.75rem; text-align: left; border-bottom: 1px solid #ddd;">Status</th>
-                    <th style="padding: 0.75rem; text-align: left; border-bottom: 1px solid #ddd;">Date</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for enrollment in recent_enrollments %}
-                <tr>
-                    <td style="padding: 0.75rem; border-bottom: 1px solid #eee;">{{ enrollment.student.get_full_name }}</td>
-                    <td style="padding: 0.75rem; border-bottom: 1px solid #eee;">
-                        {{ enrollment.course_offering.course.code }} - {{ enrollment.course_offering.section }}
-                    </td>
-                    <td style="padding: 0.75rem; border-bottom: 1px solid #eee;">
-                        <span style="padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 12px; font-weight: bold;
-                                     {% if enrollment.status == 'enrolled' %}background-color: #e8f5e9; color: #2e7d32;
-                                     {% elif enrollment.status == 'pending' %}background-color: #fff3e0; color: #f57c00;
-                                     {% else %}background-color: #ffebee; color: #d32f2f;{% endif %}">
-                            {{ enrollment.get_status_display }}
-                        </span>
-                    </td>
-                    <td style="padding: 0.75rem; border-bottom: 1px solid #eee;">{{ enrollment.enrolled_at|date:"M d, Y" }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <div style="text-align: center; margin-top: 1rem;">
-        <a href="{% url 'courses:enrollment_management' %}" class="btn" style="font-size: 14px;">View All Enrollments</a>
+<!-- Analytics Modal -->
+<div class="modal fade" id="analyticsModal" tabindex="-1" aria-labelledby="analyticsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="analyticsModalLabel">
+                    <i class="fas fa-chart-line me-2"></i>Course Analytics
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h3 class="text-primary">{{ analytics.most_popular_course.enrollment_count|default:0 }}</h3>
+                                <p class="text-muted mb-0">Most Popular Course</p>
+                                {% if analytics.most_popular_course %}
+                                <small class="fw-semibold">{{ analytics.most_popular_course.course.code }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h3 class="text-success">{{ analytics.avg_enrollment_per_course|floatformat:1|default:0 }}</h3>
+                                <p class="text-muted mb-0">Avg. Enrollment per Course</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Detailed analytics and reporting features are coming soon!
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-{% endif %}
 
 <style>
-.card {
-    background: white;
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+:root {
+    --primary-color: #2c3e50;
+    --primary-dark: #1a252f;
+    --secondary-color: #3498db;
+    --success-color: #27ae60;
+    --warning-color: #f39c12;
+    --danger-color: #e74c3c;
+    --info-color: #17a2b8;
+    --light-bg: #f8f9fa;
+    --border-color: #dee2e6;
 }
 
-.btn {
-    background-color: #4CAF50;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    text-decoration: none;
-    border-radius: 4px;
+.modern-card {
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.modern-card:hover {
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+}
+
+.stats-card {
     border: none;
-    cursor: pointer;
-    display: inline-block;
-    text-align: center;
-    transition: background-color 0.3s;
+    border-radius: 12px;
+    color: white;
+    transition: all 0.3s ease;
 }
 
-.btn:hover {
-    background-color: #45a049;
-    color: white;
-    text-decoration: none;
+.stats-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
 }
+
+.gradient-success {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+}
+
+.gradient-info {
+    background: linear-gradient(135deg, #3498db 0%, #5dade2 100%);
+}
+
+.gradient-warning {
+    background: linear-gradient(135deg, #f39c12 0%, #f7dc6f 100%);
+}
+
+.gradient-purple {
+    background: linear-gradient(135deg, #8e44ad 0%, #bb8fce 100%);
+}
+
+.action-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.action-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.action-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--gradient);
+}
+
+.action-card.gradient-success::before {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+}
+
+.action-card.gradient-info::before {
+    background: linear-gradient(135deg, #3498db 0%, #5dade2 100%);
+}
+
+.action-card.gradient-warning::before {
+    background: linear-gradient(135deg, #f39c12 0%, #f7dc6f 100%);
+}
+
+.action-card.gradient-purple::before {
+    background: linear-gradient(135deg, #8e44ad 0%, #bb8fce 100%);
+}
+
+.action-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.5rem;
+}
+
+.gradient-success .action-icon {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    color: white;
+}
+
+.gradient-info .action-icon {
+    background: linear-gradient(135deg, #3498db 0%, #5dade2 100%);
+    color: white;
+}
+
+.gradient-warning .action-icon {
+    background: linear-gradient(135deg, #f39c12 0%, #f7dc6f 100%);
+    color: white;
+}
+
+.gradient-purple .action-icon {
+    background: linear-gradient(135deg, #8e44ad 0%, #bb8fce 100%);
+    color: white;
+}
+
+.action-title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+
+.action-desc {
+    color: #666;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.semester-info-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-left: 5px solid var(--primary-color);
+}
+
+.current-semester-badge .badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+}
+
+.enrollment-status .badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+}
+
+.modern-table th {
+    background-color: var(--light-bg);
+    border-bottom: 2px solid var(--border-color);
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.modern-table td {
+    border-bottom: 1px solid #f1f3f4;
+    vertical-align: middle;
+}
+
+.avatar-sm {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.progress-item .progress {
+    background-color: #f1f3f4;
+}
+
+.btn-group-sm > .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+/* Dark Mode Support */
+[data-bs-theme="dark"] {
+    --primary-color: #3498db;
+    --light-bg: #2c3e50;
+    --border-color: #495057;
+}
+
+[data-bs-theme="dark"] .modern-card {
+    background-color: #343a40;
+    border-color: var(--border-color);
+}
+
+[data-bs-theme="dark"] .action-card {
+    background-color: #343a40;
+    border-color: var(--border-color);
+}
+
+[data-bs-theme="dark"] .action-title {
+    color: #ffffff;
+}
+
+[data-bs-theme="dark"] .action-desc {
+    color: #ced4da;
+}
+
+[data-bs-theme="dark"] .semester-info-card {
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    color: #ffffff;
+}
+
+[data-bs-theme="dark"] .modern-table th {
+    background-color: #495057;
+    color: #ffffff;
+}
+
+[data-bs-theme="dark"] .modern-table td {
+    border-bottom-color: #495057;
+    color: #ffffff;
+}
+
+[data-bs-theme="dark"] .avatar-sm {
+    background: var(--primary-color);
+}
+
+@media (max-width: 768px) {
+    .action-card {
+        padding: 1rem;
+    }
+    
+    .action-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.25rem;
+    }
+    
+    .stats-card .card-body {
+        padding: 1rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .action-buttons .btn {
+        width: 100%;
+        margin-bottom: 0.25rem;
+    }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modern-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.stats-card:nth-child(1) { animation-delay: 0.1s; }
+.stats-card:nth-child(2) { animation-delay: 0.2s; }
+.stats-card:nth-child(3) { animation-delay: 0.3s; }
+.stats-card:nth-child(4) { animation-delay: 0.4s; }
 </style>
+
+<script>
+// Auto-refresh dashboard stats every 5 minutes
+setInterval(function() {
+    if (document.visibilityState === 'visible') {
+        // Uncomment when AJAX endpoint is ready
+        // updateDashboardStats();
+    }
+}, 300000);
+
+// Initialize tooltips
+document.addEventListener('DOMContentLoaded', function() {
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+    
+    // Animate progress bars
+    const progressBars = document.querySelectorAll('.progress-bar');
+    progressBars.forEach(bar => {
+        const width = bar.style.width;
+        bar.style.width = '0%';
+        setTimeout(() => {
+            bar.style.transition = 'width 1s ease-in-out';
+            bar.style.width = width;
+        }, 500);
+    });
+});
+
+// Add click animation to action cards
+document.querySelectorAll('.action-card').forEach(card => {
+    card.addEventListener('click', function() {
+        this.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            this.style.transform = '';
+        }, 150);
+    });
+});
+</script>
 {% endblock %}

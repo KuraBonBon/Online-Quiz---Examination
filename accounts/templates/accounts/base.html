@@ -28,6 +28,18 @@
             --light-bg: #f8f9fa;
             --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             --card-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            
+            /* Dark Mode Variables */
+            --dark-bg-primary: #1a1a1a;
+            --dark-bg-secondary: #2d2d2d;
+            --dark-bg-tertiary: #374151;
+            --dark-bg-quaternary: #3d3d3d;
+            --dark-text-primary: #ffffff;
+            --dark-text-secondary: #e0e0e0;
+            --dark-text-tertiary: #b0b0b0;
+            --dark-text-muted: #a0a0a0;
+            --dark-border: rgba(255, 255, 255, 0.1);
+            --dark-border-focus: rgba(255, 255, 255, 0.2);
         }
 
         * {
@@ -321,113 +333,107 @@
             color: white !important;
         }
         
-        /* Dark Mode */
+        /* ===========================
+           CONSOLIDATED DARK MODE STYLES
+           =========================== */
+        
+        /* Core Dark Mode Layout */
         body.dark-mode {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            color: #e0e0e0;
+            background: linear-gradient(135deg, var(--dark-bg-primary) 0%, var(--dark-bg-secondary) 100%);
+            color: var(--dark-text-secondary);
         }
         
-        body.dark-mode .modern-card {
-            background: #2d2d2d !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            color: #e0e0e0 !important;
-        }
-
-        /* White sections - Light mode visibility */
-        .bg-white {
-            background: #ffffff !important;
-            color: #374151 !important;
-        }
-
-        .bg-white h3, .bg-white h4, .bg-white h5, .bg-white h6 {
-            color: #1f2937 !important;
-        }
-
-        .bg-white small, .bg-white .small {
-            color: #6b7280 !important;
-        }
-
-        /* White sections in welcome banners - ensure text visibility */
-        .bg-opacity-20 {
-            background: rgba(255, 255, 255, 0.9) !important;
-            color: #374151 !important;
-        }
-
-        .bg-opacity-20 h3, .bg-opacity-20 h4, .bg-opacity-20 h5, .bg-opacity-20 h6 {
-            color: #1f2937 !important;
-        }
-
-        .bg-opacity-20 small, .bg-opacity-20 .small {
-            color: #6b7280 !important;
-        }
-
-        /* Dark mode white sections */
-        body.dark-mode .bg-white {
-            background: #2d2d2d !important;
-            color: #e0e0e0 !important;
-        }
-
-        body.dark-mode .bg-white h3, body.dark-mode .bg-white h4, 
-        body.dark-mode .bg-white h5, body.dark-mode .bg-white h6 {
-            color: #ffffff !important;
-        }
-
-        body.dark-mode .bg-opacity-20 {
-            background: rgba(45, 45, 45, 0.9) !important;
-            color: #e0e0e0 !important;
-        }
-
-        body.dark-mode .bg-opacity-20 h3, body.dark-mode .bg-opacity-20 h4, 
-        body.dark-mode .bg-opacity-20 h5, body.dark-mode .bg-opacity-20 h6 {
-            color: #ffffff !important;
-        }
-
-        /* Fix text-white in light backgrounds - Active Courses section */
-        .bg-white .text-white, .bg-opacity-20 .text-white {
-            color: #1f2937 !important;
-        }
-
-        .bg-white .text-white h3, .bg-opacity-20 .text-white h3,
-        .bg-white .text-white h4, .bg-opacity-20 .text-white h4 {
-            color: #1f2937 !important;
-        }
-
-        .bg-white .text-white small, .bg-opacity-20 .text-white small {
-            color: #6b7280 !important;
-        }
-
-        /* Dark mode text-white remains white */
-        body.dark-mode .bg-white .text-white, body.dark-mode .bg-opacity-20 .text-white {
-            color: #ffffff !important;
-        }
-
-        body.dark-mode .bg-white .text-white h3, body.dark-mode .bg-opacity-20 .text-white h3,
-        body.dark-mode .bg-white .text-white h4, body.dark-mode .bg-opacity-20 .text-white h4 {
-            color: #ffffff !important;
-        }
-
-        body.dark-mode .bg-white .text-white small, body.dark-mode .bg-opacity-20 .text-white small {
-            color: #e0e0e0 !important;
-        }
-        
+        /* Navigation and Headers */
         body.dark-mode .spist-navbar {
             background: rgba(0, 0, 0, 0.8);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid var(--dark-border);
         }
         
         body.dark-mode .spist-navbar .nav-link {
-            color: #e0e0e0;
+            color: var(--dark-text-secondary);
         }
         
         body.dark-mode .spist-navbar .nav-link:hover {
             background: var(--primary-dark);
-            color: white;
+            color: var(--dark-text-primary);
+        }
+
+        /* Cards and Containers */
+        body.dark-mode .modern-card,
+        body.dark-mode .card {
+            background: var(--dark-bg-secondary) !important;
+            border: 1px solid var(--dark-border) !important;
+            color: var(--dark-text-secondary) !important;
         }
         
+        body.dark-mode .card-header {
+            background: var(--dark-bg-quaternary);
+            color: var(--dark-text-secondary);
+            border-bottom: 1px solid var(--dark-border);
+        }
+        
+        body.dark-mode .card-body {
+            color: var(--dark-text-secondary) !important;
+        }
+        
+        body.dark-mode .card-body h1, body.dark-mode .card-body h2, 
+        body.dark-mode .card-body h3, body.dark-mode .card-body h4, 
+        body.dark-mode .card-body h5, body.dark-mode .card-body h6 {
+            color: var(--dark-text-primary) !important;
+        }
+        
+        body.dark-mode .card-body strong {
+            color: var(--dark-text-primary) !important;
+        }
+
+        /* Background Overrides for Light Sections */
+        body.dark-mode .bg-white {
+            background: var(--dark-bg-secondary) !important;
+            color: var(--dark-text-secondary) !important;
+        }
+
+        body.dark-mode .bg-white h3, body.dark-mode .bg-white h4, 
+        body.dark-mode .bg-white h5, body.dark-mode .bg-white h6 {
+            color: var(--dark-text-primary) !important;
+        }
+
+        body.dark-mode .bg-opacity-20 {
+            background: rgba(45, 45, 45, 0.9) !important;
+            color: var(--dark-text-secondary) !important;
+        }
+
+        body.dark-mode .bg-opacity-20 h3, body.dark-mode .bg-opacity-20 h4, 
+        body.dark-mode .bg-opacity-20 h5, body.dark-mode .bg-opacity-20 h6 {
+            color: var(--dark-text-primary) !important;
+        }
+
+        body.dark-mode .bg-light {
+            background: var(--dark-bg-quaternary) !important;
+        }
+
+        /* Text Color Overrides */
+        body.dark-mode .text-muted {
+            color: var(--dark-text-muted) !important;
+        }
+        
+        body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, 
+        body.dark-mode h4, body.dark-mode h5, body.dark-mode h6 {
+            color: var(--dark-text-primary) !important;
+        }
+
+        body.dark-mode .lead {
+            color: #d0d0d0;
+        }
+
+        body.dark-mode small {
+            color: var(--dark-text-tertiary) !important;
+        }
+
+        /* Stat Cards */
         body.dark-mode .stat-card {
-            background: #2d2d2d;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #e0e0e0;
+            background: var(--dark-bg-secondary);
+            border: 1px solid var(--dark-border);
+            color: var(--dark-text-secondary);
         }
 
         body.dark-mode .stat-card-primary {
@@ -485,52 +491,93 @@
         body.dark-mode .stat-card-success .stat-label {
             color: #a5d6a7;
         }
-        
-        body.dark-mode .form-control {
-            background: #3d3d3d;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #e0e0e0;
+
+        /* Form Controls */
+        body.dark-mode .form-control,
+        body.dark-mode input[type="text"],
+        body.dark-mode input[type="email"],
+        body.dark-mode input[type="password"],
+        body.dark-mode input[type="number"],
+        body.dark-mode input[type="date"],
+        body.dark-mode input[type="time"],
+        body.dark-mode input[type="datetime-local"],
+        body.dark-mode textarea,
+        body.dark-mode select {
+            background: var(--dark-bg-tertiary) !important;
+            border: 1px solid #6b7280 !important;
+            color: var(--dark-text-primary) !important;
         }
         
-        body.dark-mode .form-control:focus {
-            background: #3d3d3d;
-            border-color: var(--primary-light);
-            color: #e0e0e0;
+        body.dark-mode .form-control:focus,
+        body.dark-mode input:focus,
+        body.dark-mode textarea:focus,
+        body.dark-mode select:focus {
+            background: #4b5563 !important;
+            border-color: var(--primary-light) !important;
+            color: var(--dark-text-primary) !important;
+            box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25) !important;
         }
         
+        body.dark-mode .form-control::placeholder,
+        body.dark-mode input::placeholder,
+        body.dark-mode textarea::placeholder {
+            color: #9ca3af !important;
+        }
+
+        body.dark-mode .form-label,
+        body.dark-mode label {
+            color: #e5e7eb !important;
+        }
+
+        body.dark-mode .form-text,
+        body.dark-mode .help-text {
+            color: #d1d5db !important;
+        }
+
+        body.dark-mode .form-check-input {
+            background-color: var(--dark-bg-tertiary) !important;
+            border: 1px solid #6b7280 !important;
+        }
+
+        body.dark-mode .form-check-input:checked {
+            background-color: var(--primary-light) !important;
+            border-color: var(--primary-light) !important;
+        }
+
+        body.dark-mode .form-check-label {
+            color: #e5e7eb !important;
+        }
+
+        body.dark-mode select option {
+            background-color: var(--dark-bg-tertiary) !important;
+            color: var(--dark-text-primary) !important;
+        }
+
+        body.dark-mode .form-select {
+            background-color: var(--dark-bg-tertiary) !important;
+            color: var(--dark-text-primary) !important;
+            border: 1px solid #6b7280 !important;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e") !important;
+        }
+
+        /* Tables */
         body.dark-mode .table {
-            color: #e0e0e0;
-        }
-        
-        body.dark-mode .bg-light {
-            background: #3d3d3d !important;
-        }
-        
-        body.dark-mode .text-muted {
-            color: #a0a0a0 !important;
+            color: var(--dark-text-secondary);
         }
 
-        /* Additional dark mode improvements */
-        body.dark-mode .card-header {
-            background: #333333;
-            color: #e0e0e0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        body.dark-mode .table td {
+            color: var(--dark-text-secondary) !important;
         }
 
-        body.dark-mode .dropdown-menu {
-            background: #2d2d2d;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        body.dark-mode .table th {
+            color: var(--dark-text-primary) !important;
         }
 
-        body.dark-mode .dropdown-item {
-            color: #e0e0e0;
+        body.dark-mode .table td strong {
+            color: var(--dark-text-primary) !important;
         }
 
-        body.dark-mode .dropdown-item:hover {
-            background: #3d3d3d;
-            color: #ffffff;
-        }
-
+        /* Buttons and Interactive Elements */
         body.dark-mode .btn-outline-primary {
             border-color: var(--primary-light);
             color: var(--primary-light);
@@ -553,9 +600,25 @@
             color: #1a1a1a;
         }
 
+        /* Dropdown Menus */
+        body.dark-mode .dropdown-menu {
+            background: var(--dark-bg-secondary);
+            border: 1px solid var(--dark-border);
+        }
+
+        body.dark-mode .dropdown-item {
+            color: var(--dark-text-secondary);
+        }
+
+        body.dark-mode .dropdown-item:hover {
+            background: var(--dark-bg-quaternary);
+            color: var(--dark-text-primary);
+        }
+
+        /* Badges and Pills */
         body.dark-mode .badge {
-            background: #3d3d3d;
-            color: #e0e0e0;
+            background: var(--dark-bg-quaternary);
+            color: var(--dark-text-secondary);
         }
 
         body.dark-mode .badge.bg-primary {
@@ -573,97 +636,37 @@
             color: #1a1a1a;
         }
 
-        /* Improve visibility for announcement items */
-        body.dark-mode .announcement-item,
-        body.dark-mode .notification-item {
-            background: #3d3d3d !important;
-            color: #e0e0e0;
-        }
-
-        /* Ensure proper contrast for important elements */
-        body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, 
-        body.dark-mode h4, body.dark-mode h5, body.dark-mode h6 {
-            color: #ffffff !important;
-        }
-
-        body.dark-mode .lead {
-            color: #d0d0d0;
-        }
-
-        /* Targeted text fixes for dark mode - avoid overly broad selectors */
-        body.dark-mode small {
-            color: #b0b0b0 !important;
-        }
-
-        /* Table specific fixes */
-        body.dark-mode .table {
-            color: #e0e0e0;
-        }
-
-        body.dark-mode .table td {
-            color: #e0e0e0 !important;
-        }
-
-        body.dark-mode .table th {
-            color: #ffffff !important;
-        }
-
-        body.dark-mode .table td strong {
-            color: #ffffff !important;
-        }
-
-        /* Activity and notification items */
-        body.dark-mode .d-flex h6 {
-            color: #ffffff !important;
-        }
-
-        body.dark-mode .d-flex small {
-            color: #a0a0a0 !important;
-        }
-
-        /* Course items and other content */
-        body.dark-mode .border p,
-        body.dark-mode .border h6 {
-            color: #e0e0e0 !important;
-        }
-
-        body.dark-mode .border h6.text-primary {
-            color: var(--primary-light) !important;
-        }
-
-        /* Fix borders and containers in dark mode */
+        /* Borders and Containers */
         body.dark-mode .border {
-            border-color: rgba(255, 255, 255, 0.2) !important;
-            background: #3d3d3d;
+            border-color: var(--dark-border) !important;
+            background: var(--dark-bg-quaternary);
         }
 
-        /* Card body text fixes - Light mode defaults */
-        .card-body {
-            color: #374151;
+        /* Faculty Profile Specific */
+        body.dark-mode .table-borderless td {
+            color: var(--dark-text-secondary) !important;
         }
 
-        .card-body h1, .card-body h2, .card-body h3, 
-        .card-body h4, .card-body h5, .card-body h6 {
-            color: #1f2937;
+        body.dark-mode .table-borderless td strong {
+            color: var(--dark-text-primary) !important;
         }
 
-        .card-body strong {
-            color: #1f2937;
+        /* Special Text Colors in Dark Mode */
+        body.dark-mode .bg-white .text-white, 
+        body.dark-mode .bg-opacity-20 .text-white {
+            color: var(--dark-text-primary) !important;
         }
 
-        /* Dark mode card body fixes */
-        body.dark-mode .card-body {
-            color: #e0e0e0 !important;
+        body.dark-mode .bg-white .text-white h3, 
+        body.dark-mode .bg-opacity-20 .text-white h3,
+        body.dark-mode .bg-white .text-white h4, 
+        body.dark-mode .bg-opacity-20 .text-white h4 {
+            color: var(--dark-text-primary) !important;
         }
 
-        body.dark-mode .card-body h1, body.dark-mode .card-body h2, 
-        body.dark-mode .card-body h3, body.dark-mode .card-body h4, 
-        body.dark-mode .card-body h5, body.dark-mode .card-body h6 {
-            color: #ffffff !important;
-        }
-
-        body.dark-mode .card-body strong {
-            color: #ffffff !important;
+        body.dark-mode .bg-white .text-white small, 
+        body.dark-mode .bg-opacity-20 .text-white small {
+            color: var(--dark-text-secondary) !important;
         }
 
         body.dark-mode .card-body .text-primary {
@@ -682,7 +685,143 @@
             color: #ffb74d !important;
         }
 
-        /* Faculty Profile and table fixes - Light mode */
+        /* Assessment and Form Validation */
+        body.dark-mode .form-control.is-invalid,
+        body.dark-mode .was-validated .form-control:invalid {
+            border-color: #dc2626 !important;
+        }
+
+        body.dark-mode .form-control.is-valid,
+        body.dark-mode .was-validated .form-control:valid {
+            border-color: #059669 !important;
+        }
+
+        body.dark-mode .invalid-feedback {
+            color: #fca5a5 !important;
+        }
+
+        body.dark-mode .valid-feedback {
+            color: #86efac !important;
+        }
+
+        body.dark-mode .form-control:disabled,
+        body.dark-mode .form-control[readonly] {
+            background-color: #111827 !important;
+            color: #9ca3af !important;
+            border-color: #4b5563 !important;
+        }
+
+        /* Alert Messages */
+        body.dark-mode .alert {
+            border: 1px solid var(--dark-border) !important;
+        }
+
+        body.dark-mode .alert-info {
+            background-color: #1e40af !important;
+            color: var(--dark-text-primary) !important;
+        }
+
+        body.dark-mode .alert-success {
+            background-color: #059669 !important;
+            color: var(--dark-text-primary) !important;
+        }
+
+        body.dark-mode .alert-warning {
+            background-color: #d97706 !important;
+            color: var(--dark-text-primary) !important;
+        }
+
+        body.dark-mode .alert-danger {
+            background-color: #dc2626 !important;
+            color: var(--dark-text-primary) !important;
+        }
+
+        /* Modals */
+        body.dark-mode .modal-content {
+            background-color: var(--dark-bg-secondary) !important;
+            color: var(--dark-text-secondary) !important;
+        }
+
+        body.dark-mode .modal-header {
+            border-bottom: 1px solid var(--dark-border) !important;
+        }
+
+        body.dark-mode .modal-footer {
+            border-top: 1px solid var(--dark-border) !important;
+        }
+
+        /* Assessment-Specific Elements */
+        body.dark-mode .assessment-form,
+        body.dark-mode .question-form,
+        body.dark-mode .question-container {
+            background-color: var(--dark-bg-secondary) !important;
+            color: var(--dark-text-secondary) !important;
+        }
+
+        body.dark-mode input[name*="answer"],
+        body.dark-mode input[name*="choice"],
+        body.dark-mode input[name*="question"] {
+            background-color: var(--dark-bg-tertiary) !important;
+            color: var(--dark-text-primary) !important;
+            border: 1px solid #6b7280 !important;
+        }
+
+        /* Override Inline Styles */
+        body.dark-mode div[style*="background-color: white"],
+        body.dark-mode div[style*="background: white"],
+        body.dark-mode input[style*="background-color: white"],
+        body.dark-mode input[style*="background: white"],
+        body.dark-mode textarea[style*="background-color: white"],
+        body.dark-mode textarea[style*="background: white"] {
+            background-color: var(--dark-bg-secondary) !important;
+            color: var(--dark-text-secondary) !important;
+        }
+        
+        /* END CONSOLIDATED DARK MODE STYLES */
+
+        /* White sections - Light mode visibility */
+        .bg-white {
+            background: #ffffff !important;
+            color: #374151 !important;
+        }
+
+        .bg-white h3, .bg-white h4, .bg-white h5, .bg-white h6 {
+            color: #1f2937 !important;
+        }
+
+        .bg-white small, .bg-white .small {
+            color: #6b7280 !important;
+        }
+
+        /* White sections in welcome banners - ensure text visibility */
+        .bg-opacity-20 {
+            background: rgba(255, 255, 255, 0.9) !important;
+            color: #374151 !important;
+        }
+
+        .bg-opacity-20 h3, .bg-opacity-20 h4, .bg-opacity-20 h5, .bg-opacity-20 h6 {
+            color: #1f2937 !important;
+        }
+
+        .bg-opacity-20 small, .bg-opacity-20 .small {
+            color: #6b7280 !important;
+        }
+
+        /* Fix text-white in light backgrounds - Active Courses section */
+        .bg-white .text-white, .bg-opacity-20 .text-white {
+            color: #1f2937 !important;
+        }
+
+        .bg-white .text-white h3, .bg-opacity-20 .text-white h3,
+        .bg-white .text-white h4, .bg-opacity-20 .text-white h4 {
+            color: #1f2937 !important;
+        }
+
+        .bg-white .text-white small, .bg-opacity-20 .text-white small {
+            color: #6b7280 !important;
+        }
+
+        /* Light mode table fixes */
         .table-borderless td {
             color: #1f2937 !important;
             border: none;
@@ -693,119 +832,27 @@
             color: #111827 !important;
         }
 
-        /* Ensure Faculty Profile card content is visible */
-        .modern-card .table-borderless {
-            color: #1f2937 !important;
+        /* Light mode card body defaults */
+        .card-body {
+            color: #374151;
         }
 
-        /* Dark mode table fixes */
-        body.dark-mode .table-borderless td {
-            color: #e0e0e0 !important;
-            border: none;
+        .card-body h1, .card-body h2, .card-body h3, 
+        .card-body h4, .card-body h5, .card-body h6 {
+            color: #1f2937;
         }
 
-        body.dark-mode .table-borderless td strong {
-            color: #ffffff !important;
+        .card-body strong {
+            color: #1f2937;
         }
 
-        body.dark-mode .modern-card .table-borderless {
-            color: #e0e0e0 !important;
-        }
 
-        body.dark-mode .modern-card .table-borderless td {
-            color: #e0e0e0 !important;
-        }
 
-        body.dark-mode .modern-card .table-borderless td strong {
-            color: #ffffff !important;
-        }
 
-        /* Higher specificity override for Faculty Profile */
-        body.dark-mode .modern-card .card-body .table.table-borderless td {
-            color: #e0e0e0 !important;
-            background: transparent !important;
-        }
 
-        body.dark-mode .modern-card .card-body .table.table-borderless td strong {
-            color: #ffffff !important;
-        }
 
-        /* Ultimate override - target all table elements in Faculty Profile cards */
-        body.dark-mode div.modern-card div.card-body table.table-borderless td {
-            color: #e0e0e0 !important;
-        }
 
-        body.dark-mode div.modern-card div.card-body table.table-borderless td strong {
-            color: #ffffff !important;
-        }
 
-        /* Nuclear option - override everything with extreme specificity */
-        html body.dark-mode div.modern-card div.card-body table.table.table-borderless.small tr td {
-            color: #e0e0e0 !important;
-        }
-
-        html body.dark-mode div.modern-card div.card-body table.table.table-borderless.small tr td strong {
-            color: #ffffff !important;
-        }
-
-        /* Last resort - use attribute selector to ensure it works */
-        body.dark-mode [class*="modern-card"] [class*="card-body"] table[class*="table-borderless"] td {
-            color: #e0e0e0 !important;
-        }
-
-        body.dark-mode [class*="modern-card"] [class*="card-body"] table[class*="table-borderless"] td strong {
-            color: #ffffff !important;
-        }
-
-        /* =================================================
-           COMPREHENSIVE DARK MODE FORM & INPUT FIXES
-           ================================================= */
-
-        /* Form Controls - Input fields, textareas, selects */
-        body.dark-mode .form-control,
-        body.dark-mode input[type="text"],
-        body.dark-mode input[type="email"],
-        body.dark-mode input[type="password"],
-        body.dark-mode input[type="number"],
-        body.dark-mode input[type="date"],
-        body.dark-mode input[type="time"],
-        body.dark-mode input[type="datetime-local"],
-        body.dark-mode textarea,
-        body.dark-mode select {
-            background-color: #374151 !important;
-            color: #ffffff !important;
-            border: 1px solid #6b7280 !important;
-        }
-
-        body.dark-mode .form-control:focus,
-        body.dark-mode input:focus,
-        body.dark-mode textarea:focus,
-        body.dark-mode select:focus {
-            background-color: #4b5563 !important;
-            color: #ffffff !important;
-            border-color: var(--primary-light) !important;
-            box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25) !important;
-        }
-
-        /* Form Control Placeholders */
-        body.dark-mode .form-control::placeholder,
-        body.dark-mode input::placeholder,
-        body.dark-mode textarea::placeholder {
-            color: #9ca3af !important;
-        }
-
-        /* Form Labels */
-        body.dark-mode .form-label,
-        body.dark-mode label {
-            color: #e5e7eb !important;
-        }
-
-        /* Form Text & Help Text */
-        body.dark-mode .form-text,
-        body.dark-mode .help-text,
-        body.dark-mode small {
-            color: #d1d5db !important;
-        }
 
         /* Radio Buttons and Checkboxes */
         body.dark-mode .form-check-input {
@@ -1583,21 +1630,42 @@
                         </button>
                     </li>
                     <li class="nav-item">
-                        <a href="{% url 'home' %}" class="nav-link">
+                        <a href="{% url 'accounts:home' %}" class="nav-link">
                             <i class="fas fa-home me-1"></i>Home
                         </a>
                     </li>
                     {% if user.user_type == 'student' %}
                         <li class="nav-item">
-                            <a href="{% url 'student_dashboard' %}" class="nav-link">
+                            <a href="{% url 'accounts:student_dashboard' %}" class="nav-link">
                                 <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'courses:student_enrollment' %}" class="nav-link">
+                                <i class="fas fa-book-open me-1"></i>Enrollment
                             </a>
                         </li>
                     {% elif user.user_type == 'teacher' %}
                         <li class="nav-item">
-                            <a href="{% url 'teacher_dashboard' %}" class="nav-link">
+                            <a href="{% url 'accounts:teacher_dashboard' %}" class="nav-link">
                                 <i class="fas fa-chalkboard-teacher me-1"></i>Dashboard
                             </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-graduation-cap me-1"></i>Courses
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'courses:dashboard' %}"><i class="fas fa-tachometer-alt me-2"></i>Course Dashboard</a></li>
+                                <li><a class="dropdown-item" href="{% url 'courses:course_offerings' %}"><i class="fas fa-calendar me-2"></i>My Offerings</a></li>
+                                <li><a class="dropdown-item" href="{% url 'courses:enrollment_management' %}"><i class="fas fa-users me-2"></i>Manage Enrollments</a></li>
+                                <li><a class="dropdown-item" href="{% url 'courses:manage_enrollment_codes' %}"><i class="fas fa-key me-2"></i>Enrollment Codes</a></li>
+                                {% if user.is_staff %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'courses:course_list' %}"><i class="fas fa-book me-2"></i>All Courses</a></li>
+                                <li><a class="dropdown-item" href="{% url 'courses:curriculum_list' %}"><i class="fas fa-list me-2"></i>Curricula</a></li>
+                                {% endif %}
+                            </ul>
                         </li>
                     {% endif %}
                     <li class="nav-item dropdown">
@@ -1605,11 +1673,12 @@
                             <i class="fas fa-user-cog me-1"></i>Account
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-user-edit me-2"></i>Profile</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li><a class="dropdown-item" href="{% url 'accounts:profile' %}"><i class="fas fa-user-edit me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'accounts:settings' %}"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li><a class="dropdown-item" href="{% url 'accounts:security' %}"><i class="fas fa-shield-alt me-2"></i>Security</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <form method="post" action="{% url 'logout' %}" class="dropdown-item p-0">
+                                <form method="post" action="{% url 'accounts:logout' %}" class="dropdown-item p-0">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-link text-decoration-none text-start w-100 p-3">
                                         <i class="fas fa-sign-out-alt me-2"></i>Logout
@@ -1696,178 +1765,144 @@
         
         // Dark mode toggle (moved below to include fix function)
         
-        // Comprehensive function to fix all dark mode elements
-        function fixFacultyProfileTextColors() {
-            setTimeout(() => {
-                const isDarkMode = document.body.classList.contains('dark-mode');
+        // Consolidated Dark Mode Enhancement System
+        const ThemeManager = {
+            // Constants for consistent styling
+            DARK_COLORS: {
+                background: '#1f2937',
+                backgroundTertiary: '#374151', 
+                textPrimary: '#ffffff',
+                textSecondary: '#e5e7eb',
+                border: '#6b7280'
+            },
+            
+            // Apply dark mode styling to all elements
+            applyDarkModeStyles() {
+                if (!document.body.classList.contains('dark-mode')) return;
                 
-                if (isDarkMode) {
-                    // Fix Faculty Profile tables
-                    const facultyTables = document.querySelectorAll('.modern-card .card-body .table-borderless td');
-                    const facultyStrong = document.querySelectorAll('.modern-card .card-body .table-borderless td strong');
-                    
-                    facultyTables.forEach(td => {
-                        td.style.color = '#e0e0e0';
+                // Form elements (inputs, textareas, selects)
+                document.querySelectorAll('input:not([type="submit"]):not([type="button"]):not([type="hidden"]), textarea, select')
+                    .forEach(element => {
+                        element.style.backgroundColor = this.DARK_COLORS.backgroundTertiary;
+                        element.style.color = this.DARK_COLORS.textPrimary;
+                        element.style.border = `1px solid ${this.DARK_COLORS.border}`;
                     });
-                    facultyStrong.forEach(strong => {
-                        strong.style.color = '#ffffff';
-                    });
-                    
-                    // Fix ALL form elements more aggressively
-                    const allInputs = document.querySelectorAll('input, textarea, select');
-                    allInputs.forEach(input => {
-                        // Skip buttons and hidden inputs
-                        if (input.type !== 'submit' && input.type !== 'button' && input.type !== 'hidden') {
-                            input.style.backgroundColor = '#374151';
-                            input.style.color = '#ffffff';
-                            input.style.border = '1px solid #6b7280';
-                        }
-                    });
-                    
-                    // Fix all labels
-                    const allLabels = document.querySelectorAll('label, .form-label');
-                    allLabels.forEach(label => {
-                        label.style.color = '#e5e7eb';
-                    });
-                    
-                    // Fix card elements
-                    const cardElements = document.querySelectorAll('.card, .modern-card, .card-body');
-                    cardElements.forEach(card => {
+                
+                // Labels and form text
+                document.querySelectorAll('label, .form-label')
+                    .forEach(element => element.style.color = this.DARK_COLORS.textSecondary);
+                
+                // Cards and containers
+                document.querySelectorAll('.card, .modern-card, .card-body')
+                    .forEach(card => {
                         if (!card.classList.contains('bg-primary') && !card.classList.contains('bg-success')) {
-                            card.style.backgroundColor = '#1f2937';
-                            card.style.color = '#e5e7eb';
+                            card.style.backgroundColor = this.DARK_COLORS.background;
+                            card.style.color = this.DARK_COLORS.textSecondary;
                         }
                     });
-                    
-                    // Fix divs that might be white
-                    const whiteDivs = document.querySelectorAll('div');
-                    whiteDivs.forEach(div => {
-                        const computedStyle = window.getComputedStyle(div);
-                        if (computedStyle.backgroundColor === 'rgb(255, 255, 255)' || 
-                            computedStyle.backgroundColor === 'white') {
-                            div.style.backgroundColor = '#1f2937';
-                            div.style.color = '#e5e7eb';
-                        }
-                    });
-                    
-                    // Fix answer choice containers specifically
-                    const answerInputs = document.querySelectorAll('input[name*="answer"], input[name*="choice"], .answer-choice-input');
-                    answerInputs.forEach(input => {
-                        input.style.backgroundColor = '#374151';
-                        input.style.color = '#ffffff';
-                        input.style.border = '1px solid #6b7280';
-                    });
-                    
-                    // Fix any remaining text elements
-                    const textElements = document.querySelectorAll('span, p, div, td, th');
-                    textElements.forEach(element => {
-                        const computedStyle = window.getComputedStyle(element);
-                        if (computedStyle.color === 'rgb(0, 0, 0)' || computedStyle.color === 'black') {
-                            element.style.color = '#e5e7eb';
-                        }
-                    });
-                    
-                } else {
-                    // Light mode - reset everything
-                    const allElements = document.querySelectorAll('*');
-                    allElements.forEach(element => {
-                        element.style.backgroundColor = '';
-                        element.style.color = '';
-                        element.style.borderColor = '';
-                    });
-                }
-            }, 150);
-        }
+                
+                // Table elements (Faculty Profile fix)
+                document.querySelectorAll('.table-borderless td')
+                    .forEach(td => td.style.color = this.DARK_COLORS.textSecondary);
+                document.querySelectorAll('.table-borderless td strong')
+                    .forEach(strong => strong.style.color = this.DARK_COLORS.textPrimary);
+                
+                // Override white backgrounds
+                document.querySelectorAll('*').forEach(element => {
+                    const style = window.getComputedStyle(element);
+                    if (style.backgroundColor === 'rgb(255, 255, 255)') {
+                        element.style.backgroundColor = this.DARK_COLORS.background;
+                        element.style.color = this.DARK_COLORS.textSecondary;
+                    }
+                    if (style.color === 'rgb(0, 0, 0)') {
+                        element.style.color = this.DARK_COLORS.textSecondary;
+                    }
+                });
+            },
+            
+            // Reset all inline styles for light mode
+            resetStyles() {
+                document.querySelectorAll('*').forEach(element => {
+                    element.style.backgroundColor = '';
+                    element.style.color = '';
+                    element.style.borderColor = '';
+                });
+            }
+        };
         
-        // Toggle theme function
+        // Enhanced toggle theme function
         function toggleTheme() {
             const body = document.body;
             const themeIcon = document.getElementById('themeIcon');
             const themeText = document.getElementById('themeText');
             
             body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
             
-            if (body.classList.contains('dark-mode')) {
-                themeIcon.classList.remove('fa-moon');
-                themeIcon.classList.add('fa-sun');
-                themeText.textContent = 'Light Mode';
-                localStorage.setItem('theme', 'dark');
-            } else {
-                themeIcon.classList.remove('fa-sun');
-                themeIcon.classList.add('fa-moon');
-                themeText.textContent = 'Dark Mode';
-                localStorage.setItem('theme', 'light');
+            // Update UI elements
+            if (themeIcon && themeText) {
+                if (isDark) {
+                    themeIcon.classList.replace('fa-moon', 'fa-sun');
+                    themeText.textContent = 'Light Mode';
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    themeIcon.classList.replace('fa-sun', 'fa-moon');
+                    themeText.textContent = 'Dark Mode';
+                    localStorage.setItem('theme', 'light');
+                }
             }
             
-            // Fix Faculty Profile colors after theme change
-            fixFacultyProfileTextColors();
+            // Apply appropriate styling
+            setTimeout(() => {
+                if (isDark) {
+                    ThemeManager.applyDarkModeStyles();
+                } else {
+                    ThemeManager.resetStyles();
+                }
+            }, 50);
         }
         
-        // Apply saved theme on page load
+        // Initialize theme system on page load
         document.addEventListener('DOMContentLoaded', function() {
             const savedTheme = localStorage.getItem('theme');
             const themeIcon = document.getElementById('themeIcon');
             const themeText = document.getElementById('themeText');
+            const isDark = savedTheme === 'dark';
             
-            if (savedTheme === 'dark') {
+            // Apply saved theme
+            if (isDark) {
                 document.body.classList.add('dark-mode');
                 if (themeIcon && themeText) {
-                    themeIcon.classList.remove('fa-moon');
-                    themeIcon.classList.add('fa-sun');
+                    themeIcon.classList.replace('fa-moon', 'fa-sun');
                     themeText.textContent = 'Light Mode';
-                }
-            } else {
-                if (themeIcon && themeText) {
-                    themeIcon.classList.remove('fa-sun');
-                    themeIcon.classList.add('fa-moon');
-                    themeText.textContent = 'Dark Mode';
                 }
             }
             
-            // Force fix Faculty Profile text visibility
-            fixFacultyProfileTextColors();
-            
-            // Additional immediate fixes for assessment pages
-            setTimeout(function() {
-                const isDarkMode = document.body.classList.contains('dark-mode');
-                if (isDarkMode) {
-                    // Emergency fix for any white backgrounds
-                    const allElements = document.querySelectorAll('*');
-                    allElements.forEach(element => {
-                        const style = window.getComputedStyle(element);
-                        if (style.backgroundColor === 'rgb(255, 255, 255)') {
-                            element.style.backgroundColor = '#1f2937';
-                            element.style.color = '#e5e7eb';
-                        }
-                        if (style.color === 'rgb(0, 0, 0)') {
-                            element.style.color = '#e5e7eb';
-                        }
-                    });
-                }
-            }, 300);
-            
-            // Monitor for dynamic content changes
-            const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                        // Re-apply fixes when new content is added
-                        setTimeout(fixFacultyProfileTextColors, 50);
-                    }
-                });
-            });
-            
-            // Start observing the document for changes
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true
-            });
-            
-            // Run fixes periodically to catch any missed elements
-            setInterval(function() {
+            // Initial styling application
+            setTimeout(() => {
                 if (document.body.classList.contains('dark-mode')) {
-                    fixFacultyProfileTextColors();
+                    ThemeManager.applyDarkModeStyles();
                 }
-            }, 2000);
+            }, 100);
+            
+            // Monitor for dynamic content and re-apply styles
+            const observer = new MutationObserver(() => {
+                if (document.body.classList.contains('dark-mode')) {
+                    ThemeManager.applyDarkModeStyles();
+                }
+            });
+            
+            observer.observe(document.body, { 
+                childList: true, 
+                subtree: true 
+            });
+            
+            // Periodic maintenance (reduced frequency)
+            setInterval(() => {
+                if (document.body.classList.contains('dark-mode')) {
+                    ThemeManager.applyDarkModeStyles();
+                }
+            }, 5000);
         });
     </script>
 </body>

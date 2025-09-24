@@ -125,7 +125,10 @@ class CourseOfferingForm(forms.ModelForm):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['instructor'].queryset = User.objects.filter(user_type='teacher')
+        # Optimize: select only necessary fields for teacher dropdown
+        self.fields['instructor'].queryset = User.objects.filter(
+            user_type='teacher'
+        ).select_related('teacher_profile').order_by('first_name', 'last_name')
 
 class StudentEnrollmentForm(forms.ModelForm):
     """Form for enrolling students"""
@@ -186,7 +189,9 @@ class BulkEnrollmentForm(forms.Form):
         help_text="Select curriculum for automatic enrollment"
     )
     semester = forms.ModelChoiceField(
-        queryset=Semester.objects.all(),
+        queryset=Semester.objects.select_related('academic_year').filter(
+            is_current=True
+        ).order_by('-academic_year__year_start'),
         widget=forms.Select(attrs={'class': 'form-control'}),
         help_text="Target semester for enrollment"
     )
@@ -246,7 +251,9 @@ class StudentEnrollmentSearchForm(forms.Form):
         })
     )
     course_offering = forms.ModelChoiceField(
-        queryset=CourseOffering.objects.all(),
+        queryset=CourseOffering.objects.select_related('course', 'semester').filter(
+            status='open'
+        ).order_by('course__code'),
         required=False,
         empty_label="All Courses",
         widget=forms.Select(attrs={'class': 'form-control'})

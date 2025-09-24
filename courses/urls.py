@@ -31,4 +31,10 @@ urlpatterns = [
     # Student enrollment
     path('my-enrollment/', views.student_enrollment_view, name='student_enrollment'),
     path('enroll/<int:offering_id>/', views.enroll_in_course_view, name='enroll_in_course'),
+    path('offerings/<int:offering_id>/details/', views.course_offering_details_view, name='offering_details'),
+    path('enrollments/<int:enrollment_id>/cancel/', views.cancel_enrollment_view, name='cancel_enrollment'),
+    
+    # Enrollment codes
+    path('use-enrollment-code/', views.use_enrollment_code_view, name='use_enrollment_code'),
+    path('manage-enrollment-codes/', views.manage_enrollment_codes_view, name='manage_enrollment_codes'),
 ]

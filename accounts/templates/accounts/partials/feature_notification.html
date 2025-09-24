@@ -1,0 +1,105 @@
+<!-- Feature Not Implemented Notification Template -->
+<div class="alert alert-info alert-modern alert-dismissible fade show" role="alert" id="feature-notification">
+    <div class="d-flex align-items-center">
+        <div class="notification-icon me-3">
+            <i class="fas fa-info-circle fa-2x text-info"></i>
+        </div>
+        <div class="notification-content flex-grow-1">
+            <h6 class="alert-heading mb-1">
+                <i class="fas fa-wrench me-2"></i>Feature Coming Soon
+            </h6>
+            <p class="mb-0">
+                {{ feature_name|default:"This" }} feature will be implemented soon. 
+                We're working hard to bring you the best experience!
+            </p>
+            {% if show_progress %}
+            <div class="mt-2">
+                <small class="text-muted">
+                    <i class="fas fa-chart-line me-1"></i>
+                    Development Progress: {{ progress_percentage|default:"0" }}%
+                </small>
+                <div class="progress mt-1" style="height: 4px;">
+                    <div class="progress-bar bg-info" 
+                         role="progressbar" 
+                         style="width: {{ progress_percentage|default:"0" }}%" 
+                         aria-valuenow="{{ progress_percentage|default:"0" }}" 
+                         aria-valuemin="0" 
+                         aria-valuemax="100">
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div class="notification-actions ms-3">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<style>
+.alert-modern {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid var(--bs-info);
+    background: linear-gradient(135deg, rgba(23, 162, 184, 0.1) 0%, rgba(23, 162, 184, 0.05) 100%);
+}
+
+.notification-icon {
+    opacity: 0.8;
+}
+
+.alert-heading {
+    color: var(--bs-info);
+    font-weight: 600;
+}
+
+@keyframes slideInFromTop {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#feature-notification {
+    animation: slideInFromTop 0.5s ease-out;
+}
+
+/* Auto-hide after 8 seconds with fade out animation */
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+.alert-auto-hide {
+    animation: fadeOut 0.5s ease-in 7.5s forwards;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const notification = document.getElementById('feature-notification');
+    if (notification) {
+        // Add auto-hide class after a delay
+        setTimeout(() => {
+            notification.classList.add('alert-auto-hide');
+            // Remove the element after animation completes
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 500);
+        }, 8000);
+    }
+});
+</script>

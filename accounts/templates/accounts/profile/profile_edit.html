@@ -1,0 +1,419 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Edit Profile - SPIST{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Header -->
+            <div class="d-flex align-items-center mb-4">
+                <a href="{% url 'accounts:profile' %}" class="btn btn-outline-secondary me-3">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <div>
+                    <h2 class="mb-0">Edit Profile</h2>
+                    <p class="text-muted mb-0">Update your personal information</p>
+                </div>
+            </div>
+
+            <!-- Profile Edit Form -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-user-edit me-2"></i>Profile Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" id="profileForm">
+                        {% csrf_token %}
+                        
+                        <!-- Personal Information Section -->
+                        <div class="section-header mb-3">
+                            <h6 class="text-primary">Personal Information</h6>
+                            <hr>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.first_name.id_for_label }}" class="form-label">
+                                    First Name <span class="text-danger">*</span>
+                                </label>
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.first_name.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.last_name.id_for_label }}" class="form-label">
+                                    Last Name <span class="text-danger">*</span>
+                                </label>
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.last_name.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.email.id_for_label }}" class="form-label">
+                                    Email Address <span class="text-danger">*</span>
+                                </label>
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.email.errors }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.phone_number.id_for_label }}" class="form-label">
+                                    Phone Number
+                                </label>
+                                {{ form.phone_number }}
+                                {% if form.phone_number.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.phone_number.errors }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Philippine mobile number format</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bio Section -->
+                        <div class="mb-3">
+                            <label for="{{ form.bio.id_for_label }}" class="form-label">
+                                About Yourself
+                            </label>
+                            {{ form.bio }}
+                            <div class="form-text">
+                                <span id="bioCounter">0</span>/500 characters
+                            </div>
+                            {% if form.bio.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {{ form.bio.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Academic/Professional Information Section -->
+                        <div class="section-header mb-3 mt-4">
+                            {% if user_type == 'student' %}
+                                <h6 class="text-primary">Academic Information</h6>
+                            {% else %}
+                                <h6 class="text-primary">Professional Information</h6>
+                            {% endif %}
+                            <hr>
+                        </div>
+                        
+                        {% if user_type == 'student' %}
+                            <div class="row mb-3">
+                                <div class="col-md-8">
+                                    <label for="{{ form.course.id_for_label }}" class="form-label">
+                                        Course/Program <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.course }}
+                                    {% if form.course.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.course.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="{{ form.year_level.id_for_label }}" class="form-label">
+                                        Year Level <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.year_level }}
+                                    {% if form.year_level.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.year_level.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="{{ form.department.id_for_label }}" class="form-label">
+                                        Department <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.department }}
+                                    {% if form.department.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.department.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="{{ form.specialization.id_for_label }}" class="form-label">
+                                        Specialization
+                                    </label>
+                                    {{ form.specialization }}
+                                    {% if form.specialization.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {{ form.specialization.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            {% if form.office_hours %}
+                            <div class="mb-3">
+                                <label for="{{ form.office_hours.id_for_label }}" class="form-label">
+                                    Office Hours
+                                </label>
+                                {{ form.office_hours }}
+                                {% if form.office_hours.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {{ form.office_hours.errors }}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">e.g., Monday-Friday 2:00 PM - 4:00 PM</div>
+                            </div>
+                            {% endif %}
+                        {% endif %}
+                        
+                        <!-- Form Actions -->
+                        <div class="d-flex justify-content-between mt-4 pt-3 border-top">
+                            <div>
+                                <a href="{% url 'accounts:profile' %}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times me-2"></i>Cancel
+                                </a>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-outline-primary me-2" onclick="previewChanges()">
+                                    <i class="fas fa-eye me-2"></i>Preview
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Help Section -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h6 class="text-info mb-3">
+                        <i class="fas fa-info-circle me-2"></i>Profile Tips
+                    </h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Keep your contact information up to date for important notifications
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Add a bio to help others know more about you
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success me-2"></i>
+                            Use a professional profile picture for better recognition
+                        </li>
+                        <li>
+                            <i class="fas fa-check text-success me-2"></i>
+                            Review your privacy settings to control who can see your information
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Preview Modal -->
+<div class="modal fade" id="previewModal" tabindex="-1" aria-labelledby="previewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="previewModalLabel">Profile Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="previewContent">
+                <!-- Preview content will be inserted here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="submitForm()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.section-header {
+    margin-top: 2rem;
+}
+
+.section-header:first-child {
+    margin-top: 0;
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.25);
+}
+
+.invalid-feedback {
+    display: block !important;
+}
+
+.card-header {
+    background-color: var(--card-header-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Character counter */
+#bioCounter {
+    font-weight: 500;
+    color: var(--primary-color);
+}
+
+/* Dark mode compatibility */
+[data-theme="dark"] .card {
+    background-color: var(--card-bg-dark);
+    border-color: var(--border-color-dark);
+}
+
+[data-theme="dark"] .card-header {
+    background-color: var(--card-header-bg-dark);
+    border-color: var(--border-color-dark);
+}
+
+[data-theme="dark"] .form-control {
+    background-color: var(--input-bg-dark);
+    border-color: var(--border-color-dark);
+    color: var(--text-color-dark);
+}
+
+[data-theme="dark"] .form-control:focus {
+    background-color: var(--input-bg-dark);
+    border-color: var(--primary-color);
+}
+
+[data-theme="dark"] .form-label {
+    color: var(--text-color-dark);
+}
+
+[data-theme="dark"] .text-muted {
+    color: var(--text-muted-dark) !important;
+}
+</style>
+
+<script>
+// Bio character counter
+document.addEventListener('DOMContentLoaded', function() {
+    const bioTextarea = document.getElementById('{{ form.bio.id_for_label }}');
+    const counter = document.getElementById('bioCounter');
+    
+    function updateCounter() {
+        const length = bioTextarea.value.length;
+        counter.textContent = length;
+        
+        if (length > 450) {
+            counter.style.color = '#dc3545';
+        } else if (length > 400) {
+            counter.style.color = '#fd7e14';
+        } else {
+            counter.style.color = 'var(--primary-color)';
+        }
+    }
+    
+    bioTextarea.addEventListener('input', updateCounter);
+    updateCounter(); // Initial count
+});
+
+// Form validation
+document.getElementById('profileForm').addEventListener('submit', function(e) {
+    const requiredFields = this.querySelectorAll('input[required], select[required]');
+    let isValid = true;
+    
+    requiredFields.forEach(function(field) {
+        if (!field.value.trim()) {
+            isValid = false;
+            field.classList.add('is-invalid');
+        } else {
+            field.classList.remove('is-invalid');
+        }
+    });
+    
+    if (!isValid) {
+        e.preventDefault();
+        alert('Please fill in all required fields.');
+    }
+});
+
+// Preview changes
+function previewChanges() {
+    const form = document.getElementById('profileForm');
+    const formData = new FormData(form);
+    
+    let previewHTML = '<div class="row">';
+    
+    // Personal Information
+    previewHTML += `
+        <div class="col-md-6">
+            <h6 class="text-primary mb-3">Personal Information</h6>
+            <table class="table table-borderless">
+                <tr><td class="fw-bold">Name:</td><td>${formData.get('first_name')} ${formData.get('last_name')}</td></tr>
+                <tr><td class="fw-bold">Email:</td><td>${formData.get('email')}</td></tr>
+                <tr><td class="fw-bold">Phone:</td><td>${formData.get('phone_number') || 'Not provided'}</td></tr>
+            </table>
+        </div>
+    `;
+    
+    // Academic/Professional Information
+    previewHTML += '<div class="col-md-6">';
+    {% if user_type == 'student' %}
+        previewHTML += `
+            <h6 class="text-primary mb-3">Academic Information</h6>
+            <table class="table table-borderless">
+                <tr><td class="fw-bold">Course:</td><td>${formData.get('course')}</td></tr>
+                <tr><td class="fw-bold">Year Level:</td><td>${formData.get('year_level')}</td></tr>
+            </table>
+        `;
+    {% else %}
+        previewHTML += `
+            <h6 class="text-primary mb-3">Professional Information</h6>
+            <table class="table table-borderless">
+                <tr><td class="fw-bold">Department:</td><td>${formData.get('department')}</td></tr>
+                <tr><td class="fw-bold">Specialization:</td><td>${formData.get('specialization') || 'Not specified'}</td></tr>
+        `;
+        {% if form.office_hours %}
+            previewHTML += `<tr><td class="fw-bold">Office Hours:</td><td>${formData.get('office_hours') || 'Not specified'}</td></tr>`;
+        {% endif %}
+        previewHTML += '</table>';
+    {% endif %}
+    previewHTML += '</div></div>';
+    
+    // Bio
+    if (formData.get('bio')) {
+        previewHTML += `
+            <div class="mt-3">
+                <h6 class="text-primary mb-3">About</h6>
+                <p class="text-muted">${formData.get('bio').replace(/\n/g, '<br>')}</p>
+            </div>
+        `;
+    }
+    
+    document.getElementById('previewContent').innerHTML = previewHTML;
+    new bootstrap.Modal(document.getElementById('previewModal')).show();
+}
+
+function submitForm() {
+    document.getElementById('profileForm').submit();
+}
+</script>
+{% endblock %}

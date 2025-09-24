@@ -1,0 +1,337 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}Manage Enrollment Codes - SPIST{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card modern-card">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h2 class="fw-bold mb-2 text-primary">
+                                <i class="fas fa-key me-2"></i>Enrollment Code Management
+                            </h2>
+                            <p class="text-muted mb-0">Create and manage enrollment codes for late enrollees and transferees</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createCodeModal">
+                                <i class="fas fa-plus me-2"></i>Create New Code
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Current Semester Info -->
+    {% if current_semester %}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Current Semester:</strong> {{ current_semester }}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Existing Enrollment Codes -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card modern-card">
+                <div class="card-header">
+                    <h5 class="fw-bold mb-0">
+                        <i class="fas fa-list me-2"></i>Active Enrollment Codes
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if enrollment_codes %}
+                        <div class="table-responsive">
+                            <table class="table table-hover modern-table">
+                                <thead>
+                                    <tr>
+                                        <th>Code</th>
+                                        <th>Course</th>
+                                        <th>Usage</th>
+                                        <th>Valid Until</th>
+                                        <th>Status</th>
+                                        <th>Created By</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for code in enrollment_codes %}
+                                    <tr>
+                                        <td>
+                                            <div class="code-display">
+                                                <span class="fw-bold font-monospace fs-5">{{ code.code }}</span>
+                                                <button class="btn btn-link btn-sm p-0 ms-2" onclick="copyCode('{{ code.code }}')" title="Copy Code">
+                                                    <i class="fas fa-copy"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="course-info">
+                                                <div class="fw-semibold">{{ code.course_offering.course.code }}</div>
+                                                <small class="text-muted">{{ code.course_offering.course.title|truncatechars:30 }}</small>
+                                                <br>
+                                                <small class="text-muted">Section {{ code.course_offering.section }}</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="usage-info">
+                                                <div class="progress mb-1" style="height: 8px;">
+                                                    <div class="progress-bar" style="width: {% widthratio code.used_count code.max_uses 100 %}%"></div>
+                                                </div>
+                                                <small class="text-muted">{{ code.used_count }}/{{ code.max_uses }} uses</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="validity-info">
+                                                <div class="fw-semibold">{{ code.valid_until|date:"M j, Y" }}</div>
+                                                <small class="text-muted">{{ code.valid_until|time:"g:i A" }}</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% if code.is_valid %}
+                                                <span class="badge bg-success">Active</span>
+                                            {% elif not code.is_active %}
+                                                <span class="badge bg-secondary">Deactivated</span>
+                                            {% elif code.used_count >= code.max_uses %}
+                                                <span class="badge bg-warning">Exhausted</span>
+                                            {% else %}
+                                                <span class="badge bg-danger">Expired</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="creator-info">
+                                                <div class="fw-semibold">{{ code.created_by.get_full_name }}</div>
+                                                <small class="text-muted">{{ code.created_at|date:"M j, Y g:i A" }}</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <button type="button" class="btn btn-outline-info" title="View Usage" onclick="viewCodeUsage('{{ code.id }}')">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                {% if code.is_active and code.created_by == user %}
+                                                <button type="button" class="btn btn-outline-danger" title="Deactivate" onclick="deactivateCode('{{ code.id }}')">
+                                                    <i class="fas fa-ban"></i>
+                                                </button>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-key fa-4x text-muted mb-3"></i>
+                            <h5 class="text-muted">No Enrollment Codes</h5>
+                            <p class="text-muted">Create enrollment codes to help late enrollees and transferees access your courses.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Code Modal -->
+<div class="modal fade" id="createCodeModal" tabindex="-1" aria-labelledby="createCodeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createCodeModalLabel">
+                    <i class="fas fa-plus me-2"></i>Create Enrollment Code
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="create_code">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="course_offering_id" class="form-label fw-semibold">Course Offering</label>
+                        <select class="form-select" name="course_offering_id" id="course_offering_id" required>
+                            <option value="">Select Course Offering</option>
+                            {% for offering in course_offerings %}
+                                <option value="{{ offering.id }}">
+                                    {{ offering.course.code }} - {{ offering.course.title }} (Section {{ offering.section }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="max_uses" class="form-label fw-semibold">Maximum Uses</label>
+                                <input type="number" class="form-control" name="max_uses" id="max_uses" value="1" min="1" max="50" required>
+                                <div class="form-text">How many students can use this code</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="valid_hours" class="form-label fw-semibold">Valid For (Hours)</label>
+                                <select class="form-select" name="valid_hours" id="valid_hours" required>
+                                    <option value="24">24 Hours (1 Day)</option>
+                                    <option value="72">72 Hours (3 Days)</option>
+                                    <option value="168" selected>168 Hours (1 Week)</option>
+                                    <option value="336">336 Hours (2 Weeks)</option>
+                                    <option value="720">720 Hours (1 Month)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="notes" class="form-label fw-semibold">Notes (Optional)</label>
+                        <textarea class="form-control" name="notes" id="notes" rows="3" placeholder="Internal notes about this enrollment code..."></textarea>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Note:</strong> The code will be automatically generated and displayed after creation. Make sure to share it with the intended students.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-key me-2"></i>Create Code
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.modern-card {
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.modern-card:hover {
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+}
+
+.modern-table th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.modern-table td {
+    border-bottom: 1px solid #f1f3f4;
+    vertical-align: middle;
+}
+
+.code-display {
+    display: flex;
+    align-items: center;
+}
+
+.usage-info, .validity-info, .creator-info {
+    min-width: 120px;
+}
+
+.course-info {
+    min-width: 200px;
+}
+
+.btn-group-sm > .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+[data-bs-theme="dark"] .modern-card {
+    background-color: #343a40;
+    border-color: #495057;
+}
+
+[data-bs-theme="dark"] .modern-table th {
+    background-color: #495057;
+    color: #ffffff;
+}
+
+[data-bs-theme="dark"] .modern-table td {
+    border-bottom-color: #495057;
+}
+</style>
+
+<script>
+function copyCode(code) {
+    navigator.clipboard.writeText(code).then(function() {
+        showToast('Success', `Code ${code} copied to clipboard!`, 'success');
+    }).catch(function() {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = code;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showToast('Success', `Code ${code} copied to clipboard!`, 'success');
+    });
+}
+
+function deactivateCode(codeId) {
+    if (confirm('Are you sure you want to deactivate this enrollment code? This action cannot be undone.')) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.innerHTML = `
+            {% csrf_token %}
+            <input type="hidden" name="action" value="deactivate_code">
+            <input type="hidden" name="code_id" value="${codeId}">
+        `;
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+
+function viewCodeUsage(codeId) {
+    // This would open a modal or navigate to a detailed view
+    // For now, just show a placeholder
+    alert('Usage details feature coming soon!');
+}
+
+function showToast(title, message, type = 'info') {
+    const toastContainer = document.getElementById('toastContainer') || createToastContainer();
+    
+    const toast = document.createElement('div');
+    toast.className = `toast align-items-center text-white bg-${type} border-0`;
+    toast.setAttribute('role', 'alert');
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                <strong>${title}:</strong> ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    `;
+    
+    toastContainer.appendChild(toast);
+    new bootstrap.Toast(toast).show();
+}
+
+function createToastContainer() {
+    const container = document.createElement('div');
+    container.id = 'toastContainer';
+    container.className = 'toast-container position-fixed top-0 end-0 p-3';
+    container.style.zIndex = '1050';
+    document.body.appendChild(container);
+    return container;
+}
+</script>
+{% endblock %}

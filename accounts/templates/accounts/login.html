@@ -91,10 +91,10 @@
                 <div class="card-body">
                     <h6 class="mb-3">Don't have an account?</h6>
                     <div class="d-flex gap-2 justify-content-center flex-wrap">
-                        <a href="{% url 'student_register' %}" class="btn btn-outline-primary">
+                        <a href="{% url 'accounts:student_register' %}" class="btn btn-outline-primary">
                             <i class="fas fa-user-graduate me-2"></i>Student Registration
                         </a>
-                        <a href="{% url 'teacher_register' %}" class="btn btn-outline-info">
+                        <a href="{% url 'accounts:teacher_register' %}" class="btn btn-outline-info">
                             <i class="fas fa-chalkboard-teacher me-2"></i>Faculty Registration
                         </a>
                     </div>
@@ -147,7 +147,7 @@ function togglePassword() {
 </script>
     
     <div class="text-center" style="margin-top: 1rem;">
-        <a href="{% url 'home' %}">← Back to Portal Selection</a>
+        <a href="{% url 'accounts:home' %}">← Back to Portal Selection</a>
     </div>
 </div>
 {% endblock %}

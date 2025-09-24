@@ -128,37 +128,116 @@
         <!-- Correct Answers for Identification and Enumeration -->
         {% with question_types='identification,enumeration'|split:',' %}
         {% if question.question_type in question_types and answer_formset %}
-        <div class="card" style="background-color: #f5f5f5; margin: 1.5rem 0;">
-            <h4>Correct Answers</h4>
+        <div class="card enhanced-answer-section">
             {% if question.question_type == 'identification' %}
-                <p style="color: #666; margin-bottom: 1rem;">Add one or more acceptable answers.</p>
+                <div class="section-header">
+                    <h4><i class="fas fa-key me-2"></i>Correct Answers</h4>
+                    <p class="section-description">Add one or more acceptable answers for this identification question.</p>
+                </div>
             {% elif question.question_type == 'enumeration' %}
-                <p style="color: #666; margin-bottom: 1rem;">Add the items that should be listed in the answer.</p>
+                <div class="section-header">
+                    <h4><i class="fas fa-list-ol me-2"></i>Enumeration Items</h4>
+                    <p class="section-description">Add all items that should be included in the enumeration. Students must list these items correctly.</p>
+                </div>
             {% endif %}
             
             {{ answer_formset.management_form }}
-            <div id="answer-formset">
+            
+            <div id="answer-formset" class="answer-formset-container">
                 {% for form in answer_formset %}
-                    <div class="answer-form" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; padding: 1rem; border: 1px solid #ddd; border-radius: 4px;">
+                    <div class="answer-form-item" data-form-index="{{ forloop.counter0 }}">
                         {{ form.id }}
-                        <div style="flex: 1;">
-                            {{ form.answer_text }}
-                            {% if form.answer_text.errors %}
-                                <div style="color: red; font-size: 12px;">{{ form.answer_text.errors }}</div>
-                            {% endif %}
+                        
+                        <div class="answer-item-content">
+                            <div class="answer-number">
+                                <span class="number-badge">{{ forloop.counter }}</span>
+                            </div>
+                            
+                            <div class="answer-input-section">
+                                <div class="form-group">
+                                    <label for="{{ form.answer_text.id_for_label }}" class="form-label">
+                                        {% if question.question_type == 'enumeration' %}
+                                            Item {{ forloop.counter }}
+                                        {% else %}
+                                            Answer {{ forloop.counter }}
+                                        {% endif %}
+                                    </label>
+                                    <div class="input-wrapper">
+                                        {{ form.answer_text }}
+                                        <div class="input-status">
+                                            <i class="fas fa-check-circle text-success" style="display: none;"></i>
+                                        </div>
+                                    </div>
+                                    {% if form.answer_text.errors %}
+                                        <div class="error-feedback">
+                                            <i class="fas fa-exclamation-circle me-1"></i>
+                                            {{ form.answer_text.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="answer-options">
+                                    <div class="form-check">
+                                        {{ form.is_case_sensitive }}
+                                        <label for="{{ form.is_case_sensitive.id_for_label }}" class="form-check-label">
+                                            <i class="fas fa-font me-1"></i>Case Sensitive
+                                            <small class="text-muted d-block">Check if capitalization matters</small>
+                                        </label>
+                                    </div>
+                                    
+                                    {% if form.DELETE %}
+                                    <div class="form-check delete-option">
+                                        {{ form.DELETE }}
+                                        <label for="{{ form.DELETE.id_for_label }}" class="form-check-label text-danger">
+                                            <i class="fas fa-trash-alt me-1"></i>Mark for deletion
+                                        </label>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="answer-actions">
+                                {% if not forloop.first %}
+                                <button type="button" class="btn btn-outline-danger btn-sm remove-answer-btn" title="Remove this answer">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                                {% endif %}
+                            </div>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            {{ form.is_case_sensitive }}
-                            <label for="{{ form.is_case_sensitive.id_for_label }}" style="margin: 0; font-size: 14px;">Case Sensitive</label>
-                        </div>
-                        {% if form.DELETE %}
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            {{ form.DELETE }}
-                            <label for="{{ form.DELETE.id_for_label }}" style="margin: 0; font-size: 14px; color: #d32f2f;">Delete</label>
-                        </div>
-                        {% endif %}
                     </div>
                 {% endfor %}
+            </div>
+            
+            <div class="formset-actions">
+                <button type="button" class="btn btn-success add-answer-btn" id="add-answer">
+                    <i class="fas fa-plus me-2"></i>
+                    Add {% if question.question_type == 'enumeration' %}Item{% else %}Answer{% endif %}
+                </button>
+                
+                <div class="answer-info">
+                    <div class="info-item">
+                        <i class="fas fa-info-circle me-1"></i>
+                        <span id="answer-count">{{ answer_formset|length }} 
+                            {% if question.question_type == 'enumeration' %}item(s){% else %}answer(s){% endif %} added
+                        </span>
+                    </div>
+                    {% if question.question_type == 'enumeration' %}
+                    <div class="info-item">
+                        <i class="fas fa-lightbulb me-1"></i>
+                        <small>Students will need to list all items in any order</small>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Live Preview -->
+            <div class="answer-preview">
+                <h5><i class="fas fa-eye me-2"></i>Preview</h5>
+                <div class="preview-content">
+                    <div class="preview-list" id="answer-preview">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
             </div>
         </div>
         {% endif %}
@@ -226,5 +305,513 @@ input[type="checkbox"] {
     height: 18px;
     accent-color: #2e7d32;
 }
+
+/* Enhanced Answer Section Styles */
+.enhanced-answer-section {
+    background: var(--bg-card, #ffffff);
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+[data-bs-theme="dark"] .enhanced-answer-section {
+    background: #1e1e1e;
+    border-color: #444;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.section-header {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.section-header h4 {
+    color: var(--text-primary, #333);
+    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+[data-bs-theme="dark"] .section-header h4 {
+    color: #ffffff;
+}
+
+.section-description {
+    color: var(--text-secondary, #666);
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+[data-bs-theme="dark"] .section-description {
+    color: #cccccc;
+}
+
+.answer-formset-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.answer-form-item {
+    background: var(--bg-light, #f9f9f9);
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: 8px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+}
+
+[data-bs-theme="dark"] .answer-form-item {
+    background: #2a2a2a;
+    border-color: #444;
+}
+
+.answer-form-item:hover {
+    border-color: var(--primary-color, #2e7d32);
+    box-shadow: 0 2px 8px rgba(46, 125, 50, 0.1);
+}
+
+.answer-item-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.answer-number {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.number-badge {
+    background: linear-gradient(135deg, var(--primary-color, #2e7d32), var(--primary-light, #4caf50));
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.answer-input-section {
+    flex: 1;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    color: var(--text-primary, #333);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+[data-bs-theme="dark"] .form-label {
+    color: #ffffff;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper input[type="text"] {
+    flex: 1;
+    padding: 0.75rem;
+    border: 2px solid var(--border-color, #e0e0e0);
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: var(--bg-card, #ffffff);
+    color: var(--text-primary, #333);
+}
+
+[data-bs-theme="dark"] .input-wrapper input[type="text"] {
+    background: #1e1e1e;
+    border-color: #444;
+    color: #ffffff;
+}
+
+.input-wrapper input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-color, #2e7d32);
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+}
+
+.input-status {
+    margin-left: 0.5rem;
+}
+
+.error-feedback {
+    color: #f44336;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+}
+
+[data-bs-theme="dark"] .error-feedback {
+    color: #ff6b6b;
+}
+
+.answer-options {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.form-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.form-check-label {
+    color: var(--text-secondary, #666);
+    font-size: 0.9rem;
+    cursor: pointer;
+    line-height: 1.4;
+}
+
+[data-bs-theme="dark"] .form-check-label {
+    color: #cccccc;
+}
+
+.form-check-label small {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.delete-option .form-check-label {
+    color: #f44336;
+}
+
+[data-bs-theme="dark"] .delete-option .form-check-label {
+    color: #ff6b6b;
+}
+
+.answer-actions {
+    flex-shrink: 0;
+    display: flex;
+    align-items: flex-start;
+    padding-top: 2rem;
+}
+
+.remove-answer-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid #f44336;
+    background: transparent;
+    color: #f44336;
+    transition: all 0.3s ease;
+}
+
+.remove-answer-btn:hover {
+    background: #f44336;
+    color: white;
+    transform: scale(1.1);
+}
+
+.formset-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.add-answer-btn {
+    background: linear-gradient(135deg, var(--success-color, #4caf50), #66bb6a);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.add-answer-btn:hover {
+    background: linear-gradient(135deg, #388e3c, var(--success-color, #4caf50));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.answer-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary, #666);
+    font-size: 0.9rem;
+}
+
+[data-bs-theme="dark"] .info-item {
+    color: #cccccc;
+}
+
+.info-item i {
+    color: var(--primary-color, #2e7d32);
+    margin-right: 0.5rem;
+}
+
+.answer-preview {
+    background: var(--bg-light, #f9f9f9);
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+[data-bs-theme="dark"] .answer-preview {
+    background: #2a2a2a;
+    border-color: #444;
+}
+
+.answer-preview h5 {
+    color: var(--text-primary, #333);
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+[data-bs-theme="dark"] .answer-preview h5 {
+    color: #ffffff;
+}
+
+.preview-content {
+    min-height: 40px;
+}
+
+.preview-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.preview-item {
+    background: var(--primary-color, #2e7d32);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.preview-empty {
+    color: var(--text-secondary, #666);
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+[data-bs-theme="dark"] .preview-empty {
+    color: #cccccc;
+}
+
+@media (max-width: 768px) {
+    .answer-item-content {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .answer-number {
+        align-self: flex-start;
+    }
+    
+    .answer-actions {
+        padding-top: 0;
+        align-self: flex-end;
+    }
+    
+    .formset-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .answer-info {
+        text-align: center;
+    }
+    
+    .answer-options {
+        justify-content: center;
+    }
+}
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Enhanced formset management
+    const formsetContainer = document.getElementById('answer-formset');
+    const addButton = document.getElementById('add-answer');
+    const managementForm = document.querySelector('#id_form-TOTAL_FORMS');
+    const answerCount = document.getElementById('answer-count');
+    const previewContainer = document.getElementById('answer-preview');
+    
+    if (!formsetContainer || !addButton || !managementForm) return;
+    
+    let formCount = parseInt(managementForm.value);
+    
+    // Update answer count display
+    function updateAnswerCount() {
+        const visibleForms = formsetContainer.querySelectorAll('.answer-form-item:not([style*="display: none"])');
+        const questionType = document.querySelector('select[name="question_type"]')?.value;
+        const itemType = questionType === 'enumeration' ? 'item(s)' : 'answer(s)';
+        answerCount.textContent = `${visibleForms.length} ${itemType} added`;
+    }
+    
+    // Update answer preview
+    function updatePreview() {
+        if (!previewContainer) return;
+        
+        const previewList = previewContainer.querySelector('.preview-list') || previewContainer;
+        const inputs = formsetContainer.querySelectorAll('input[name$="-answer_text"]');
+        const answers = Array.from(inputs)
+            .map(input => input.value.trim())
+            .filter(value => value !== '');
+        
+        if (answers.length === 0) {
+            previewList.innerHTML = '<span class="preview-empty">No answers added yet</span>';
+        } else {
+            previewList.innerHTML = answers
+                .map(answer => `<span class="preview-item">${answer}</span>`)
+                .join('');
+        }
+    }
+    
+    // Update answer numbers
+    function updateAnswerNumbers() {
+        const items = formsetContainer.querySelectorAll('.answer-form-item:not([style*="display: none"])');
+        items.forEach((item, index) => {
+            const badge = item.querySelector('.number-badge');
+            const label = item.querySelector('.form-label');
+            const questionType = document.querySelector('select[name="question_type"]')?.value;
+            
+            if (badge) badge.textContent = index + 1;
+            if (label) {
+                const labelType = questionType === 'enumeration' ? 'Item' : 'Answer';
+                label.textContent = `${labelType} ${index + 1}`;
+            }
+        });
+    }
+    
+    // Add new form
+    function addForm() {
+        const emptyForm = formsetContainer.querySelector('.answer-form-item:last-child');
+        if (!emptyForm) return;
+        
+        const newForm = emptyForm.cloneNode(true);
+        
+        // Update form indices
+        const formRegex = /form-(\d+)/g;
+        newForm.innerHTML = newForm.innerHTML.replace(formRegex, `form-${formCount}`);
+        
+        // Clear input values
+        const inputs = newForm.querySelectorAll('input[type="text"], input[type="checkbox"]:not([name$="-DELETE"])');
+        inputs.forEach(input => {
+            if (input.type === 'text') input.value = '';
+            if (input.type === 'checkbox') input.checked = false;
+        });
+        
+        // Add event listeners to new form
+        addFormEventListeners(newForm);
+        
+        formsetContainer.appendChild(newForm);
+        formCount++;
+        managementForm.value = formCount;
+        
+        updateAnswerNumbers();
+        updateAnswerCount();
+        updatePreview();
+        
+        // Focus on new input
+        const newInput = newForm.querySelector('input[type="text"]');
+        if (newInput) newInput.focus();
+    }
+    
+    // Remove form
+    function removeForm(formItem) {
+        const deleteCheckbox = formItem.querySelector('input[name$="-DELETE"]');
+        if (deleteCheckbox) {
+            deleteCheckbox.checked = true;
+            formItem.style.display = 'none';
+        } else {
+            formItem.remove();
+        }
+        
+        updateAnswerNumbers();
+        updateAnswerCount();
+        updatePreview();
+    }
+    
+    // Add event listeners to form
+    function addFormEventListeners(formItem) {
+        // Remove button
+        const removeBtn = formItem.querySelector('.remove-answer-btn');
+        if (removeBtn) {
+            removeBtn.addEventListener('click', () => removeForm(formItem));
+        }
+        
+        // Input change for preview
+        const textInput = formItem.querySelector('input[type="text"]');
+        if (textInput) {
+            textInput.addEventListener('input', updatePreview);
+            textInput.addEventListener('blur', function() {
+                const value = this.value.trim();
+                const statusIcon = formItem.querySelector('.input-status i');
+                if (statusIcon) {
+                    statusIcon.style.display = value ? 'inline' : 'none';
+                }
+            });
+        }
+    }
+    
+    // Initialize existing forms
+    formsetContainer.querySelectorAll('.answer-form-item').forEach(addFormEventListeners);
+    
+    // Add button click
+    addButton.addEventListener('click', addForm);
+    
+    // Initial updates
+    updateAnswerNumbers();
+    updateAnswerCount();
+    updatePreview();
+    
+    // Auto-save draft functionality
+    let saveTimeout;
+    function autoSave() {
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(() => {
+            // Implement auto-save logic here if needed
+            console.log('Auto-saving draft...');
+        }, 2000);
+    }
+    
+    // Add auto-save to all inputs
+    document.querySelectorAll('input, textarea, select').forEach(element => {
+        element.addEventListener('input', autoSave);
+    });
+});
+</script>
 {% endblock %}

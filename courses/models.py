@@ -354,3 +354,78 @@ class EnrollmentPeriod(models.Model):
     def is_open(self):
         now = timezone.now()
         return self.is_active and self.start_date <= now <= self.end_date
+
+
+class EnrollmentCode(models.Model):
+    """Enrollment codes for late enrollees and transferees"""
+    code = models.CharField(max_length=20, unique=True, help_text="Unique enrollment code")
+    course_offering = models.ForeignKey(CourseOffering, on_delete=models.CASCADE, related_name='enrollment_codes')
+    
+    # Code settings
+    is_active = models.BooleanField(default=True)
+    max_uses = models.PositiveIntegerField(default=1, help_text="Maximum number of times this code can be used")
+    used_count = models.PositiveIntegerField(default=0)
+    
+    # Validity period
+    valid_from = models.DateTimeField()
+    valid_until = models.DateTimeField()
+    
+    # Created by (registrar/teacher)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_enrollment_codes')
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    # Usage tracking
+    used_by = models.ManyToManyField(User, through='EnrollmentCodeUsage', related_name='used_enrollment_codes')
+    
+    # Notes
+    notes = models.TextField(blank=True, help_text="Internal notes about this code")
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.code} - {self.course_offering}"
+    
+    def is_valid(self):
+        """Check if code is valid for use"""
+        from django.utils import timezone
+        now = timezone.now()
+        return (
+            self.is_active and 
+            self.valid_from <= now <= self.valid_until and
+            self.used_count < self.max_uses
+        )
+    
+    def can_be_used_by(self, user):
+        """Check if code can be used by specific user"""
+        if not self.is_valid():
+            return False, "Enrollment code is not valid or has expired"
+        
+        # Check if user already used this code
+        if EnrollmentCodeUsage.objects.filter(code=self, user=user).exists():
+            return False, "You have already used this enrollment code"
+        
+        # Check if user is already enrolled
+        if StudentEnrollment.objects.filter(
+            student=user, 
+            course_offering=self.course_offering
+        ).exists():
+            return False, "You are already enrolled in this course"
+        
+        return True, "Code is valid"
+
+
+class EnrollmentCodeUsage(models.Model):
+    """Track enrollment code usage"""
+    code = models.ForeignKey(EnrollmentCode, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    enrollment = models.OneToOneField(StudentEnrollment, on_delete=models.CASCADE, null=True, blank=True)
+    used_at = models.DateTimeField(auto_now_add=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    
+    class Meta:
+        unique_together = ['code', 'user']
+        ordering = ['-used_at']
+    
+    def __str__(self):
+        return f"{self.code.code} used by {self.user.get_full_name()} at {self.used_at}"

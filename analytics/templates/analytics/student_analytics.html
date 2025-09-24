@@ -1,0 +1,587 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}SPIST - Student Analytics{% endblock %}
+
+{% block content %}
+<!-- Student Analytics Header -->
+<div class="analytics-header">
+    <div class="row align-items-center mb-4">
+        <div class="col-md-8">
+            <h1 class="analytics-title">
+                <i class="fas fa-user-graduate me-3"></i>Student Performance Analytics
+            </h1>
+            <p class="analytics-subtitle">Detailed insights into student performance and learning outcomes</p>
+        </div>
+        <div class="col-md-4">
+            <a href="{% url 'analytics:dashboard' %}" class="btn btn-light">
+                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="analytics-filters mb-4">
+    <div class="row g-3">
+        <div class="col-md-3">
+            <label class="form-label">Course Filter</label>
+            <select class="form-select" id="courseFilter">
+                <option value="">All Courses</option>
+                {% for course in courses %}
+                <option value="{{ course.id }}" {% if current_filters.course == course.id|stringformat:"s" %}selected{% endif %}>
+                    {{ course.name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Student Filter</label>
+            <select class="form-select" id="studentFilter">
+                <option value="">All Students</option>
+                {% for student in students %}
+                <option value="{{ student.id }}" {% if current_filters.student == student.id|stringformat:"s" %}selected{% endif %}>
+                    {{ student.get_full_name }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Semester</label>
+            <select class="form-select" id="semesterFilter">
+                <option value="">All Semesters</option>
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">&nbsp;</label>
+            <button class="btn btn-primary w-100" onclick="applyFilters()">
+                <i class="fas fa-filter me-2"></i>Apply Filters
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Performance Overview -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-8">
+        <div class="analytics-card">
+            <div class="card-header">
+                <h5 class="card-title">
+                    <i class="fas fa-chart-line me-2"></i>Grade Distribution
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="grade-distribution">
+                    <div class="grade-item">
+                        <div class="grade-label">A (90-100%)</div>
+                        <div class="grade-bar">
+                            <div class="grade-fill" style="width: {{ grade_distribution.a_grade|default:0 }}%"></div>
+                        </div>
+                        <div class="grade-count">{{ grade_distribution.a_grade|default:0 }}</div>
+                    </div>
+                    <div class="grade-item">
+                        <div class="grade-label">B (80-89%)</div>
+                        <div class="grade-bar">
+                            <div class="grade-fill" style="width: {{ grade_distribution.b_grade|default:0 }}%"></div>
+                        </div>
+                        <div class="grade-count">{{ grade_distribution.b_grade|default:0 }}</div>
+                    </div>
+                    <div class="grade-item">
+                        <div class="grade-label">C (70-79%)</div>
+                        <div class="grade-bar">
+                            <div class="grade-fill" style="width: {{ grade_distribution.c_grade|default:0 }}%"></div>
+                        </div>
+                        <div class="grade-count">{{ grade_distribution.c_grade|default:0 }}</div>
+                    </div>
+                    <div class="grade-item">
+                        <div class="grade-label">D (60-69%)</div>
+                        <div class="grade-bar">
+                            <div class="grade-fill" style="width: {{ grade_distribution.d_grade|default:0 }}%"></div>
+                        </div>
+                        <div class="grade-count">{{ grade_distribution.d_grade|default:0 }}</div>
+                    </div>
+                    <div class="grade-item">
+                        <div class="grade-label">F (Below 60%)</div>
+                        <div class="grade-bar">
+                            <div class="grade-fill" style="width: {{ grade_distribution.f_grade|default:0 }}%"></div>
+                        </div>
+                        <div class="grade-count">{{ grade_distribution.f_grade|default:0 }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="analytics-card">
+            <div class="card-header">
+                <h5 class="card-title">
+                    <i class="fas fa-question-circle me-2"></i>Question Type Performance
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="question-performance">
+                    {% for qtype in question_type_performance %}
+                    <div class="performance-item">
+                        <div class="performance-label">{{ qtype.question_type|title }}</div>
+                        <div class="performance-value">{{ qtype.accuracy|floatformat:1 }}%</div>
+                    </div>
+                    {% empty %}
+                    <div class="empty-state">
+                        <i class="fas fa-chart-bar text-muted"></i>
+                        <p class="text-muted mt-2">No performance data available</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Student Performance Table -->
+<div class="analytics-card mb-4">
+    <div class="card-header">
+        <h5 class="card-title">
+            <i class="fas fa-table me-2"></i>Student Performance Summary
+        </h5>
+        <div class="card-actions">
+            <button class="btn btn-sm btn-outline-primary" onclick="exportStudentData()">
+                <i class="fas fa-download me-1"></i>Export
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Email</th>
+                        <th>Total Attempts</th>
+                        <th>Average Score</th>
+                        <th>Passed Assessments</th>
+                        <th>Failed Assessments</th>
+                        <th>Performance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in student_performance %}
+                    <tr>
+                        <td>
+                            <div class="student-info">
+                                <strong>{{ student.student__first_name }} {{ student.student__last_name }}</strong>
+                            </div>
+                        </td>
+                        <td>{{ student.student__email }}</td>
+                        <td>
+                            <span class="badge bg-info">{{ student.total_attempts|default:0 }}</span>
+                        </td>
+                        <td>
+                            <div class="score-display">
+                                <span class="score-value">{{ student.avg_score|floatformat:1|default:"0.0" }}%</span>
+                                <div class="score-bar">
+                                    <div class="score-fill" style="width: {{ student.avg_score|default:0 }}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge bg-success">{{ student.passed_assessments|default:0 }}</span>
+                        </td>
+                        <td>
+                            <span class="badge bg-danger">{{ student.failed_assessments|default:0 }}</span>
+                        </td>
+                        <td>
+                            {% if student.avg_score >= 90 %}
+                                <span class="performance-badge excellent">Excellent</span>
+                            {% elif student.avg_score >= 80 %}
+                                <span class="performance-badge good">Good</span>
+                            {% elif student.avg_score >= 70 %}
+                                <span class="performance-badge average">Average</span>
+                            {% elif student.avg_score >= 60 %}
+                                <span class="performance-badge below-average">Below Average</span>
+                            {% else %}
+                                <span class="performance-badge poor">Needs Improvement</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-4">
+                            <div class="empty-state">
+                                <i class="fas fa-users-slash text-muted fa-2x"></i>
+                                <p class="text-muted mt-2">No student performance data available</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        {% if student_performance.has_other_pages %}
+        <nav aria-label="Student pagination">
+            <ul class="pagination justify-content-center">
+                {% if student_performance.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ student_performance.previous_page_number }}">Previous</a>
+                    </li>
+                {% endif %}
+                
+                <li class="page-item active">
+                    <span class="page-link">{{ student_performance.number }} of {{ student_performance.paginator.num_pages }}</span>
+                </li>
+                
+                {% if student_performance.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ student_performance.next_page_number }}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ student_performance.paginator.num_pages }}">Last</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Assessment Difficulty Analysis -->
+<div class="analytics-card">
+    <div class="card-header">
+        <h5 class="card-title">
+            <i class="fas fa-exclamation-triangle me-2"></i>Most Challenging Assessments
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="difficulty-analysis">
+            {% for assessment in assessment_difficulty %}
+            <div class="difficulty-item">
+                <div class="difficulty-info">
+                    <h6 class="difficulty-title">{{ assessment.title }}</h6>
+                    <small class="difficulty-type">{{ assessment.get_assessment_type_display }}</small>
+                </div>
+                <div class="difficulty-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Average Score:</span>
+                        <span class="stat-value">{{ assessment.avg_score|floatformat:1 }}%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Pass Rate:</span>
+                        <span class="stat-value">{{ assessment.pass_rate|floatformat:1 }}%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Attempts:</span>
+                        <span class="stat-value">{{ assessment.attempt_count }}</span>
+                    </div>
+                </div>
+                <div class="difficulty-level">
+                    {% if assessment.avg_score < 60 %}
+                        <span class="difficulty-badge very-hard">Very Hard</span>
+                    {% elif assessment.avg_score < 70 %}
+                        <span class="difficulty-badge hard">Hard</span>
+                    {% elif assessment.avg_score < 80 %}
+                        <span class="difficulty-badge moderate">Moderate</span>
+                    {% else %}
+                        <span class="difficulty-badge easy">Easy</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <i class="fas fa-clipboard-list text-muted fa-2x"></i>
+                <p class="text-muted mt-2">No assessment difficulty data available</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<style>
+.analytics-header {
+    margin-bottom: 2rem;
+    padding: 2rem 0;
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-radius: 16px;
+    color: white;
+    margin: -1rem -1rem 2rem -1rem;
+    padding: 2rem 2rem;
+}
+
+.analytics-filters {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+[data-bs-theme="dark"] .analytics-filters {
+    background: #334155;
+    border-color: #475569;
+}
+
+.grade-distribution {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.grade-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.grade-label {
+    width: 120px;
+    font-weight: 500;
+    color: var(--bs-body-color);
+}
+
+.grade-bar {
+    flex: 1;
+    height: 20px;
+    background: #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.grade-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #10b981, #059669);
+    transition: width 0.3s ease;
+}
+
+.grade-count {
+    width: 50px;
+    text-align: right;
+    font-weight: 600;
+    color: var(--bs-body-color);
+}
+
+.question-performance {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.performance-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: #f8fafc;
+    border-radius: 8px;
+}
+
+[data-bs-theme="dark"] .performance-item {
+    background: #475569;
+}
+
+.performance-label {
+    font-weight: 500;
+    color: var(--bs-body-color);
+}
+
+.performance-value {
+    font-weight: 700;
+    color: #10b981;
+}
+
+.student-info strong {
+    color: var(--bs-body-color);
+}
+
+.score-display {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.score-value {
+    font-weight: 600;
+    color: var(--bs-body-color);
+}
+
+.score-bar {
+    width: 60px;
+    height: 4px;
+    background: #e2e8f0;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.score-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981);
+    transition: width 0.3s ease;
+}
+
+.performance-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.performance-badge.excellent {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.performance-badge.good {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.performance-badge.average {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.performance-badge.below-average {
+    background: #fed7aa;
+    color: #c2410c;
+}
+
+.performance-badge.poor {
+    background: #fecaca;
+    color: #dc2626;
+}
+
+.difficulty-analysis {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.difficulty-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 8px;
+    border-left: 4px solid #e2e8f0;
+}
+
+[data-bs-theme="dark"] .difficulty-item {
+    background: #475569;
+    border-left-color: #64748b;
+}
+
+.difficulty-info {
+    flex: 1;
+}
+
+.difficulty-title {
+    margin: 0 0 0.25rem 0;
+    color: var(--bs-body-color);
+    font-weight: 600;
+}
+
+.difficulty-type {
+    color: #64748b;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.difficulty-stats {
+    display: flex;
+    gap: 1rem;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-bottom: 0.25rem;
+}
+
+.stat-value {
+    display: block;
+    font-weight: 600;
+    color: var(--bs-body-color);
+}
+
+.difficulty-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.difficulty-badge.very-hard {
+    background: #fecaca;
+    color: #dc2626;
+}
+
+.difficulty-badge.hard {
+    background: #fed7aa;
+    color: #c2410c;
+}
+
+.difficulty-badge.moderate {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.difficulty-badge.easy {
+    background: #dcfce7;
+    color: #166534;
+}
+
+@media (max-width: 768px) {
+    .analytics-header {
+        margin: -1rem -0.5rem 1rem -0.5rem;
+        padding: 1.5rem 1rem;
+    }
+    
+    .difficulty-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .difficulty-stats {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+</style>
+
+<script>
+function applyFilters() {
+    const course = document.getElementById('courseFilter').value;
+    const student = document.getElementById('studentFilter').value;
+    const semester = document.getElementById('semesterFilter').value;
+    
+    const url = new URL(window.location);
+    if (course) url.searchParams.set('course', course);
+    else url.searchParams.delete('course');
+    
+    if (student) url.searchParams.set('student', student);
+    else url.searchParams.delete('student');
+    
+    if (semester) url.searchParams.set('semester', semester);
+    else url.searchParams.delete('semester');
+    
+    window.location.href = url.toString();
+}
+
+function exportStudentData() {
+    // Implement export functionality
+    window.open('{% url "analytics:export_analytics" %}?type=student_performance&format=json', '_blank');
+}
+</script>
+{% endblock %}
