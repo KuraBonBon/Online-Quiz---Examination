@@ -841,15 +841,10 @@ in the Software without restriction, including...
 
 ## 🙋‍♂️ Support & Contact
 
-### **Technical Support**
-- 📧 **Email**: admin@spist.edu
-- 💬 **Issues**: [GitHub Issues](https://github.com/KuraBonBon/Online-Quiz---Examination/issues)
-- 📚 **Documentation**: [Wiki](https://github.com/KuraBonBon/Online-Quiz---Examination/wiki)
-
 ### **Development Team**
 - 👨‍💻 **Lead Developer**: [@KuraBonBon](https://github.com/KuraBonBon)
 - 🏫 **Institution**: Southern Philippines Institution of Science and Technology
-- 🌐 **Website**: [www.spist.edu](http://www.spist.edu) *(if available)*
+- 🌐 **Website**: [www.spist.edu](http://www.spist.edu) *(Coming Soon)*
 
 ---
 
@@ -914,6 +909,6 @@ in the Software without restriction, including...
 - [ ] Test security features
 - [ ] Explore analytics dashboard
 
-**Welcome to SPIST School Management System! 🎓**
+**Welcome to SPIST Online Assessment! 🎓**
 
-*Built with ❤️ by the SPIST Development Team*
+*Built with ❤️ by Yours Truly~*
