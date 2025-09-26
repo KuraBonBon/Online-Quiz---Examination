@@ -6,6 +6,11 @@ from django.utils import timezone
 from django.db.models import Q, Count, Avg
 from django.db import models
 from django.forms import formset_factory
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+import json
+from datetime import datetime, timedelta
 
 from .models import Assessment, Question, Choice, CorrectAnswer, StudentAttempt, StudentAnswer
 from .forms import (
@@ -523,11 +528,332 @@ def take_assessment_view(request, assessment_id):
     """View for students to take an assessment"""
     pass  # This won't be executed due to decorator
 
+# ==========================================
+# SECURITY-ENHANCED ASSESSMENT TAKING VIEWS
+# ==========================================
+
 @login_required
-@feature_not_implemented("Assessment Submission", redirect_url='assessments:available_assessments')
+def take_assessment_view(request, assessment_id):
+    """Security-enhanced view for taking an assessment"""
+    if request.user.user_type != 'student':
+        messages.error(request, 'Only students can take assessments.')
+        return redirect('accounts:student_dashboard')
+    
+    assessment = get_object_or_404(Assessment, id=assessment_id)
+    
+    # Check if assessment is available
+    if not assessment.is_published:
+        messages.error(request, 'This assessment is not available.')
+        return redirect('assessments:available_assessments')
+    
+    # Check if student has already completed the assessment
+    existing_attempt = StudentAttempt.objects.filter(
+        student=request.user,
+        assessment=assessment,
+        is_completed=True
+    ).first()
+    
+    if existing_attempt:
+        messages.info(request, 'You have already completed this assessment.')
+        return redirect('assessments:assessment_result', attempt_id=existing_attempt.id)
+    
+    # Get or create current attempt
+    current_attempt, created = StudentAttempt.objects.get_or_create(
+        student=request.user,
+        assessment=assessment,
+        is_completed=False,
+        defaults={
+            'started_at': timezone.now(),
+            'violation_flags': {},
+            'tab_switches': 0,
+            'copy_paste_attempts': 0
+        }
+    )
+    
+    # Check time limit
+    if assessment.time_limit and current_attempt.started_at:
+        time_elapsed = timezone.now() - current_attempt.started_at
+        if time_elapsed.total_seconds() > (assessment.time_limit * 60):
+            current_attempt.is_completed = True
+            current_attempt.completed_at = timezone.now()
+            current_attempt.auto_submit_reason = 'Time expired'
+            current_attempt.save()
+            messages.warning(request, 'Assessment time has expired.')
+            return redirect('assessments:assessment_result', attempt_id=current_attempt.id)
+    
+    questions = assessment.questions.all().order_by('id')
+    
+    context = {
+        'assessment': assessment,
+        'questions': questions,
+        'attempt': current_attempt,
+        'time_remaining': None
+    }
+    
+    # Calculate remaining time
+    if assessment.time_limit and current_attempt.started_at:
+        time_elapsed = timezone.now() - current_attempt.started_at
+        time_remaining = (assessment.time_limit * 60) - time_elapsed.total_seconds()
+        context['time_remaining'] = max(0, int(time_remaining / 60))
+    
+    return render(request, 'assessments/take_assessment.html', context)
+
+@login_required
+@require_http_methods(["POST"])
+def track_violation_view(request, assessment_id):
+    """AJAX endpoint for tracking security violations"""
+    if request.user.user_type != 'student':
+        return JsonResponse({'error': 'Unauthorized'}, status=403)
+    
+    try:
+        data = json.loads(request.body)
+        violation_type = data.get('violation_type')
+        timestamp = data.get('timestamp')
+        violations = data.get('violations', {})
+        
+        # Get current attempt
+        attempt = StudentAttempt.objects.filter(
+            student=request.user,
+            assessment_id=assessment_id,
+            is_completed=False
+        ).first()
+        
+        if not attempt:
+            return JsonResponse({'error': 'No active attempt found'}, status=404)
+        
+        # Update violation tracking
+        if violation_type == 'tab_switches':
+            attempt.tab_switches += 1
+        elif violation_type in ['copy_attempts', 'paste_attempts']:
+            attempt.copy_paste_attempts += 1
+        
+        # Update violation flags
+        violation_flags = attempt.violation_flags or {}
+        violation_flags[timestamp] = {
+            'type': violation_type,
+            'total_violations': sum(violations.values())
+        }
+        attempt.violation_flags = violation_flags
+        
+        attempt.save()
+        
+        return JsonResponse({
+            'success': True,
+            'total_violations': sum(violations.values())
+        })
+        
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+@login_required
+@require_http_methods(["POST"])
+def save_progress_view(request, assessment_id):
+    """AJAX endpoint for saving assessment progress"""
+    if request.user.user_type != 'student':
+        return JsonResponse({'error': 'Unauthorized'}, status=403)
+    
+    try:
+        assessment = get_object_or_404(Assessment, id=assessment_id)
+        
+        # Get current attempt
+        attempt = StudentAttempt.objects.filter(
+            student=request.user,
+            assessment=assessment,
+            is_completed=False
+        ).first()
+        
+        if not attempt:
+            return JsonResponse({'error': 'No active attempt found'}, status=404)
+        
+        # Save current answers
+        for key, value in request.POST.items():
+            if key.startswith('question_'):
+                question_id = key.split('_')[1]
+                if question_id.isdigit():
+                    question = get_object_or_404(Question, id=question_id)
+                    
+                    # Update or create student answer
+                    answer, created = StudentAnswer.objects.update_or_create(
+                        attempt=attempt,
+                        question=question,
+                        defaults={'answer_text': value}
+                    )
+        
+        # Update violations if provided
+        violations_data = request.POST.get('violations')
+        if violations_data:
+            violations = json.loads(violations_data)
+            attempt.tab_switches = violations.get('tab_switches', 0)
+            attempt.copy_paste_attempts = violations.get('copy_attempts', 0) + violations.get('paste_attempts', 0)
+        
+        attempt.last_activity = timezone.now()
+        attempt.save()
+        
+        return JsonResponse({'success': True, 'message': 'Progress saved successfully'})
+        
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+@login_required
 def submit_assessment_view(request, assessment_id):
-    """View for submitting an assessment"""
-    pass  # This won't be executed due to decorator
+    """Enhanced view for submitting an assessment with security tracking"""
+    if request.user.user_type != 'student':
+        messages.error(request, 'Only students can submit assessments.')
+        return redirect('accounts:student_dashboard')
+    
+    if request.method != 'POST':
+        return redirect('assessments:take_assessment', assessment_id=assessment_id)
+    
+    assessment = get_object_or_404(Assessment, id=assessment_id)
+    
+    # Get current attempt
+    attempt = StudentAttempt.objects.filter(
+        student=request.user,
+        assessment=assessment,
+        is_completed=False
+    ).first()
+    
+    if not attempt:
+        messages.error(request, 'No active assessment attempt found.')
+        return redirect('assessments:available_assessments')
+    
+    # Process violation data
+    violation_data = request.POST.get('violation_data')
+    if violation_data:
+        try:
+            violation_info = json.loads(violation_data)
+            violations = violation_info.get('violations', {})
+            
+            attempt.tab_switches = violations.get('tab_switches', 0)
+            attempt.copy_paste_attempts = (
+                violations.get('copy_attempts', 0) + 
+                violations.get('paste_attempts', 0)
+            )
+            
+            # Store additional violation info
+            attempt.violation_flags = attempt.violation_flags or {}
+            attempt.violation_flags['submission'] = {
+                'auto_submit_reason': violation_info.get('auto_submit_reason'),
+                'time_spent': violation_info.get('time_spent'),
+                'total_violations': sum(violations.values())
+            }
+            
+        except json.JSONDecodeError:
+            pass
+    
+    # Process question sequence data
+    question_sequence = request.POST.get('question_sequence')
+    if question_sequence:
+        try:
+            sequence_data = json.loads(question_sequence)
+            attempt.violation_flags = attempt.violation_flags or {}
+            attempt.violation_flags['question_sequence'] = sequence_data
+        except json.JSONDecodeError:
+            pass
+    
+    # Save all answers
+    total_score = 0
+    max_score = 0
+    
+    for question in assessment.questions.all():
+        max_score += question.points
+        answer_key = f'question_{question.id}'
+        
+        if question.question_type == 'enumeration':
+            # Handle enumeration questions
+            enumeration_answers = []
+            for i in range(1, 6):  # Up to 5 items
+                item_key = f'question_{question.id}_item_{i}'
+                if item_key in request.POST and request.POST[item_key].strip():
+                    enumeration_answers.append(request.POST[item_key].strip())
+            answer_text = '; '.join(enumeration_answers)
+        else:
+            answer_text = request.POST.get(answer_key, '')
+        
+        if answer_text:
+            # Create or update student answer
+            student_answer, created = StudentAnswer.objects.update_or_create(
+                attempt=attempt,
+                question=question,
+                defaults={'answer_text': answer_text}
+            )
+            
+            # Calculate score based on question type
+            if question.question_type == 'multiple_choice':
+                try:
+                    choice_id = int(answer_text)
+                    correct_choice = question.choices.filter(is_correct=True).first()
+                    if correct_choice and correct_choice.id == choice_id:
+                        student_answer.points_earned = question.points
+                        total_score += question.points
+                except (ValueError, TypeError):
+                    student_answer.points_earned = 0
+                    
+            elif question.question_type == 'true_false':
+                correct_answer = question.correct_answers.first()
+                if correct_answer and correct_answer.answer_text.lower() == answer_text.lower():
+                    student_answer.points_earned = question.points
+                    total_score += question.points
+                else:
+                    student_answer.points_earned = 0
+                    
+            # For other question types, manual grading is needed
+            elif question.question_type in ['identification', 'essay', 'enumeration']:
+                student_answer.points_earned = None  # Requires manual grading
+                
+            student_answer.save()
+    
+    # Complete the attempt
+    attempt.is_completed = True
+    attempt.completed_at = timezone.now()
+    attempt.total_score = total_score
+    attempt.percentage = (total_score / max_score * 100) if max_score > 0 else 0
+    attempt.save()
+    
+    # Success message with security summary
+    violation_summary = ""
+    if attempt.tab_switches > 0 or attempt.copy_paste_attempts > 0:
+        violation_summary = f" (Security violations detected: {attempt.tab_switches} tab switches, {attempt.copy_paste_attempts} copy/paste attempts)"
+    
+    messages.success(request, f'Assessment submitted successfully! Score: {attempt.percentage:.1f}%{violation_summary}')
+    return redirect('assessments:assessment_result', attempt_id=attempt.id)
+
+@login_required
+def assessment_result_view(request, attempt_id):
+    """View for displaying assessment results with security report"""
+    attempt = get_object_or_404(StudentAttempt, id=attempt_id)
+    
+    # Check if user can view this result
+    if request.user != attempt.student and request.user != attempt.assessment.creator:
+        messages.error(request, 'You are not authorized to view this result.')
+        return redirect('accounts:dashboard')
+    
+    student_answers = attempt.answers.all().select_related('question')
+    
+    # Prepare security report
+    security_report = {
+        'tab_switches': attempt.tab_switches,
+        'copy_paste_attempts': attempt.copy_paste_attempts,
+        'violation_flags': attempt.violation_flags or {},
+        'total_violations': attempt.tab_switches + attempt.copy_paste_attempts,
+        'risk_level': 'Low'
+    }
+    
+    # Determine risk level
+    total_violations = security_report['total_violations']
+    if total_violations >= 5:
+        security_report['risk_level'] = 'High'
+    elif total_violations >= 2:
+        security_report['risk_level'] = 'Medium'
+    
+    context = {
+        'attempt': attempt,
+        'student_answers': student_answers,
+        'security_report': security_report,
+        'is_teacher_view': request.user == attempt.assessment.creator
+    }
+    
+    return render(request, 'assessments/assessment_result.html', context)
 
 @login_required
 @feature_not_implemented("Assessment Results", redirect_url='assessments:available_assessments')

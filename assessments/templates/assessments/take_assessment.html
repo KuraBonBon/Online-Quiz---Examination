@@ -1,0 +1,548 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Taking Assessment: {{ assessment.title }} - SPIST{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Assessment taking specific styles */
+    .assessment-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+    
+    .security-warning {
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        color: #856404;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        display: none;
+    }
+    
+    .security-warning.show {
+        display: block;
+    }
+    
+    .violation-count {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #dc3545;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: bold;
+        display: none;
+    }
+    
+    .question-container {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .time-remaining {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        background: #007bff;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: bold;
+    }
+    
+    /* Fullscreen styles */
+    .fullscreen-mode {
+        background: #f8f9fa;
+    }
+    
+    .exit-fullscreen-warning {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #dc3545;
+        color: white;
+        text-align: center;
+        padding: 1rem;
+        z-index: 9999;
+        display: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="assessment-container">
+    <!-- Security Warning Display -->
+    <div id="security-warning" class="security-warning">
+        <strong>Security Alert!</strong> <span id="warning-message"></span>
+    </div>
+    
+    <!-- Violation Counter -->
+    <div id="violation-counter" class="violation-count">
+        Violations: <span id="violation-count">0</span>
+    </div>
+    
+    <!-- Time Remaining -->
+    {% if assessment.time_limit %}
+    <div id="time-remaining" class="time-remaining">
+        Time: <span id="timer">{{ assessment.time_limit }}:00</span>
+    </div>
+    {% endif %}
+    
+    <!-- Exit Fullscreen Warning -->
+    <div id="exit-fullscreen-warning" class="exit-fullscreen-warning">
+        Please return to fullscreen mode to continue the assessment.
+    </div>
+    
+    <!-- Assessment Header -->
+    <div class="card mb-4">
+        <div class="card-body text-center">
+            <h1>{{ assessment.title }}</h1>
+            <p class="text-muted">{{ assessment.description }}</p>
+            <div class="row">
+                <div class="col-md-4">
+                    <strong>Questions:</strong> {{ questions.count }}
+                </div>
+                <div class="col-md-4">
+                    <strong>Points:</strong> {{ assessment.total_points }}
+                </div>
+                <div class="col-md-4">
+                    <strong>Passing Score:</strong> {{ assessment.passing_score }}%
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Questions Form -->
+    <form id="assessment-form" method="post" action="{% url 'assessments:submit_assessment' assessment.id %}">
+        {% csrf_token %}
+        <input type="hidden" id="violation-data" name="violation_data" value="">
+        <input type="hidden" id="time-spent" name="time_spent" value="">
+        <input type="hidden" id="question-sequence" name="question_sequence" value="">
+        
+        {% for question in questions %}
+        <div class="question-container" data-question-id="{{ question.id }}">
+            <h4>Question {{ forloop.counter }} ({{ question.points }} points)</h4>
+            <p>{{ question.question_text|linebreaks }}</p>
+            
+            {% if question.question_type == 'multiple_choice' %}
+                {% for choice in question.choices.all %}
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" 
+                           name="question_{{ question.id }}" 
+                           value="{{ choice.id }}" 
+                           id="choice_{{ choice.id }}">
+                    <label class="form-check-label" for="choice_{{ choice.id }}">
+                        {{ choice.choice_text }}
+                    </label>
+                </div>
+                {% endfor %}
+                
+            {% elif question.question_type == 'true_false' %}
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" 
+                           name="question_{{ question.id }}" 
+                           value="true" 
+                           id="true_{{ question.id }}">
+                    <label class="form-check-label" for="true_{{ question.id }}">
+                        True
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" 
+                           name="question_{{ question.id }}" 
+                           value="false" 
+                           id="false_{{ question.id }}">
+                    <label class="form-check-label" for="false_{{ question.id }}">
+                        False
+                    </label>
+                </div>
+                
+            {% elif question.question_type in 'identification,essay'|split:',' %}
+                <textarea class="form-control" 
+                          name="question_{{ question.id }}" 
+                          rows="{% if question.question_type == 'essay' %}8{% else %}3{% endif %}"
+                          placeholder="Enter your answer here..."></textarea>
+                          
+            {% elif question.question_type == 'enumeration' %}
+                <div id="enumeration_{{ question.id }}">
+                    {% for i in "12345"|make_list %}
+                    <input type="text" class="form-control mb-2" 
+                           name="question_{{ question.id }}_item_{{ forloop.counter }}" 
+                           placeholder="Item {{ forloop.counter }}">
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+        
+        <div class="text-center">
+            <button type="button" class="btn btn-warning me-3" onclick="saveProgress()">
+                <i class="fas fa-save"></i> Save Progress
+            </button>
+            <button type="submit" class="btn btn-success" onclick="return confirmSubmit()">
+                <i class="fas fa-paper-plane"></i> Submit Assessment
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// ========================================
+// PHASE 1 SECURITY IMPLEMENTATION
+// ========================================
+
+class AssessmentSecurity {
+    constructor() {
+        this.violations = {
+            tab_switches: 0,
+            copy_attempts: 0,
+            paste_attempts: 0,
+            right_clicks: 0,
+            focus_lost: 0,
+            fullscreen_exits: 0
+        };
+        
+        this.startTime = new Date();
+        this.questionSequence = [];
+        this.isSubmitted = false;
+        
+        this.init();
+    }
+    
+    init() {
+        this.setupFullscreen();
+        this.setupEventListeners();
+        this.setupKeyboardRestrictions();
+        this.setupTimer();
+        this.startPeriodicSave();
+        
+        console.log('🔒 Assessment security system initialized');
+    }
+    
+    // =====================================
+    // FULLSCREEN MANAGEMENT
+    // =====================================
+    setupFullscreen() {
+        // Enter fullscreen on page load
+        setTimeout(() => {
+            this.enterFullscreen();
+        }, 1000);
+        
+        // Monitor fullscreen changes
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement) {
+                this.handleFullscreenExit();
+            }
+        });
+    }
+    
+    enterFullscreen() {
+        const elem = document.documentElement;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) {
+            elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+            elem.msRequestFullscreen();
+        }
+    }
+    
+    handleFullscreenExit() {
+        this.recordViolation('fullscreen_exits');
+        this.showWarning('You exited fullscreen mode. Please return to fullscreen to continue.');
+        document.getElementById('exit-fullscreen-warning').style.display = 'block';
+        
+        // Auto re-enter fullscreen after 3 seconds
+        setTimeout(() => {
+            this.enterFullscreen();
+            document.getElementById('exit-fullscreen-warning').style.display = 'none';
+        }, 3000);
+    }
+    
+    // =====================================
+    // EVENT LISTENERS
+    // =====================================
+    setupEventListeners() {
+        // Tab switching detection
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                this.recordViolation('tab_switches');
+                this.showWarning('Tab switching detected! This may be considered cheating.');
+            }
+        });
+        
+        // Window focus detection
+        window.addEventListener('blur', () => {
+            this.recordViolation('focus_lost');
+            this.showWarning('Window focus lost! Please keep focus on the assessment.');
+        });
+        
+        // Right-click prevention
+        document.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            this.recordViolation('right_clicks');
+            this.showWarning('Right-clicking is disabled during the assessment.');
+        });
+        
+        // Copy/Paste detection
+        document.addEventListener('copy', (e) => {
+            e.preventDefault();
+            this.recordViolation('copy_attempts');
+            this.showWarning('Copying is not allowed during the assessment.');
+        });
+        
+        document.addEventListener('paste', (e) => {
+            e.preventDefault();
+            this.recordViolation('paste_attempts');
+            this.showWarning('Pasting is not allowed during the assessment.');
+        });
+        
+        // Track question interactions
+        document.querySelectorAll('input, textarea').forEach(input => {
+            input.addEventListener('focus', (e) => {
+                const questionId = e.target.closest('.question-container').dataset.questionId;
+                this.trackQuestionAccess(questionId);
+            });
+        });
+    }
+    
+    // =====================================
+    // KEYBOARD RESTRICTIONS
+    // =====================================
+    setupKeyboardRestrictions() {
+        document.addEventListener('keydown', (e) => {
+            // Block common cheating shortcuts
+            const blockedKeys = [
+                // Developer tools
+                { key: 'F12' },
+                { key: 'F12', ctrlKey: true },
+                { key: 'I', ctrlKey: true, shiftKey: true },
+                { key: 'J', ctrlKey: true, shiftKey: true },
+                { key: 'U', ctrlKey: true },
+                
+                // Copy/Paste
+                { key: 'C', ctrlKey: true },
+                { key: 'V', ctrlKey: true },
+                { key: 'X', ctrlKey: true },
+                { key: 'A', ctrlKey: true },
+                
+                // Navigation
+                { key: 'Tab', altKey: true },
+                { key: 'Escape' },
+                { key: 'F5' },
+                { key: 'F5', ctrlKey: true },
+                { key: 'R', ctrlKey: true },
+                
+                // New windows/tabs
+                { key: 'T', ctrlKey: true },
+                { key: 'N', ctrlKey: true },
+                { key: 'W', ctrlKey: true }
+            ];
+            
+            const isBlocked = blockedKeys.some(blocked => {
+                return blocked.key === e.key &&
+                       (blocked.ctrlKey === undefined || blocked.ctrlKey === e.ctrlKey) &&
+                       (blocked.altKey === undefined || blocked.altKey === e.altKey) &&
+                       (blocked.shiftKey === undefined || blocked.shiftKey === e.shiftKey);
+            });
+            
+            if (isBlocked) {
+                e.preventDefault();
+                this.recordViolation('blocked_keys');
+                this.showWarning(`Keyboard shortcut ${e.key} is disabled during the assessment.`);
+            }
+        });
+    }
+    
+    // =====================================
+    // VIOLATION TRACKING
+    // =====================================
+    recordViolation(type) {
+        this.violations[type] = (this.violations[type] || 0) + 1;
+        
+        const totalViolations = Object.values(this.violations).reduce((a, b) => a + b, 0);
+        document.getElementById('violation-count').textContent = totalViolations;
+        document.getElementById('violation-counter').style.display = 'block';
+        
+        // Auto-submit after too many violations
+        if (totalViolations >= 5) {
+            this.showWarning('Too many security violations detected. Assessment will be auto-submitted.');
+            setTimeout(() => {
+                this.autoSubmit('Excessive security violations');
+            }, 3000);
+        }
+        
+        // Send violation to server
+        this.sendViolationToServer(type);
+        
+        console.log(`🚨 Violation recorded: ${type}`, this.violations);
+    }
+    
+    sendViolationToServer(violationType) {
+        fetch(`/assessments/{{ assessment.id }}/track-violation/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                violation_type: violationType,
+                timestamp: new Date().toISOString(),
+                violations: this.violations
+            })
+        }).catch(error => console.error('Error tracking violation:', error));
+    }
+    
+    showWarning(message) {
+        const warning = document.getElementById('security-warning');
+        document.getElementById('warning-message').textContent = message;
+        warning.classList.add('show');
+        
+        setTimeout(() => {
+            warning.classList.remove('show');
+        }, 5000);
+    }
+    
+    // =====================================
+    // TIMER MANAGEMENT
+    // =====================================
+    setupTimer() {
+        {% if assessment.time_limit %}
+        let timeLeft = {{ assessment.time_limit }} * 60; // Convert to seconds
+        
+        const timer = setInterval(() => {
+            if (timeLeft <= 0 || this.isSubmitted) {
+                clearInterval(timer);
+                if (!this.isSubmitted) {
+                    this.autoSubmit('Time expired');
+                }
+                return;
+            }
+            
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = 
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Warning at 5 minutes
+            if (timeLeft === 300) {
+                this.showWarning('⏰ 5 minutes remaining!');
+            }
+            
+            // Warning at 1 minute
+            if (timeLeft === 60) {
+                this.showWarning('⏰ 1 minute remaining!');
+            }
+            
+            timeLeft--;
+        }, 1000);
+        {% endif %}
+    }
+    
+    // =====================================
+    // PROGRESS TRACKING
+    // =====================================
+    trackQuestionAccess(questionId) {
+        const timestamp = new Date().toISOString();
+        this.questionSequence.push({
+            question_id: questionId,
+            accessed_at: timestamp
+        });
+        
+        document.getElementById('question-sequence').value = JSON.stringify(this.questionSequence);
+    }
+    
+    startPeriodicSave() {
+        // Auto-save every 30 seconds
+        setInterval(() => {
+            if (!this.isSubmitted) {
+                this.saveProgress(true);
+            }
+        }, 30000);
+    }
+    
+    saveProgress(silent = false) {
+        const formData = new FormData(document.getElementById('assessment-form'));
+        formData.append('action', 'save_progress');
+        formData.append('violations', JSON.stringify(this.violations));
+        
+        fetch(`/assessments/{{ assessment.id }}/save-progress/`, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!silent) {
+                this.showWarning('✅ Progress saved successfully!');
+            }
+        })
+        .catch(error => {
+            console.error('Error saving progress:', error);
+            if (!silent) {
+                this.showWarning('❌ Error saving progress. Please try again.');
+            }
+        });
+    }
+    
+    autoSubmit(reason) {
+        if (this.isSubmitted) return;
+        
+        this.isSubmitted = true;
+        document.getElementById('violation-data').value = JSON.stringify({
+            violations: this.violations,
+            auto_submit_reason: reason,
+            time_spent: Math.floor((new Date() - this.startTime) / 1000)
+        });
+        
+        document.getElementById('assessment-form').submit();
+    }
+}
+
+// =====================================
+// UTILITY FUNCTIONS
+// =====================================
+function confirmSubmit() {
+    return confirm('Are you sure you want to submit your assessment? This action cannot be undone.');
+}
+
+function saveProgress() {
+    if (window.assessmentSecurity) {
+        window.assessmentSecurity.saveProgress();
+    }
+}
+
+// =====================================
+// INITIALIZATION
+// =====================================
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize security system
+    window.assessmentSecurity = new AssessmentSecurity();
+    
+    // Prevent back button
+    window.history.pushState(null, null, window.location.href);
+    window.addEventListener('popstate', function(event) {
+        window.history.pushState(null, null, window.location.href);
+        window.assessmentSecurity.showWarning('Browser navigation is disabled during the assessment.');
+    });
+    
+    // Warn before page unload
+    window.addEventListener('beforeunload', function(e) {
+        if (!window.assessmentSecurity.isSubmitted) {
+            e.preventDefault();
+            e.returnValue = 'Your assessment progress may be lost. Are you sure you want to leave?';
+        }
+    });
+    
+    console.log('🎓 Assessment system ready!');
+});
+</script>
+{% endblock %}

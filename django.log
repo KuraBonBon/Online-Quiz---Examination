@@ -3550,3 +3550,958 @@ Not Found: /accounts/login/
 C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
 Watching for file changes with StatReloader
 Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /courses/enrollments/ HTTP/1.1" 200 71108
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /courses/ HTTP/1.1" 200 82904
+"GET /courses/offerings/ HTTP/1.1" 200 93892
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /courses/ HTTP/1.1" 200 82904
+"GET /courses/offerings/ HTTP/1.1" 200 93892
+"GET /profile/ HTTP/1.1" 200 79567
+"GET /media/avatars/teacher/2/download-_1_.png HTTP/1.1" 304 0
+"GET /profile/activity/ HTTP/1.1" 200 88785
+"POST /profile/avatar/remove/ HTTP/1.1" 302 0
+"GET /profile/ HTTP/1.1" 200 80463
+"GET /profile/activity/ HTTP/1.1" 200 91466
+"GET /profile/activity/?ajax=1 HTTP/1.1" 200 91466
+"GET /profile/activity/?ajax=1 HTTP/1.1" 200 91466
+"GET /profile/activity/?ajax=1 HTTP/1.1" 200 91466
+"GET /profile/edit/ HTTP/1.1" 200 76344
+"GET /profile/ HTTP/1.1" 200 79918
+"GET /profile/security/ HTTP/1.1" 200 76890
+"GET / HTTP/1.1" 200 69389
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /admin HTTP/1.1" 301 0
+"GET /admin/ HTTP/1.1" 302 0
+"GET /admin/login/?next=/admin/ HTTP/1.1" 200 4170
+"GET /static/admin/css/base.css HTTP/1.1" 200 22120
+"GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2808
+"GET /static/admin/css/login.css HTTP/1.1" 200 951
+"GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+"GET /static/admin/css/responsive.css HTTP/1.1" 200 16565
+"GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+"GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+"POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+"GET /admin/ HTTP/1.1" 200 22528
+"GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+"GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+"GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+"GET /static/admin/img/icon-deletelink.svg HTTP/1.1" 200 392
+"GET /admin/ HTTP/1.1" 200 22528
+"POST /admin/logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /courses/offerings/ HTTP/1.1" 200 93892
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /courses/enrollments/ HTTP/1.1" 200 71108
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /analytics/ HTTP/1.1" 200 95884
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /courses/ HTTP/1.1" 200 82904
+"GET /courses/ HTTP/1.1" 200 82904
+"GET /courses/offerings/ HTTP/1.1" 200 93892
+"GET /courses/enrollments/ HTTP/1.1" 200 71108
+"GET /profile/ HTTP/1.1" 200 79918
+"GET /profile/edit/ HTTP/1.1" 200 76344
+"GET /profile/ HTTP/1.1" 200 79918
+"GET /profile/settings/ HTTP/1.1" 200 89349
+"POST /profile/settings/ HTTP/1.1" 302 0
+"GET /profile/settings/ HTTP/1.1" 200 89349
+"POST /profile/settings/ HTTP/1.1" 302 0
+"GET /profile/settings/ HTTP/1.1" 200 89349
+"POST /profile/settings/ HTTP/1.1" 302 0
+"GET /profile/settings/ HTTP/1.1" 200 89349
+"POST /profile/settings/ HTTP/1.1" 302 0
+"GET /profile/settings/ HTTP/1.1" 200 89349
+"GET /courses/manage-enrollment-codes/ HTTP/1.1" 200 71431
+"GET /courses/manage-enrollment-codes/ HTTP/1.1" 200 71431
+"GET /courses/enrollments/ HTTP/1.1" 200 71108
+"GET /courses/offerings/ HTTP/1.1" 200 93892
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /assessments/create/ HTTP/1.1" 200 73052
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /assessments/my-assessments/ HTTP/1.1" 200 87406
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/student/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/student/dashboard/ HTTP/1.1" 302 0
+"GET /student/dashboard/ HTTP/1.1" 200 72335
+"GET /courses/my-enrollment/ HTTP/1.1" 200 157840
+"GET /media/avatars/student/1/download-_1_.png HTTP/1.1" 200 64438
+"GET /student/dashboard/ HTTP/1.1" 200 72335
+"GET /courses/my-enrollment/ HTTP/1.1" 200 157840
+"GET /profile/ HTTP/1.1" 200 76303
+"GET /profile/edit/ HTTP/1.1" 200 74857
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /admin/ HTTP/1.1" 302 0
+"GET /admin/login/?next=/admin/ HTTP/1.1" 200 4170
+"POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+"GET /admin/ HTTP/1.1" 200 22528
+"GET /admin/accounts/studentprofile/ HTTP/1.1" 200 22078
+"GET /static/admin/css/changelists.css HTTP/1.1" 200 6878
+"GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+"GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+"GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+"GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+"GET /static/admin/js/core.js HTTP/1.1" 200 6208
+"GET /static/admin/img/search.svg HTTP/1.1" 200 458
+"GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+"GET /static/admin/js/filters.js HTTP/1.1" 200 978
+"GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+"GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+"GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 200 581
+"GET /admin/accounts/teacherprofile/ HTTP/1.1" 200 20527
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/accounts/user/ HTTP/1.1" 200 25085
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /static/admin/img/icon-yes.svg HTTP/1.1" 200 436
+"GET /static/admin/img/icon-no.svg HTTP/1.1" 200 560
+"GET /static/admin/img/sorting-icons.svg HTTP/1.1" 200 1097
+"GET /admin/accounts/studentprofile/add/ HTTP/1.1" 200 23647
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /static/admin/css/forms.css HTTP/1.1" 200 8525
+"GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+"GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+"GET /static/admin/css/widgets.css HTTP/1.1" 200 11991
+"GET /admin/accounts/user/ HTTP/1.1" 200 25085
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/assessments/assessment/ HTTP/1.1" 200 24343
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/assessments/choice/ HTTP/1.1" 200 28481
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/assessments/correctanswer/ HTTP/1.1" 200 25079
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/assessments/question/ HTTP/1.1" 200 28363
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/assessments/studentanswer/ HTTP/1.1" 200 18501
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/assessments/studentattempt/ HTTP/1.1" 200 18632
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/auth/group/ HTTP/1.1" 200 17045
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/courses/academicyear/ HTTP/1.1" 200 19558
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/courses/courseoffering/ HTTP/1.1" 200 42855
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/courses/course/ HTTP/1.1" 200 40534
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/courses/curriculum/ HTTP/1.1" 200 25357
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/courses/academicyear/ HTTP/1.1" 200 19558
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/assessments/assessment/ HTTP/1.1" 200 24343
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET / HTTP/1.1" 200 69771
+"GET /courses/courses/ HTTP/1.1" 200 96767
+Internal Server Error: /courses/curricula/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\courses\views.py", line 166, in curriculum_list_view
+    return render(request, 'courses/curriculum_list.html', context)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: courses/curriculum_list.html
+"GET /courses/curricula/ HTTP/1.1" 500 95162
+"GET /courses/manage-enrollment-codes/ HTTP/1.1" 200 74277
+"GET /courses/courses/ HTTP/1.1" 200 96767
+"GET /teacher/dashboard/ HTTP/1.1" 200 76966
+"GET /courses/offerings/ HTTP/1.1" 200 101766
+"GET /teacher/dashboard/ HTTP/1.1" 200 76966
+"GET /profile/ HTTP/1.1" 200 74488
+"POST /profile/avatar/upload/ HTTP/1.1" 302 0
+"GET /profile/ HTTP/1.1" 200 76092
+"GET /media/avatars/teacher/3/download-_1_.png HTTP/1.1" 200 64438
+"GET /profile/edit/ HTTP/1.1" 200 76626
+"GET /profile/ HTTP/1.1" 200 75547
+"GET /media/avatars/teacher/3/download-_1_.png HTTP/1.1" 304 0
+"GET /profile/change-password/ HTTP/1.1" 200 76048
+"GET /profile/ HTTP/1.1" 200 75547
+"GET /media/avatars/teacher/3/download-_1_.png HTTP/1.1" 304 0
+"GET /profile/settings/ HTTP/1.1" 200 89731
+"GET / HTTP/1.1" 200 69771
+"GET /teacher/dashboard/ HTTP/1.1" 200 76966
+"GET /assessments/create/ HTTP/1.1" 200 73434
+"POST /assessments/create/ HTTP/1.1" 302 0
+"GET /assessments/create/quiz/ HTTP/1.1" 200 74690
+"GET /teacher/dashboard/ HTTP/1.1" 200 76966
+"GET /assessments/my-assessments/ HTTP/1.1" 200 72740
+"GET / HTTP/1.1" 200 69771
+"GET /teacher/dashboard/ HTTP/1.1" 200 76966
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /analytics/ HTTP/1.1" 200 95884
+"GET /analytics/?period=7 HTTP/1.1" 200 82228
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /analytics/ HTTP/1.1" 200 95884
+"GET /analytics/?period=7 HTTP/1.1" 200 82228
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /analytics/ HTTP/1.1" 200 95884
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /assessments/my-assessments/ HTTP/1.1" 200 87406
+"GET /assessments/11/questions/ HTTP/1.1" 200 65695
+"GET /assessments/11/add-question/ HTTP/1.1" 200 67777
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 65420
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 7856
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /analytics/ HTTP/1.1" 200 95884
+Internal Server Error: /analytics/students/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\analytics\views.py", line 156, in student_analytics
+    return render(request, 'analytics/student_analytics.html', context)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\defaulttags.py", line 199, in render
+    len_values = len(values)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 366, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 216, in __iter__
+    for row in compiler.results_iter(
+               ~~~~~~~~~~~~~~~~~~~~~^
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ):
+    ^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 1572, in results_iter
+    results = self.execute_sql(
+        MULTI, chunked_fetch=chunked_fetch, chunk_size=chunk_size
+    )
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 1610, in execute_sql
+    sql, params = self.as_sql()
+                  ~~~~~~~~~~~^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 766, in as_sql
+    extra_select, order_by, group_by = self.pre_sql_setup(
+                                       ~~~~~~~~~~~~~~~~~~^
+        with_col_aliases=with_col_aliases or bool(combinator),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 85, in pre_sql_setup
+    self.setup_query(with_col_aliases=with_col_aliases)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 74, in setup_query
+    self.select, self.klass_info, self.annotation_col_map = self.get_select(
+                                                            ~~~~~~~~~~~~~~~^
+        with_col_aliases=with_col_aliases,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 316, in get_select
+    sql, params = self.compile(col)
+                  ~~~~~~~~~~~~^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 575, in compile
+    sql, params = vendor_impl(self, self.connection)
+                  ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\expressions.py", line 29, in as_sqlite
+    sql, params = self.as_sql(compiler, connection, **extra_context)
+                  ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\expressions.py", line 1724, in as_sql
+    if self._output_field_or_none is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\expressions.py", line 341, in _output_field_or_none
+    return self.output_field
+           ^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\utils\functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\expressions.py", line 327, in output_field
+    output_field = self._resolve_output_field()
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\expressions.py", line 365, in _resolve_output_field
+    raise FieldError(
+    ...<6 lines>...
+    )
+django.core.exceptions.FieldError: Expression contains mixed types: IntegerField, FloatField. You must set output_field.
+"GET /analytics/students/ HTTP/1.1" 500 234309
+Internal Server Error: /analytics/assessments/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\analytics\views.py", line 203, in assessment_analytics
+    assessments = Assessment.objects.annotate(
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        attempt_count=Count('attempts', filter=Q(attempts__is_completed=True)),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        pass_rate=Count('attempts', filter=Q(attempts__is_passed=True)) * 100.0 / Count('attempts', filter=Q(attempts__is_completed=True))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ).filter(status='published').order_by('-attempt_count')
+    ^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1649, in annotate
+    return self._annotate(args, kwargs, select=True)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1694, in _annotate
+    raise ValueError(
+    ...<2 lines>...
+    )
+ValueError: The annotation 'completion_rate' conflicts with a field on the model.
+"GET /analytics/assessments/ HTTP/1.1" 500 90225
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET / HTTP/1.1" 200 69389
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /analytics/ HTTP/1.1" 200 95884
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+"GET /teacher/dashboard/ HTTP/1.1" 200 76966
+"GET /analytics/ HTTP/1.1" 200 96304
+Internal Server Error: /analytics/system/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\analytics\views.py", line 262, in system_analytics
+    return render(request, 'analytics/system_analytics.html', context)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 489, in parse
+    raise self.error(token, e)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 487, in parse
+    filter_expression = self.compile_filter(token.contents)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 682, in __init__
+    raise TemplateSyntaxError(
+    ...<2 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Could not parse some characters: cpu_usage|floatformat:0|add:0| > 80||yesno:'danger,warning'
+"GET /analytics/system/ HTTP/1.1" 500 268368
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /analytics/ HTTP/1.1" 200 95884
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+"GET /teacher/dashboard/ HTTP/1.1" 200 76966
+"GET /courses/courses/ HTTP/1.1" 200 96767
+"GET /courses/courses/ HTTP/1.1" 200 96767
+"GET /courses/courses/?search=&department=&course_type=core HTTP/1.1" 200 83846
+"GET /courses/courses/?search=&department=&course_type=elective HTTP/1.1" 200 65836
+"GET /courses/courses/?search=&department=&course_type=general HTTP/1.1" 200 85471
+"GET /courses/courses/?search=&department=&course_type= HTTP/1.1" 200 96767
+"GET /courses/courses/ HTTP/1.1" 200 96767
+Internal Server Error: /courses/curricula/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\courses\views.py", line 166, in curriculum_list_view
+    return render(request, 'courses/curriculum_list.html', context)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: courses/curriculum_list.html
+"GET /courses/curricula/ HTTP/1.1" 500 95235
+"GET /courses/manage-enrollment-codes/ HTTP/1.1" 200 74277
+"GET /courses/enrollments/ HTTP/1.1" 200 71490
+"GET /admin/ HTTP/1.1" 200 22528
+"GET /admin/courses/academicyear/ HTTP/1.1" 200 19558
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/courses/academicyear/add/ HTTP/1.1" 200 19153
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+"GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+"POST /admin/courses/academicyear/add/ HTTP/1.1" 302 0
+"GET /admin/courses/academicyear/ HTTP/1.1" 200 20173
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/courses/academicyear/1/change/ HTTP/1.1" 200 19394
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"POST /admin/courses/academicyear/1/change/ HTTP/1.1" 302 0
+"GET /admin/courses/academicyear/ HTTP/1.1" 200 20175
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/courses/courseoffering/ HTTP/1.1" 200 42855
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/courses/curriculum/ HTTP/1.1" 200 25357
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/courses/department/ HTTP/1.1" 200 25598
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET / HTTP/1.1" 200 69771
+"GET /admin/ HTTP/1.1" 200 22427
+"GET /admin/accounts/studentprofile/ HTTP/1.1" 200 22078
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/ HTTP/1.1" 200 22427
+"GET / HTTP/1.1" 200 69771
+"GET /admin/ HTTP/1.1" 200 22427
+"GET / HTTP/1.1" 200 69771
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+"GET /teacher/dashboard/ HTTP/1.1" 200 76966
+"GET /analytics/ HTTP/1.1" 200 96304
+"GET /teacher/dashboard/ HTTP/1.1" 200 76966
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /analytics/ HTTP/1.1" 200 95884
+"GET /courses/manage-enrollment-codes/ HTTP/1.1" 200 71431
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /analytics/ HTTP/1.1" 200 95884
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+"GET /teacher/dashboard/ HTTP/1.1" 200 76966
+"GET /analytics/ HTTP/1.1" 200 96304
+"GET /admin/ HTTP/1.1" 200 22427
+"GET /admin/accounts/user/ HTTP/1.1" 200 25085
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/accounts/user/3/change/ HTTP/1.1" 200 44122
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /static/admin/js/admin/DateTimeShortcuts.js HTTP/1.1" 200 19319
+"GET /static/admin/js/calendar.js HTTP/1.1" 200 9141
+"GET /static/admin/js/SelectBox.js HTTP/1.1" 200 4530
+"GET /static/admin/js/SelectFilter2.js HTTP/1.1" 200 15845
+"GET /static/admin/img/icon-clock.svg HTTP/1.1" 200 677
+"GET /static/admin/img/selector-icons.svg HTTP/1.1" 200 3291
+"GET /static/admin/img/icon-calendar.svg HTTP/1.1" 200 1086
+"GET /admin/accounts/user/ HTTP/1.1" 200 25085
+"GET /admin/accounts/user/3/change/ HTTP/1.1" 200 44122
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/accounts/user/ HTTP/1.1" 200 25085
+"GET /admin/accounts/user/2/change/ HTTP/1.1" 200 44123
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"POST /admin/logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /analytics/ HTTP/1.1" 200 95884
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /admin/ HTTP/1.1" 302 0
+"GET /admin/login/?next=/admin/ HTTP/1.1" 200 4170
+"POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+"GET /admin/ HTTP/1.1" 200 22427
+"GET /admin/accounts/teacherprofile/ HTTP/1.1" 200 20527
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/accounts/user/ HTTP/1.1" 200 25085
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/accounts/user/2/change/ HTTP/1.1" 200 44123
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"POST /admin/accounts/user/2/change/ HTTP/1.1" 302 0
+"GET /admin/accounts/user/ HTTP/1.1" 200 25297
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"POST /admin/logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+"GET /teacher/dashboard/ HTTP/1.1" 200 77245
+"GET /analytics/ HTTP/1.1" 200 96304
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /admin/ HTTP/1.1" 302 0
+"GET /admin/login/?next=/admin/ HTTP/1.1" 200 4170
+"POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+"GET /admin/ HTTP/1.1" 200 22411
+"GET /admin/accounts/user/2/change/ HTTP/1.1" 200 44139
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"POST /admin/logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /admin/ HTTP/1.1" 302 0
+"GET /admin/login/?next=/admin/ HTTP/1.1" 200 4170
+"POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+"GET /admin/ HTTP/1.1" 200 18611
+"GET /admin/accounts/user/ HTTP/1.1" 200 25084
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/accounts/user/3/change/ HTTP/1.1" 200 44121
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"POST /admin/logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+"GET /teacher/dashboard/ HTTP/1.1" 200 76966
+"GET /admin/ HTTP/1.1" 200 22411
+"GET /admin/accounts/user/ HTTP/1.1" 200 25085
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/accounts/user/2/change/ HTTP/1.1" 200 44139
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"POST /admin/accounts/user/2/change/ HTTP/1.1" 302 0
+"GET /admin/accounts/user/ HTTP/1.1" 200 25297
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"POST /admin/logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /courses/offerings/ HTTP/1.1" 200 93892
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /analytics/ HTTP/1.1" 200 95884
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /assessments/create/ HTTP/1.1" 200 73052
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /assessments/my-assessments/ HTTP/1.1" 200 87424
+"GET /assessments/11/questions/ HTTP/1.1" 200 65695
+"GET /assessments/11/ HTTP/1.1" 200 68606
+"GET /assessments/11/edit/ HTTP/1.1" 200 67764
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /courses/ HTTP/1.1" 200 82904
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /courses/ HTTP/1.1" 200 82904
+"GET /courses/courses/ HTTP/1.1" 200 96385
+"GET /courses/courses/?search=&department=&course_type=core HTTP/1.1" 200 83464
+"GET /courses/courses/?search=&department=&course_type=elective HTTP/1.1" 200 65454
+"GET /courses/courses/?search=&department=&course_type=general HTTP/1.1" 200 85089
+"GET /courses/courses/?search=&department=&course_type=elective HTTP/1.1" 200 65454
+"GET /courses/courses/?search=&department=&course_type=core HTTP/1.1" 200 83464
+"GET /courses/courses/?search=&department=&course_type= HTTP/1.1" 200 96385
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /courses/ HTTP/1.1" 200 82904
+"GET /courses/enrollments/ HTTP/1.1" 200 71108
+"GET /courses/enrollments/bulk/ HTTP/1.1" 200 68553
+"GET /courses/enrollments/bulk/ HTTP/1.1" 200 68553
+"GET /courses/enrollments/ HTTP/1.1" 200 71108
+"GET /admin/courses/studentenrollment/add/ HTTP/1.1" 302 0
+"GET /admin/login/?next=/admin/courses/studentenrollment/add/ HTTP/1.1" 200 3756
+"GET /courses/enrollments/?export=csv HTTP/1.1" 200 71108
+"GET /admin/courses/studentenrollment/ HTTP/1.1" 302 0
+"GET /admin/login/?next=/admin/courses/studentenrollment/ HTTP/1.1" 200 3748
+"GET /admin/courses/studentenrollment/ HTTP/1.1" 302 0
+"GET /admin/login/?next=/admin/courses/studentenrollment/ HTTP/1.1" 200 3748
+"POST /admin/login/?next=/admin/courses/studentenrollment/ HTTP/1.1" 302 0
+"GET /admin/courses/studentenrollment/ HTTP/1.1" 200 20603
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/login/?next=/admin/courses/studentenrollment/ HTTP/1.1" 302 0
+"GET /admin/ HTTP/1.1" 200 22362
+"GET /admin/courses/studentenrollment/ HTTP/1.1" 200 20603
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/courses/studentenrollment/ HTTP/1.1" 200 20603
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+Forbidden (CSRF token from POST incorrect.): /logout/
+"POST /logout/ HTTP/1.1" 403 2503
+"GET /courses/enrollments/?export=csv HTTP/1.1" 200 71490
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /courses/ HTTP/1.1" 200 82904
+"GET /courses/enrollments/ HTTP/1.1" 200 71108
+"GET /admin/courses/studentenrollment/add/ HTTP/1.1" 302 0
+"GET /admin/login/?next=/admin/courses/studentenrollment/add/ HTTP/1.1" 200 3756
+"GET /courses/offerings/ HTTP/1.1" 200 93892
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 7856
+"GET /courses/ HTTP/1.1" 200 82904
+"GET /courses/enrollments/export/ HTTP/1.1" 200 102
+"GET /courses/ HTTP/1.1" 200 82904
+"GET /courses/enrollments/ HTTP/1.1" 200 71108
+"GET /courses/enrollments/ HTTP/1.1" 200 71108
+"GET /courses/ HTTP/1.1" 200 82904
+"GET /courses/enrollments/ HTTP/1.1" 200 71108
+"GET /courses/enrollments/ HTTP/1.1" 200 71108
+"GET /courses/offerings/ HTTP/1.1" 200 93892
+"GET /analytics/ HTTP/1.1" 200 95884
+Internal Server Error: /analytics/students/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\analytics\views.py", line 156, in student_analytics
+    return render(request, 'analytics/student_analytics.html', context)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\defaulttags.py", line 199, in render
+    len_values = len(values)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 366, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 216, in __iter__
+    for row in compiler.results_iter(
+               ~~~~~~~~~~~~~~~~~~~~~^
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ):
+    ^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 1572, in results_iter
+    results = self.execute_sql(
+        MULTI, chunked_fetch=chunked_fetch, chunk_size=chunk_size
+    )
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 1610, in execute_sql
+    sql, params = self.as_sql()
+                  ~~~~~~~~~~~^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 766, in as_sql
+    extra_select, order_by, group_by = self.pre_sql_setup(
+                                       ~~~~~~~~~~~~~~~~~~^
+        with_col_aliases=with_col_aliases or bool(combinator),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 85, in pre_sql_setup
+    self.setup_query(with_col_aliases=with_col_aliases)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 74, in setup_query
+    self.select, self.klass_info, self.annotation_col_map = self.get_select(
+                                                            ~~~~~~~~~~~~~~~^
+        with_col_aliases=with_col_aliases,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 316, in get_select
+    sql, params = self.compile(col)
+                  ~~~~~~~~~~~~^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 575, in compile
+    sql, params = vendor_impl(self, self.connection)
+                  ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\expressions.py", line 29, in as_sqlite
+    sql, params = self.as_sql(compiler, connection, **extra_context)
+                  ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\expressions.py", line 1724, in as_sql
+    if self._output_field_or_none is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\expressions.py", line 341, in _output_field_or_none
+    return self.output_field
+           ^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\utils\functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\expressions.py", line 327, in output_field
+    output_field = self._resolve_output_field()
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\expressions.py", line 365, in _resolve_output_field
+    raise FieldError(
+    ...<6 lines>...
+    )
+django.core.exceptions.FieldError: Expression contains mixed types: IntegerField, FloatField. You must set output_field.
+"GET /analytics/students/ HTTP/1.1" 500 234308
+"GET /analytics/teachers/ HTTP/1.1" 200 70978
+Internal Server Error: /analytics/assessments/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\analytics\views.py", line 203, in assessment_analytics
+    assessments = Assessment.objects.annotate(
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        attempt_count=Count('attempts', filter=Q(attempts__is_completed=True)),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        pass_rate=Count('attempts', filter=Q(attempts__is_passed=True)) * 100.0 / Count('attempts', filter=Q(attempts__is_completed=True))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ).filter(status='published').order_by('-attempt_count')
+    ^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1649, in annotate
+    return self._annotate(args, kwargs, select=True)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1694, in _annotate
+    raise ValueError(
+    ...<2 lines>...
+    )
+ValueError: The annotation 'completion_rate' conflicts with a field on the model.
+"GET /analytics/assessments/ HTTP/1.1" 500 90224
+"GET /analytics/teachers/ HTTP/1.1" 200 70978
+"GET /courses/offerings/ HTTP/1.1" 200 93892
+"GET /profile/ HTTP/1.1" 200 79918
+"POST /profile/avatar/upload/ HTTP/1.1" 302 0
+"GET /profile/ HTTP/1.1" 200 81228
+"GET /media/avatars/teacher/2/download-_1_.png HTTP/1.1" 200 64438
+"GET /profile/edit/ HTTP/1.1" 200 76344
+"GET /profile/ HTTP/1.1" 200 80683
+"GET /media/avatars/teacher/2/download-_1_.png HTTP/1.1" 304 0
+"GET /profile/edit/ HTTP/1.1" 200 76344
+"GET /profile/ HTTP/1.1" 200 80683
+"GET /media/avatars/teacher/2/download-_1_.png HTTP/1.1" 304 0
+"GET /profile/change-password/ HTTP/1.1" 200 75666
+"GET /profile/ HTTP/1.1" 200 80683
+"GET /profile/settings/ HTTP/1.1" 200 89349
+"POST /profile/settings/ HTTP/1.1" 302 0
+"GET /profile/settings/ HTTP/1.1" 200 89349
+"POST /profile/settings/ HTTP/1.1" 302 0
+"GET /profile/settings/ HTTP/1.1" 200 89349
+"POST /profile/settings/ HTTP/1.1" 302 0
+"GET /profile/settings/ HTTP/1.1" 200 89349
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/student/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/student/dashboard/ HTTP/1.1" 302 0
+"GET /student/dashboard/ HTTP/1.1" 200 72335
+"GET /student/dashboard/ HTTP/1.1" 200 72335
+"GET /assessments/available/ HTTP/1.1" 200 66346
+"GET /courses/my-enrollment/ HTTP/1.1" 200 157840
+"GET /media/avatars/student/1/download-_1_.png HTTP/1.1" 200 64438
+"GET /courses/enroll/20/ HTTP/1.1" 200 1847
+"POST /courses/enroll/20/ HTTP/1.1" 200 87
+"GET /courses/my-enrollment/ HTTP/1.1" 200 157840
+"GET /courses/my-enrollment/ HTTP/1.1" 200 157840
+"GET /profile/ HTTP/1.1" 200 76303
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /profile/edit/ HTTP/1.1" 200 74857
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\urls.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /profile/ HTTP/1.1" 200 76303
+"GET /profile/settings/ HTTP/1.1" 200 88575
+Watching for file changes with StatReloader
+"GET /profile/settings/ HTTP/1.1" 200 88575
+"GET / HTTP/1.1" 200 68615
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/student/dashboard/ HTTP/1.1" 200 63730
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+"GET /student/dashboard/ HTTP/1.1" 200 72335
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/student/dashboard/ HTTP/1.1" 200 63730
+"GET /student/register/ HTTP/1.1" 200 61662
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/student/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/student/dashboard/ HTTP/1.1" 302 0
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /assessments/create/ HTTP/1.1" 200 73052
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/student/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/student/dashboard/ HTTP/1.1" 302 0
+"GET /student/dashboard/ HTTP/1.1" 200 72335
+"GET /assessments/available/ HTTP/1.1" 200 66346
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 68615
+"GET /student/dashboard/ HTTP/1.1" 200 72335
+"GET /assessments/available/ HTTP/1.1" 200 66346
+"GET /student/dashboard/ HTTP/1.1" 200 72335
+"GET /assessments/available/ HTTP/1.1" 200 66346
+"GET /student/dashboard/ HTTP/1.1" 200 72335
+"GET /courses/my-enrollment/ HTTP/1.1" 200 157840
+"GET /courses/enroll/10/ HTTP/1.1" 200 1848
+"POST /courses/enroll/10/ HTTP/1.1" 200 87
+"GET / HTTP/1.1" 200 68615
+"GET /student/dashboard/ HTTP/1.1" 200 72335
+"GET /assessments/available/ HTTP/1.1" 200 66346
+"GET /student/dashboard/ HTTP/1.1" 200 72335
+"GET /courses/my-enrollment/ HTTP/1.1" 200 157840
+"GET /student/dashboard/ HTTP/1.1" 200 72335
+"GET /assessments/available/ HTTP/1.1" 200 66346
+"GET /student/dashboard/ HTTP/1.1" 200 72335
+"GET /courses/my-enrollment/ HTTP/1.1" 200 157840
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /courses/ HTTP/1.1" 200 82904
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /courses/manage-enrollment-codes/ HTTP/1.1" 200 71431
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/student/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/student/dashboard/ HTTP/1.1" 302 0
+"GET /student/dashboard/ HTTP/1.1" 200 72335
+"GET /courses/my-enrollment/ HTTP/1.1" 200 157840
+"GET /student/dashboard/ HTTP/1.1" 200 72335
+"GET /assessments/available/ HTTP/1.1" 200 66346
+"GET /student/dashboard/ HTTP/1.1" 200 72335
+"GET /courses/my-enrollment/ HTTP/1.1" 200 157840
+"GET /student/dashboard/ HTTP/1.1" 200 72335
+"GET /courses/my-enrollment/ HTTP/1.1" 200 157840
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /courses/manage-enrollment-codes/ HTTP/1.1" 200 71431
+"GET /courses/enrollments/ HTTP/1.1" 200 71108
+"GET /courses/enrollments/bulk/ HTTP/1.1" 200 68553
+"POST /courses/enrollments/bulk/ HTTP/1.1" 200 68572
+"GET /courses/manage-enrollment-codes/ HTTP/1.1" 200 71431
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/student/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/student/dashboard/ HTTP/1.1" 302 0
+"GET /student/dashboard/ HTTP/1.1" 200 72335
+"GET /courses/my-enrollment/ HTTP/1.1" 200 157840
+"GET /student/dashboard/ HTTP/1.1" 200 72335

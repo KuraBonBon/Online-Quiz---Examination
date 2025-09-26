@@ -24,4 +24,9 @@ urlpatterns = [
     path('<int:assessment_id>/take/', views.take_assessment_view, name='take_assessment'),
     path('<int:assessment_id>/submit/', views.submit_assessment_view, name='submit_assessment'),
     path('results/<int:attempt_id>/', views.assessment_results_view, name='assessment_results'),
+    
+    # Security AJAX endpoints
+    path('<int:assessment_id>/track-violation/', views.track_violation_view, name='track_violation'),
+    path('<int:assessment_id>/save-progress/', views.save_progress_view, name='save_progress'),
+    path('result/<int:attempt_id>/', views.assessment_result_view, name='assessment_result'),
 ]

@@ -1,0 +1,406 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Assessment Result - {{ attempt.assessment.title }} - SPIST{% endblock %}
+
+{% block extra_css %}
+<style>
+    .result-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+    
+    .score-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 20px;
+        padding: 2rem;
+        text-align: center;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    
+    .score-display {
+        font-size: 3rem;
+        font-weight: bold;
+        margin: 1rem 0;
+    }
+    
+    .security-report {
+        background: #f8f9fa;
+        border-left: 4px solid #dc3545;
+        padding: 1.5rem;
+        margin: 2rem 0;
+        border-radius: 8px;
+    }
+    
+    .security-report.low-risk {
+        border-left-color: #28a745;
+    }
+    
+    .security-report.medium-risk {
+        border-left-color: #ffc107;
+    }
+    
+    .security-report.high-risk {
+        border-left-color: #dc3545;
+    }
+    
+    .violation-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #dee2e6;
+    }
+    
+    .violation-item:last-child {
+        border-bottom: none;
+    }
+    
+    .risk-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: bold;
+    }
+    
+    .risk-low {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .risk-medium {
+        background: #fff3cd;
+        color: #856404;
+    }
+    
+    .risk-high {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    
+    .answer-review {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .correct-answer {
+        border-left: 4px solid #28a745;
+    }
+    
+    .incorrect-answer {
+        border-left: 4px solid #dc3545;
+    }
+    
+    .pending-answer {
+        border-left: 4px solid #ffc107;
+    }
+    
+    .answer-status {
+        float: right;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: bold;
+    }
+    
+    .status-correct {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .status-incorrect {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    
+    .status-pending {
+        background: #fff3cd;
+        color: #856404;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="result-container">
+    <!-- Score Summary -->
+    <div class="score-card">
+        <h2>{{ attempt.assessment.title }}</h2>
+        <div class="score-display">{{ attempt.percentage|floatformat:1 }}%</div>
+        <p>
+            {% if attempt.percentage >= attempt.assessment.passing_score %}
+                <i class="fas fa-check-circle"></i> Passed
+            {% else %}
+                <i class="fas fa-times-circle"></i> Failed
+            {% endif %}
+            (Passing Score: {{ attempt.assessment.passing_score }}%)
+        </p>
+        <div class="row mt-3">
+            <div class="col-md-3">
+                <small>Started</small><br>
+                <strong>{{ attempt.started_at|date:"M d, Y H:i" }}</strong>
+            </div>
+            <div class="col-md-3">
+                <small>Completed</small><br>
+                <strong>{{ attempt.completed_at|date:"M d, Y H:i" }}</strong>
+            </div>
+            <div class="col-md-3">
+                <small>Duration</small><br>
+                <strong>
+                    {% if attempt.completed_at and attempt.started_at %}
+                        {% with duration=attempt.completed_at|timesince:attempt.started_at %}
+                            {{ duration }}
+                        {% endwith %}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </strong>
+            </div>
+            <div class="col-md-3">
+                <small>Questions</small><br>
+                <strong>{{ student_answers|length }}</strong>
+            </div>
+        </div>
+    </div>
+
+    {% if is_teacher_view or security_report.total_violations > 0 %}
+    <!-- Security Report -->
+    <div class="security-report {{ security_report.risk_level|lower }}-risk">
+        <h4>
+            <i class="fas fa-shield-alt"></i> Security Report
+            <span class="risk-badge risk-{{ security_report.risk_level|lower }}">
+                {{ security_report.risk_level }} Risk
+            </span>
+        </h4>
+        
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <div class="violation-item">
+                    <span><i class="fas fa-window-restore"></i> Tab Switches</span>
+                    <strong>{{ security_report.tab_switches }}</strong>
+                </div>
+                <div class="violation-item">
+                    <span><i class="fas fa-copy"></i> Copy/Paste Attempts</span>
+                    <strong>{{ security_report.copy_paste_attempts }}</strong>
+                </div>
+                <div class="violation-item">
+                    <span><i class="fas fa-exclamation-triangle"></i> Total Violations</span>
+                    <strong>{{ security_report.total_violations }}</strong>
+                </div>
+            </div>
+            <div class="col-md-6">
+                {% if security_report.violation_flags.submission.auto_submit_reason %}
+                <div class="alert alert-warning">
+                    <strong>Auto-submitted:</strong>
+                    {{ security_report.violation_flags.submission.auto_submit_reason }}
+                </div>
+                {% endif %}
+                
+                {% if security_report.risk_level == 'High' %}
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>High security risk detected!</strong> This attempt shows suspicious activity patterns.
+                </div>
+                {% elif security_report.risk_level == 'Medium' %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Moderate security concerns.</strong> Some irregular activity was detected.
+                </div>
+                {% else %}
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Clean assessment.</strong> No significant security violations detected.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Detailed Results -->
+    <div class="card">
+        <div class="card-header">
+            <h4><i class="fas fa-list-alt"></i> Detailed Results</h4>
+        </div>
+        <div class="card-body">
+            {% for answer in student_answers %}
+            <div class="answer-review 
+                {% if answer.points_earned %}
+                    {% if answer.points_earned == answer.question.points %}correct-answer{% else %}incorrect-answer{% endif %}
+                {% else %}
+                    {% if answer.points_earned is None %}pending-answer{% else %}incorrect-answer{% endif %}
+                {% endif %}">
+                
+                <div class="d-flex justify-content-between align-items-start">
+                    <h6>Question {{ forloop.counter }} ({{ answer.question.points }} points)</h6>
+                    <span class="answer-status 
+                        {% if answer.points_earned %}
+                            {% if answer.points_earned == answer.question.points %}status-correct{% else %}status-incorrect{% endif %}
+                        {% else %}
+                            {% if answer.points_earned is None %}status-pending{% else %}status-incorrect{% endif %}
+                        {% endif %}">
+                        {% if answer.points_earned %}
+                            {% if answer.points_earned == answer.question.points %}
+                                <i class="fas fa-check"></i> Correct ({{ answer.points_earned }}/{{ answer.question.points }})
+                            {% else %}
+                                <i class="fas fa-times"></i> Incorrect ({{ answer.points_earned }}/{{ answer.question.points }})
+                            {% endif %}
+                        {% else %}
+                            {% if answer.points_earned is None %}
+                                <i class="fas fa-clock"></i> Pending Review
+                            {% else %}
+                                <i class="fas fa-times"></i> Incorrect (0/{{ answer.question.points }})
+                            {% endif %}
+                        {% endif %}
+                    </span>
+                </div>
+                
+                <p><strong>Question:</strong> {{ answer.question.question_text }}</p>
+                
+                <p><strong>Your Answer:</strong></p>
+                <div class="bg-light p-2 rounded">
+                    {% if answer.question.question_type == 'multiple_choice' %}
+                        {% for choice in answer.question.choices.all %}
+                            {% if choice.id|stringformat:"s" == answer.answer_text %}
+                                {{ choice.choice_text }}
+                                {% if choice.is_correct %}
+                                    <i class="fas fa-check text-success ms-2"></i>
+                                {% else %}
+                                    <i class="fas fa-times text-danger ms-2"></i>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        {{ answer.answer_text|linebreaks }}
+                    {% endif %}
+                </div>
+                
+                {% if answer.question.question_type in 'multiple_choice,true_false'|split:',' and is_teacher_view %}
+                <p class="mt-2"><strong>Correct Answer:</strong></p>
+                <div class="bg-success text-white p-2 rounded">
+                    {% if answer.question.question_type == 'multiple_choice' %}
+                        {% for choice in answer.question.choices.all %}
+                            {% if choice.is_correct %}
+                                {{ choice.choice_text }}
+                            {% endif %}
+                        {% endfor %}
+                    {% elif answer.question.question_type == 'true_false' %}
+                        {% for correct in answer.question.correct_answers.all %}
+                            {{ correct.answer_text|title }}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="text-center text-muted">
+                <i class="fas fa-info-circle fa-3x mb-3"></i>
+                <p>No answers recorded for this assessment.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="text-center mt-4">
+        {% if request.user.user_type == 'student' %}
+            <a href="{% url 'assessments:available_assessments' %}" class="btn btn-primary">
+                <i class="fas fa-list"></i> Back to Assessments
+            </a>
+            <button onclick="window.print()" class="btn btn-secondary">
+                <i class="fas fa-print"></i> Print Results
+            </button>
+        {% else %}
+            <a href="{% url 'assessments:my_assessments' %}" class="btn btn-primary">
+                <i class="fas fa-list"></i> Back to My Assessments
+            </a>
+            {% if security_report.total_violations > 0 %}
+            <button class="btn btn-warning" onclick="showSecurityDetails()">
+                <i class="fas fa-shield-alt"></i> Security Details
+            </button>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+<!-- Security Details Modal -->
+{% if is_teacher_view %}
+<div class="modal fade" id="securityModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-shield-alt"></i> Detailed Security Report
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <h6>Violation Timeline</h6>
+                {% if security_report.violation_flags %}
+                <div class="timeline">
+                    {% for timestamp, violation in security_report.violation_flags.items %}
+                        {% if timestamp != 'submission' and timestamp != 'question_sequence' %}
+                        <div class="timeline-item">
+                            <strong>{{ timestamp|date:"H:i:s" }}</strong> - 
+                            {{ violation.type|title }} 
+                            (Total violations at time: {{ violation.total_violations }})
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                {% if security_report.violation_flags.question_sequence %}
+                <h6 class="mt-3">Question Access Pattern</h6>
+                <div class="small">
+                    {% for access in security_report.violation_flags.question_sequence %}
+                    <div>
+                        Question {{ access.question_id }} accessed at {{ access.accessed_at|date:"H:i:s" }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function showSecurityDetails() {
+    const modal = new bootstrap.Modal(document.getElementById('securityModal'));
+    modal.show();
+}
+
+// Print optimization
+window.addEventListener('beforeprint', function() {
+    document.body.classList.add('printing');
+});
+
+window.addEventListener('afterprint', function() {
+    document.body.classList.remove('printing');
+});
+</script>
+
+<style>
+@media print {
+    .printing .btn,
+    .printing .modal,
+    .printing .security-report {
+        display: none !important;
+    }
+    
+    .printing .score-card {
+        background: #f8f9fa !important;
+        color: #333 !important;
+        box-shadow: none !important;
+    }
+}
+</style>
+{% endblock %}
