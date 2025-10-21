@@ -103,18 +103,36 @@
     <!-- Assessment Header -->
     <div class="card mb-4">
         <div class="card-body text-center">
-            <h1>{{ assessment.title }}</h1>
+            <h1><i class="fas fa-clipboard-list"></i> {{ assessment.title }}</h1>
+            {% if assessment.description %}
             <p class="text-muted">{{ assessment.description }}</p>
+            {% endif %}
             <div class="row">
-                <div class="col-md-4">
-                    <strong>Questions:</strong> {{ questions.count }}
+                <div class="col-md-3">
+                    <strong><i class="fas fa-question-circle"></i> Questions:</strong> {{ questions|length }}
                 </div>
-                <div class="col-md-4">
-                    <strong>Points:</strong> {{ assessment.total_points }}
+                <div class="col-md-3">
+                    <strong><i class="fas fa-star"></i> Type:</strong> {{ assessment.get_assessment_type_display }}
                 </div>
-                <div class="col-md-4">
-                    <strong>Passing Score:</strong> {{ assessment.passing_score }}%
+                <div class="col-md-3">
+                    <strong><i class="fas fa-trophy"></i> Passing Score:</strong> {{ assessment.passing_score }}%
                 </div>
+                <div class="col-md-3">
+                    <strong><i class="fas fa-user-tie"></i> Teacher:</strong> {{ assessment.creator.get_full_name }}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Progress Bar -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="mb-0"><i class="fas fa-tasks"></i> Progress</h6>
+                <span id="progress-text">0 of {{ questions|length }} answered</span>
+            </div>
+            <div class="progress" style="height: 8px;">
+                <div id="progress-bar" class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
             </div>
         </div>
     </div>
@@ -128,16 +146,17 @@
         
         {% for question in questions %}
         <div class="question-container" data-question-id="{{ question.id }}">
-            <h4>Question {{ forloop.counter }} ({{ question.points }} points)</h4>
-            <p>{{ question.question_text|linebreaks }}</p>
+            <h4>Question {{ forloop.counter }} of {{ questions|length }} ({{ question.points }} points)</h4>
+            <p><strong>{{ question.question_text|linebreaks }}</strong></p>
             
             {% if question.question_type == 'multiple_choice' %}
                 {% for choice in question.choices.all %}
-                <div class="form-check">
+                <div class="form-check mb-2">
                     <input class="form-check-input" type="radio" 
                            name="question_{{ question.id }}" 
                            value="{{ choice.id }}" 
-                           id="choice_{{ choice.id }}">
+                           id="choice_{{ choice.id }}"
+                           onclick="trackQuestionInteraction({{ question.id }})">
                     <label class="form-check-label" for="choice_{{ choice.id }}">
                         {{ choice.choice_text }}
                     </label>
@@ -145,50 +164,103 @@
                 {% endfor %}
                 
             {% elif question.question_type == 'true_false' %}
-                <div class="form-check">
+                <div class="form-check mb-2">
                     <input class="form-check-input" type="radio" 
                            name="question_{{ question.id }}" 
                            value="true" 
-                           id="true_{{ question.id }}">
+                           id="true_{{ question.id }}"
+                           onclick="trackQuestionInteraction({{ question.id }})">
                     <label class="form-check-label" for="true_{{ question.id }}">
-                        True
+                        <i class="fas fa-check text-success"></i> True
                     </label>
                 </div>
-                <div class="form-check">
+                <div class="form-check mb-2">
                     <input class="form-check-input" type="radio" 
                            name="question_{{ question.id }}" 
                            value="false" 
-                           id="false_{{ question.id }}">
+                           id="false_{{ question.id }}"
+                           onclick="trackQuestionInteraction({{ question.id }})">
                     <label class="form-check-label" for="false_{{ question.id }}">
-                        False
+                        <i class="fas fa-times text-danger"></i> False
                     </label>
                 </div>
                 
-            {% elif question.question_type in 'identification,essay'|split:',' %}
+            {% elif question.question_type == 'identification' %}
                 <textarea class="form-control" 
                           name="question_{{ question.id }}" 
-                          rows="{% if question.question_type == 'essay' %}8{% else %}3{% endif %}"
-                          placeholder="Enter your answer here..."></textarea>
+                          rows="3"
+                          placeholder="Enter your answer here..."
+                          onfocus="trackQuestionInteraction({{ question.id }})"></textarea>
+                          
+            {% elif question.question_type == 'essay' %}
+                <textarea class="form-control" 
+                          name="question_{{ question.id }}" 
+                          rows="8"
+                          placeholder="Write your essay here... (Minimum 100 words recommended)"
+                          onfocus="trackQuestionInteraction({{ question.id }})"></textarea>
                           
             {% elif question.question_type == 'enumeration' %}
                 <div id="enumeration_{{ question.id }}">
+                    <p><small class="text-muted">List your answers below (one per field):</small></p>
                     {% for i in "12345"|make_list %}
                     <input type="text" class="form-control mb-2" 
                            name="question_{{ question.id }}_item_{{ forloop.counter }}" 
-                           placeholder="Item {{ forloop.counter }}">
+                           placeholder="Item {{ forloop.counter }}"
+                           onfocus="trackQuestionInteraction({{ question.id }})">
                     {% endfor %}
                 </div>
+            {% else %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Unsupported question type: {{ question.question_type }}
+                </div>
+            {% endif %}
+            
+            {% if question.hint %}
+            <div class="mt-2">
+                <button type="button" class="btn btn-sm btn-outline-info" onclick="toggleHint({{ question.id }})">
+                    <i class="fas fa-lightbulb"></i> Show Hint
+                </button>
+                <div id="hint_{{ question.id }}" class="alert alert-info mt-2" style="display: none;">
+                    <i class="fas fa-lightbulb"></i> <strong>Hint:</strong> {{ question.hint }}
+                </div>
+            </div>
             {% endif %}
         </div>
         {% endfor %}
         
+        {% if not questions %}
         <div class="text-center">
-            <button type="button" class="btn btn-warning me-3" onclick="saveProgress()">
-                <i class="fas fa-save"></i> Save Progress
-            </button>
-            <button type="submit" class="btn btn-success" onclick="return confirmSubmit()">
-                <i class="fas fa-paper-plane"></i> Submit Assessment
-            </button>
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                <h4>No Questions Available</h4>
+                <p>This assessment doesn't have any questions yet. Please contact your teacher.</p>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="card mt-4">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div id="submission-summary">
+                            <h6><i class="fas fa-clipboard-check"></i> Ready to Submit?</h6>
+                            <p class="text-muted mb-0">Review your answers before submitting.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <button type="button" class="btn btn-outline-primary me-2" onclick="saveProgress()">
+                            <i class="fas fa-save"></i> Save Progress
+                        </button>
+                        <button type="button" class="btn btn-outline-info me-2" onclick="reviewAnswers()">
+                            <i class="fas fa-eye"></i> Review Answers
+                        </button>
+                        <button type="submit" class="btn btn-success btn-lg" onclick="return confirmSubmit()">
+                            <i class="fas fa-paper-plane"></i> Submit Assessment
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </form>
 </div>
@@ -511,12 +583,158 @@ class AssessmentSecurity {
 // UTILITY FUNCTIONS
 // =====================================
 function confirmSubmit() {
-    return confirm('Are you sure you want to submit your assessment? This action cannot be undone.');
+    const unanswered = checkUnansweredQuestions();
+    let message = 'Are you sure you want to submit your assessment? This action cannot be undone.';
+    
+    if (unanswered.length > 0) {
+        message += `\n\nWarning: You have ${unanswered.length} unanswered questions: ${unanswered.join(', ')}`;
+    }
+    
+    return confirm(message);
 }
 
 function saveProgress() {
     if (window.assessmentSecurity) {
         window.assessmentSecurity.saveProgress();
+    }
+}
+
+function checkUnansweredQuestions() {
+    const unanswered = [];
+    const questionContainers = document.querySelectorAll('.question-container');
+    
+    questionContainers.forEach((container, index) => {
+        const questionId = container.dataset.questionId;
+        const inputs = container.querySelectorAll('input, textarea');
+        let hasAnswer = false;
+        
+        inputs.forEach(input => {
+            if (input.type === 'radio' && input.checked) {
+                hasAnswer = true;
+            } else if (input.type === 'text' && input.value.trim()) {
+                hasAnswer = true;
+            } else if (input.tagName === 'TEXTAREA' && input.value.trim()) {
+                hasAnswer = true;
+            }
+        });
+        
+        if (!hasAnswer) {
+            unanswered.push(`Q${index + 1}`);
+        }
+    });
+    
+    return unanswered;
+}
+
+function toggleHint(questionId) {
+    const hint = document.getElementById(`hint_${questionId}`);
+    const button = event.target.closest('button');
+    
+    if (hint.style.display === 'none') {
+        hint.style.display = 'block';
+        button.innerHTML = '<i class="fas fa-lightbulb"></i> Hide Hint';
+        button.classList.remove('btn-outline-info');
+        button.classList.add('btn-info');
+    } else {
+        hint.style.display = 'none';
+        button.innerHTML = '<i class="fas fa-lightbulb"></i> Show Hint';
+        button.classList.remove('btn-info');
+        button.classList.add('btn-outline-info');
+    }
+}
+
+function trackQuestionInteraction(questionId) {
+    if (window.assessmentSecurity) {
+        window.assessmentSecurity.trackQuestionAccess(questionId);
+    }
+    updateProgress();
+}
+
+function updateProgress() {
+    const totalQuestions = document.querySelectorAll('.question-container').length;
+    let answeredQuestions = 0;
+    
+    document.querySelectorAll('.question-container').forEach(container => {
+        const inputs = container.querySelectorAll('input, textarea');
+        let hasAnswer = false;
+        
+        inputs.forEach(input => {
+            if (input.type === 'radio' && input.checked) {
+                hasAnswer = true;
+            } else if ((input.type === 'text' || input.tagName === 'TEXTAREA') && input.value.trim()) {
+                hasAnswer = true;
+            }
+        });
+        
+        if (hasAnswer) {
+            answeredQuestions++;
+        }
+    });
+    
+    const percentage = (answeredQuestions / totalQuestions) * 100;
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+    
+    if (progressBar && progressText) {
+        progressBar.style.width = percentage + '%';
+        progressText.textContent = `${answeredQuestions} of ${totalQuestions} answered`;
+        
+        // Change color based on progress
+        progressBar.className = 'progress-bar';
+        if (percentage < 30) {
+            progressBar.classList.add('bg-danger');
+        } else if (percentage < 70) {
+            progressBar.classList.add('bg-warning');
+        } else {
+            progressBar.classList.add('bg-success');
+        }
+    }
+}
+
+function reviewAnswers() {
+    const unanswered = checkUnansweredQuestions();
+    const totalQuestions = document.querySelectorAll('.question-container').length;
+    const answered = totalQuestions - unanswered.length;
+    
+    let reviewMessage = `Assessment Review:\n`;
+    reviewMessage += `• Total Questions: ${totalQuestions}\n`;
+    reviewMessage += `• Answered: ${answered}\n`;
+    reviewMessage += `• Unanswered: ${unanswered.length}\n\n`;
+    
+    if (unanswered.length > 0) {
+        reviewMessage += `Unanswered Questions: ${unanswered.join(', ')}\n\n`;
+        reviewMessage += `Would you like to scroll to the first unanswered question?`;
+        
+        if (confirm(reviewMessage)) {
+            // Find the first unanswered question
+            const questionContainers = document.querySelectorAll('.question-container');
+            for (let i = 0; i < questionContainers.length; i++) {
+                const container = questionContainers[i];
+                const inputs = container.querySelectorAll('input, textarea');
+                let hasAnswer = false;
+                
+                inputs.forEach(input => {
+                    if (input.type === 'radio' && input.checked) {
+                        hasAnswer = true;
+                    } else if ((input.type === 'text' || input.tagName === 'TEXTAREA') && input.value.trim()) {
+                        hasAnswer = true;
+                    }
+                });
+                
+                if (!hasAnswer) {
+                    container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    container.style.border = '3px solid #ffc107';
+                    container.style.borderRadius = '12px';
+                    setTimeout(() => {
+                        container.style.border = '';
+                    }, 3000);
+                    break;
+                }
+            }
+        }
+    } else {
+        reviewMessage += `All questions have been answered! You can submit your assessment now.`;
+        alert(reviewMessage);
     }
 }
 
@@ -541,6 +759,15 @@ document.addEventListener('DOMContentLoaded', function() {
             e.returnValue = 'Your assessment progress may be lost. Are you sure you want to leave?';
         }
     });
+    
+    // Add progress tracking to all inputs
+    document.querySelectorAll('input, textarea').forEach(input => {
+        input.addEventListener('change', updateProgress);
+        input.addEventListener('input', updateProgress);
+    });
+    
+    // Initial progress update
+    updateProgress();
     
     console.log('🎓 Assessment system ready!');
 });

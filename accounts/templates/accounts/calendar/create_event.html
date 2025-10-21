@@ -1,0 +1,660 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}Create Event - SPIST Calendar{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --form-primary: #004d40;
+        --form-secondary: #00695c;
+        --form-accent: #26a69a;
+        --form-bg: #ffffff;
+        --form-border: #e0e0e0;
+        --form-text: #333333;
+    }
+
+    [data-theme="dark"] {
+        --form-primary: #26a69a;
+        --form-secondary: #4db6ac;
+        --form-accent: #80cbc4;
+        --form-bg: #2d2d2d;
+        --form-border: #444444;
+        --form-text: #ffffff;
+    }
+
+    .event-form-container {
+        background: var(--form-bg);
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, var(--form-primary), var(--form-secondary));
+        color: white;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .form-header h2 {
+        margin: 0;
+        font-size: 1.75rem;
+        font-weight: 600;
+    }
+
+    .form-body {
+        padding: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--form-text);
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 2px solid var(--form-border);
+        border-radius: 4px;
+        background: var(--form-bg);
+        color: var(--form-text);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--form-accent);
+        box-shadow: 0 0 0 3px rgba(38, 166, 154, 0.1);
+    }
+
+    .form-select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 0.5rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+        padding-right: 2.5rem;
+    }
+
+    .form-textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .form-row-full {
+        grid-column: 1 / -1;
+    }
+
+    .checkbox-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 0.5rem;
+    }
+
+    .checkbox-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+        accent-color: var(--form-primary);
+        transform: scale(1.2);
+    }
+
+    .help-text {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+    }
+
+    [data-theme="dark"] .help-text {
+        color: #adb5bd;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        padding-top: 2rem;
+        border-top: 1px solid var(--form-border);
+        margin-top: 2rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: var(--form-primary);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: var(--form-secondary);
+        color: white;
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #5a6268;
+        color: white;
+        text-decoration: none;
+    }
+
+    .error-message {
+        background: #f8d7da;
+        color: #721c24;
+        padding: 0.75rem;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+        border: 1px solid #f5c6cb;
+    }
+
+    [data-theme="dark"] .error-message {
+        background: #2d1b1b;
+        color: #f8b4b4;
+        border-color: #5c1e1e;
+    }
+
+    .success-message {
+        background: #d4edda;
+        color: #155724;
+        padding: 0.75rem;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+        border: 1px solid #c3e6cb;
+    }
+
+    [data-theme="dark"] .success-message {
+        background: #1b2d1b;
+        color: #b4f8b4;
+        border-color: #1e5c1e;
+    }
+
+    .priority-preview {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 3px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-left: 0.5rem;
+    }
+
+    .priority-normal { background: #6c757d; color: white; }
+    .priority-high { background: #f44336; color: white; }
+    .priority-critical { background: #d32f2f; color: white; }
+
+    @media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+        
+        .form-actions {
+            flex-direction: column;
+        }
+        
+        .form-body {
+            padding: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="event-form-container">
+                <div class="form-header">
+                    <h2>
+                        <i class="fas fa-calendar-plus me-2"></i>
+                        Create New Event
+                    </h2>
+                    <p class="mb-0 mt-2 opacity-75">Add a new event to the SPIST calendar</p>
+                </div>
+
+                <div class="form-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="{% if message.tags == 'error' %}error-message{% else %}success-message{% endif %}">
+                                <i class="fas fa-{% if message.tags == 'error' %}exclamation-triangle{% else %}check-circle{% endif %} me-2"></i>
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="post" id="eventForm">
+                        {% csrf_token %}
+                        
+                        <!-- Basic Information -->
+                        <div class="form-group">
+                            <label for="id_title" class="form-label">
+                                <i class="fas fa-heading me-1"></i>
+                                Event Title *
+                            </label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="error-message mt-2">
+                                    {% for error in form.title.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="id_description" class="form-label">
+                                <i class="fas fa-align-left me-1"></i>
+                                Description
+                            </label>
+                            {{ form.description }}
+                            <div class="help-text">Provide additional details about the event</div>
+                            {% if form.description.errors %}
+                                <div class="error-message mt-2">
+                                    {% for error in form.description.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Date and Time -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="id_start_date" class="form-label">
+                                    <i class="fas fa-calendar me-1"></i>
+                                    Start Date *
+                                </label>
+                                {{ form.start_date }}
+                                {% if form.start_date.errors %}
+                                    <div class="error-message mt-2">
+                                        {% for error in form.start_date.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="id_end_date" class="form-label">
+                                    <i class="fas fa-calendar me-1"></i>
+                                    End Date
+                                </label>
+                                {{ form.end_date }}
+                                <div class="help-text">Leave empty for single-day events</div>
+                                {% if form.end_date.errors %}
+                                    <div class="error-message mt-2">
+                                        {% for error in form.end_date.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="id_start_time" class="form-label">
+                                    <i class="fas fa-clock me-1"></i>
+                                    Start Time
+                                </label>
+                                {{ form.start_time }}
+                                <div class="help-text">Leave empty for all-day events</div>
+                                {% if form.start_time.errors %}
+                                    <div class="error-message mt-2">
+                                        {% for error in form.start_time.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="id_end_time" class="form-label">
+                                    <i class="fas fa-clock me-1"></i>
+                                    End Time
+                                </label>
+                                {{ form.end_time }}
+                                {% if form.end_time.errors %}
+                                    <div class="error-message mt-2">
+                                        {% for error in form.end_time.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Category and Settings -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="id_category" class="form-label">
+                                    <i class="fas fa-tags me-1"></i>
+                                    Category *
+                                </label>
+                                {{ form.category }}
+                                {% if form.category.errors %}
+                                    <div class="error-message mt-2">
+                                        {% for error in form.category.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="id_priority" class="form-label">
+                                    <i class="fas fa-exclamation-circle me-1"></i>
+                                    Priority *
+                                    <span id="priorityPreview" class="priority-preview priority-normal">Normal</span>
+                                </label>
+                                {{ form.priority }}
+                                {% if form.priority.errors %}
+                                    <div class="error-message mt-2">
+                                        {% for error in form.priority.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Location and Type -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="id_location" class="form-label">
+                                    <i class="fas fa-map-marker-alt me-1"></i>
+                                    Location
+                                </label>
+                                {{ form.location }}
+                                {% if form.location.errors %}
+                                    <div class="error-message mt-2">
+                                        {% for error in form.location.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="id_event_type" class="form-label">
+                                    <i class="fas fa-list me-1"></i>
+                                    Event Type *
+                                </label>
+                                {{ form.event_type }}
+                                {% if form.event_type.errors %}
+                                    <div class="error-message mt-2">
+                                        {% for error in form.event_type.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Audience Selection -->
+                        <div class="form-group">
+                            <label class="form-label">
+                                <i class="fas fa-users me-1"></i>
+                                Target Audience *
+                            </label>
+                            <div class="checkbox-group">
+                                <div class="checkbox-item">
+                                    {{ form.audience_all }}
+                                    <label for="id_audience_all">All Users</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    {{ form.audience_students }}
+                                    <label for="id_audience_students">Students</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    {{ form.audience_teachers }}
+                                    <label for="id_audience_teachers">Teachers</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    {{ form.audience_staff }}
+                                    <label for="id_audience_staff">Staff</label>
+                                </div>
+                            </div>
+                            <div class="help-text">Select who should see this event</div>
+                            {% if form.audience_all.errors %}
+                                <div class="error-message mt-2">
+                                    {% for error in form.audience_all.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Optional Settings -->
+                        {% if user.user_type == 'teacher' %}
+                        <div class="form-group">
+                            <label for="id_related_assessment" class="form-label">
+                                <i class="fas fa-clipboard-check me-1"></i>
+                                Related Assessment
+                            </label>
+                            {{ form.related_assessment }}
+                            <div class="help-text">Link this event to an assessment (optional)</div>
+                            {% if form.related_assessment.errors %}
+                                <div class="error-message mt-2">
+                                    {% for error in form.related_assessment.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
+                        <div class="form-group">
+                            <div class="checkbox-item">
+                                {{ form.send_notification }}
+                                <label for="id_send_notification" class="form-label mb-0">
+                                    <i class="fas fa-bell me-1"></i>
+                                    Send Notification
+                                </label>
+                            </div>
+                            <div class="help-text">Notify users about this event</div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <a href="{% url 'accounts:calendar_view' %}" class="btn btn-secondary">
+                                <i class="fas fa-times me-1"></i>
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>
+                                Create Event
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize form functionality
+    initializeEventForm();
+});
+
+function initializeEventForm() {
+    // Priority preview
+    const prioritySelect = document.getElementById('id_priority');
+    const priorityPreview = document.getElementById('priorityPreview');
+    
+    if (prioritySelect && priorityPreview) {
+        prioritySelect.addEventListener('change', function() {
+            const value = this.value;
+            const text = this.options[this.selectedIndex].text;
+            
+            priorityPreview.textContent = text;
+            priorityPreview.className = 'priority-preview priority-' + value;
+        });
+        
+        // Set initial state
+        if (prioritySelect.value) {
+            prioritySelect.dispatchEvent(new Event('change'));
+        }
+    }
+    
+    // Date validation
+    const startDateInput = document.getElementById('id_start_date');
+    const endDateInput = document.getElementById('id_end_date');
+    
+    if (startDateInput && endDateInput) {
+        startDateInput.addEventListener('change', function() {
+            const startDate = new Date(this.value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            if (startDate < today) {
+                alert('Start date cannot be in the past');
+                this.value = '';
+                return;
+            }
+            
+            if (endDateInput.value) {
+                const endDate = new Date(endDateInput.value);
+                if (endDate < startDate) {
+                    alert('End date cannot be before start date');
+                    endDateInput.value = '';
+                }
+            }
+        });
+        
+        endDateInput.addEventListener('change', function() {
+            if (startDateInput.value) {
+                const startDate = new Date(startDateInput.value);
+                const endDate = new Date(this.value);
+                
+                if (endDate < startDate) {
+                    alert('End date cannot be before start date');
+                    this.value = '';
+                }
+            }
+        });
+    }
+    
+    // Time validation
+    const startTimeInput = document.getElementById('id_start_time');
+    const endTimeInput = document.getElementById('id_end_time');
+    
+    if (startTimeInput && endTimeInput) {
+        function validateTimes() {
+            if (startTimeInput.value && endTimeInput.value) {
+                const startTime = startTimeInput.value;
+                const endTime = endTimeInput.value;
+                
+                if (endTime <= startTime) {
+                    alert('End time must be after start time');
+                    endTimeInput.value = '';
+                }
+            }
+        }
+        
+        startTimeInput.addEventListener('change', validateTimes);
+        endTimeInput.addEventListener('change', validateTimes);
+    }
+    
+    // Audience selection logic
+    const audienceAll = document.getElementById('id_audience_all');
+    const audienceCheckboxes = [
+        document.getElementById('id_audience_students'),
+        document.getElementById('id_audience_teachers'),
+        document.getElementById('id_audience_staff')
+    ].filter(Boolean);
+    
+    if (audienceAll && audienceCheckboxes.length > 0) {
+        audienceAll.addEventListener('change', function() {
+            if (this.checked) {
+                audienceCheckboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                    checkbox.disabled = true;
+                });
+            } else {
+                audienceCheckboxes.forEach(checkbox => {
+                    checkbox.disabled = false;
+                });
+            }
+        });
+        
+        audienceCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    audienceAll.checked = false;
+                }
+            });
+        });
+        
+        // Set initial state
+        if (audienceAll.checked) {
+            audienceAll.dispatchEvent(new Event('change'));
+        }
+    }
+    
+    // Form submission validation
+    const form = document.getElementById('eventForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            // Check if at least one audience is selected
+            const hasAudience = audienceAll?.checked || audienceCheckboxes.some(cb => cb?.checked);
+            
+            if (!hasAudience) {
+                e.preventDefault();
+                alert('Please select at least one target audience');
+                return false;
+            }
+            
+            // Additional validations can be added here
+            return true;
+        });
+    }
+}
+
+// Set today as minimum date for date inputs
+document.addEventListener('DOMContentLoaded', function() {
+    const today = new Date().toISOString().split('T')[0];
+    const dateInputs = document.querySelectorAll('input[type="date"]');
+    dateInputs.forEach(input => {
+        input.setAttribute('min', today);
+    });
+});
+</script>
+{% endblock %}

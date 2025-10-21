@@ -1,0 +1,392 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}Admin Assessments - SPIST{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-cogs me-2"></i>
+                            Assessment Administration
+                        </h4>
+                        <div>
+                            <a href="{% url 'assessments:create_assessment' %}" class="btn btn-success btn-sm">
+                                <i class="fas fa-plus me-1"></i>Create Assessment
+                            </a>
+                            <a href="{% url 'assessments:grading_queue' %}" class="btn btn-warning btn-sm">
+                                <i class="fas fa-clipboard-check me-1"></i>Grading Queue
+                                {% if pending_grades_count > 0 %}
+                                    <span class="badge bg-danger ms-1">{{ pending_grades_count }}</span>
+                                {% endif %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Statistics Overview -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="stat-card text-center p-3 bg-primary bg-opacity-10 rounded">
+                                <h4 class="text-primary mb-1">{{ total_assessments }}</h4>
+                                <p class="mb-0 text-muted">Total Assessments</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card text-center p-3 bg-success bg-opacity-10 rounded">
+                                <h4 class="text-success mb-1">{{ published_assessments }}</h4>
+                                <p class="mb-0 text-muted">Published</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card text-center p-3 bg-warning bg-opacity-10 rounded">
+                                <h4 class="text-warning mb-1">{{ draft_assessments }}</h4>
+                                <p class="mb-0 text-muted">Drafts</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card text-center p-3 bg-info bg-opacity-10 rounded">
+                                <h4 class="text-info mb-1">{{ active_attempts }}</h4>
+                                <p class="mb-0 text-muted">Active Attempts</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card bg-light">
+                                <div class="card-body p-3">
+                                    <form method="GET" class="row g-3">
+                                        <div class="col-md-3">
+                                            <label class="form-label">Status</label>
+                                            <select name="status" class="form-select form-select-sm">
+                                                <option value="">All Statuses</option>
+                                                <option value="published" {% if request.GET.status == 'published' %}selected{% endif %}>Published</option>
+                                                <option value="draft" {% if request.GET.status == 'draft' %}selected{% endif %}>Draft</option>
+                                                <option value="scheduled" {% if request.GET.status == 'scheduled' %}selected{% endif %}>Scheduled</option>
+                                                <option value="archived" {% if request.GET.status == 'archived' %}selected{% endif %}>Archived</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Subject</label>
+                                            <select name="subject" class="form-select form-select-sm">
+                                                <option value="">All Subjects</option>
+                                                <option value="mathematics" {% if request.GET.subject == 'mathematics' %}selected{% endif %}>Mathematics</option>
+                                                <option value="science" {% if request.GET.subject == 'science' %}selected{% endif %}>Science</option>
+                                                <option value="english" {% if request.GET.subject == 'english' %}selected{% endif %}>English</option>
+                                                <option value="social_studies" {% if request.GET.subject == 'social_studies' %}selected{% endif %}>Social Studies</option>
+                                                <option value="general" {% if request.GET.subject == 'general' %}selected{% endif %}>General</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Creator</label>
+                                            <select name="creator" class="form-select form-select-sm">
+                                                <option value="">All Creators</option>
+                                                {% for teacher in teachers %}
+                                                    <option value="{{ teacher.id }}" {% if request.GET.creator == teacher.id|stringformat:'s' %}selected{% endif %}>
+                                                        {{ teacher.get_full_name }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">&nbsp;</label>
+                                            <div class="d-flex gap-2">
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-search me-1"></i>Filter
+                                                </button>
+                                                <a href="{% url 'assessments:admin_assessments' %}" class="btn btn-outline-secondary btn-sm">
+                                                    <i class="fas fa-times me-1"></i>Clear
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Assessments Table -->
+                    {% if assessments.exists %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Assessment</th>
+                                        <th>Creator</th>
+                                        <th>Subject</th>
+                                        <th>Status</th>
+                                        <th>Questions</th>
+                                        <th>Attempts</th>
+                                        <th>Created</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for assessment in assessments %}
+                                    <tr>
+                                        <td>
+                                            <div>
+                                                <div class="fw-bold">{{ assessment.title|truncatechars:40 }}</div>
+                                                <small class="text-muted">
+                                                    <span class="badge bg-info me-1">{{ assessment.get_assessment_type_display }}</span>
+                                                    <span class="badge bg-secondary">{{ assessment.get_difficulty_level_display }}</span>
+                                                </small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-user-circle text-primary me-2"></i>
+                                                <div>
+                                                    <div class="fw-bold">{{ assessment.creator.get_full_name }}</div>
+                                                    <small class="text-muted">{{ assessment.creator.teacher_profile.department|default:"N/A" }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary">{{ assessment.get_subject_category_display }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-{% if assessment.status == 'published' %}success{% elif assessment.status == 'draft' %}secondary{% elif assessment.status == 'scheduled' %}warning{% else %}dark{% endif %}">
+                                                {{ assessment.get_status_display }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="text-center">
+                                                <div class="fw-bold">{{ assessment.questions.count }}</div>
+                                                <small class="text-muted">questions</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="text-center">
+                                                <div>
+                                                    <span class="fw-bold text-primary">{{ assessment.total_attempts }}</span>
+                                                    <small class="text-muted">total</small>
+                                                </div>
+                                                <div>
+                                                    <small class="text-success">{{ assessment.completed_attempts }} completed</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <div class="text-sm">{{ assessment.created_at|date:"M d, Y" }}</div>
+                                                <small class="text-muted">{{ assessment.created_at|date:"g:i A" }}</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <a href="{% url 'assessments:view_assessment' assessment.id %}" 
+                                                   class="btn btn-outline-info btn-sm" title="View">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="{% url 'assessments:edit_assessment' assessment.id %}" 
+                                                   class="btn btn-outline-warning btn-sm" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <a href="{% url 'assessments:assessment_results' assessment.id %}" 
+                                                   class="btn btn-outline-success btn-sm" title="Results">
+                                                    <i class="fas fa-chart-bar"></i>
+                                                </a>
+                                                <div class="btn-group btn-group-sm">
+                                                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" 
+                                                            type="button" data-bs-toggle="dropdown">
+                                                        <i class="fas fa-ellipsis-v"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            <a class="dropdown-item" 
+                                                               href="{% url 'assessments:manage_questions' assessment.id %}">
+                                                                <i class="fas fa-cogs me-2"></i>Manage Questions
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" href="#" 
+                                                               onclick="duplicateAssessment({{ assessment.id }})">
+                                                                <i class="fas fa-copy me-2"></i>Duplicate
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" 
+                                                               href="{% url 'assessments:export_grades' assessment.id %}">
+                                                                <i class="fas fa-download me-2"></i>Export Grades
+                                                            </a>
+                                                        </li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        {% if assessment.status == 'draft' %}
+                                                            <li>
+                                                                <a class="dropdown-item text-success" href="#" 
+                                                                   onclick="publishAssessment({{ assessment.id }})">
+                                                                    <i class="fas fa-globe me-2"></i>Publish
+                                                                </a>
+                                                            </li>
+                                                        {% elif assessment.status == 'published' %}
+                                                            <li>
+                                                                <a class="dropdown-item text-warning" href="#" 
+                                                                   onclick="archiveAssessment({{ assessment.id }})">
+                                                                    <i class="fas fa-archive me-2"></i>Archive
+                                                                </a>
+                                                            </li>
+                                                        {% endif %}
+                                                        <li>
+                                                            <a class="dropdown-item text-danger" href="#" 
+                                                               onclick="deleteAssessment({{ assessment.id }})">
+                                                                <i class="fas fa-trash me-2"></i>Delete
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        {% if assessments.has_other_pages %}
+                        <nav aria-label="Assessments pagination">
+                            <ul class="pagination justify-content-center">
+                                {% if assessments.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ assessments.previous_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.subject %}&subject={{ request.GET.subject }}{% endif %}{% if request.GET.creator %}&creator={{ request.GET.creator }}{% endif %}">Previous</a>
+                                    </li>
+                                {% endif %}
+                                
+                                {% for num in assessments.paginator.page_range %}
+                                    {% if assessments.number == num %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ num }}</span>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ num }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.subject %}&subject={{ request.GET.subject }}{% endif %}{% if request.GET.creator %}&creator={{ request.GET.creator }}{% endif %}">{{ num }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                {% if assessments.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ assessments.next_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.subject %}&subject={{ request.GET.subject }}{% endif %}{% if request.GET.creator %}&creator={{ request.GET.creator }}{% endif %}">Next</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        {% endif %}
+                    {% else %}
+                        <!-- Empty State -->
+                        <div class="text-center py-5">
+                            <i class="fas fa-clipboard-list fa-4x text-muted mb-3"></i>
+                            <h4 class="text-muted">No Assessments Found</h4>
+                            <p class="text-muted">No assessments match your current filters.</p>
+                            <div class="mt-4">
+                                <a href="{% url 'assessments:create_assessment' %}" class="btn btn-primary">
+                                    <i class="fas fa-plus me-1"></i>Create First Assessment
+                                </a>
+                                <a href="{% url 'assessments:admin_assessments' %}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times me-1"></i>Clear Filters
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Action Modals -->
+<div class="modal fade" id="actionModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="actionModalTitle">Confirm Action</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="actionModalBody">
+                <!-- Dynamic content -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmActionBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentAssessmentId = null;
+let currentAction = null;
+
+function duplicateAssessment(assessmentId) {
+    if (confirm('Create a copy of this assessment?')) {
+        // Implement duplication
+        window.location.href = `/assessments/${assessmentId}/duplicate/`;
+    }
+}
+
+function publishAssessment(assessmentId) {
+    currentAssessmentId = assessmentId;
+    currentAction = 'publish';
+    
+    document.getElementById('actionModalTitle').textContent = 'Publish Assessment';
+    document.getElementById('actionModalBody').innerHTML = 
+        '<p>Are you sure you want to publish this assessment? Students will be able to access it once published.</p>';
+    document.getElementById('confirmActionBtn').className = 'btn btn-success';
+    document.getElementById('confirmActionBtn').textContent = 'Publish';
+    
+    new bootstrap.Modal(document.getElementById('actionModal')).show();
+}
+
+function archiveAssessment(assessmentId) {
+    currentAssessmentId = assessmentId;
+    currentAction = 'archive';
+    
+    document.getElementById('actionModalTitle').textContent = 'Archive Assessment';
+    document.getElementById('actionModalBody').innerHTML = 
+        '<p>Are you sure you want to archive this assessment? It will no longer be available to students.</p>';
+    document.getElementById('confirmActionBtn').className = 'btn btn-warning';
+    document.getElementById('confirmActionBtn').textContent = 'Archive';
+    
+    new bootstrap.Modal(document.getElementById('actionModal')).show();
+}
+
+function deleteAssessment(assessmentId) {
+    currentAssessmentId = assessmentId;
+    currentAction = 'delete';
+    
+    document.getElementById('actionModalTitle').textContent = 'Delete Assessment';
+    document.getElementById('actionModalBody').innerHTML = 
+        '<p class="text-danger"><strong>Warning:</strong> This action cannot be undone. All associated data including student attempts and grades will be permanently deleted.</p>';
+    document.getElementById('confirmActionBtn').className = 'btn btn-danger';
+    document.getElementById('confirmActionBtn').textContent = 'Delete';
+    
+    new bootstrap.Modal(document.getElementById('actionModal')).show();
+}
+
+document.getElementById('confirmActionBtn').addEventListener('click', function() {
+    if (currentAssessmentId && currentAction) {
+        // Create form to perform action
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/assessments/${currentAssessmentId}/${currentAction}/`;
+        
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'csrfmiddlewaretoken';
+        csrfInput.value = csrfToken;
+        form.appendChild(csrfInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+});
+</script>
+{% endblock %}

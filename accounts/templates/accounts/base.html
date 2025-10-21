@@ -17,17 +17,32 @@
     
     <style>
         :root {
-            --primary-color: #1b5e20;
-            --primary-light: #4caf50;
-            --primary-dark: #0f3b14;
-            --secondary-color: #2196f3;
-            --accent-color: #ff9800;
-            --success-color: #4caf50;
-            --warning-color: #ff9800;
-            --danger-color: #f44336;
-            --light-bg: #f8f9fa;
-            --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --card-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            /* SPIST Brand Colors - Green and Yellow Theme */
+            --spist-primary-green: #2e7d32;
+            --spist-light-green: #4caf50;
+            --spist-dark-green: #1b5e20;
+            --spist-forest-green: #388e3c;
+            --spist-emerald: #00c853;
+            
+            --spist-primary-yellow: #fbc02d;
+            --spist-light-yellow: #ffeb3b;
+            --spist-dark-yellow: #f57f17;
+            --spist-amber: #ffc107;
+            --spist-gold: #ff8f00;
+            
+            /* Main Theme Variables */
+            --primary-color: var(--spist-primary-green);
+            --primary-light: var(--spist-light-green);
+            --primary-dark: var(--spist-dark-green);
+            --secondary-color: var(--spist-primary-yellow);
+            --accent-color: var(--spist-amber);
+            --success-color: var(--spist-emerald);
+            --warning-color: var(--spist-amber);
+            --danger-color: #e53935;
+            --info-color: var(--spist-forest-green);
+            --light-bg: #f1f8e9;
+            --card-shadow: 0 4px 6px -1px rgba(46, 125, 50, 0.1), 0 2px 4px -1px rgba(46, 125, 50, 0.06);
+            --card-shadow-lg: 0 10px 15px -3px rgba(46, 125, 50, 0.1), 0 4px 6px -2px rgba(46, 125, 50, 0.05);
             
             /* Dark Mode Variables */
             --dark-bg-primary: #1a1a1a;
@@ -51,8 +66,8 @@
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
-            color: #374151;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #2e5233;
+            background: linear-gradient(135deg, var(--light-bg) 0%, #e8f5e8 100%);
             min-height: 100vh;
         }
 
@@ -170,13 +185,28 @@
         }
 
         .btn-primary-modern {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+            background: linear-gradient(135deg, var(--spist-primary-green) 0%, var(--spist-light-green) 100%);
+            color: white;
+            border: 2px solid transparent;
+        }
+
+        .btn-primary-modern:hover {
+            background: linear-gradient(135deg, var(--spist-dark-green) 0%, var(--spist-primary-green) 100%);
+            border-color: var(--spist-light-green);
             color: white;
         }
 
         .btn-secondary-modern {
-            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
-            color: white;
+            background: linear-gradient(135deg, var(--spist-primary-yellow) 0%, var(--spist-light-yellow) 100%);
+            color: var(--spist-dark-green);
+            border: 2px solid transparent;
+            font-weight: 600;
+        }
+
+        .btn-secondary-modern:hover {
+            background: linear-gradient(135deg, var(--spist-amber) 0%, var(--spist-primary-yellow) 100%);
+            border-color: var(--spist-gold);
+            color: var(--spist-dark-green);
         }
 
         /* Dashboard Stats */
@@ -209,61 +239,65 @@
             font-weight: 500;
         }
 
-        /* Enhanced stat card variants - Green shades for light mode */
+        /* Enhanced stat card variants - SPIST Green and Yellow Theme */
         .stat-card-primary {
-            border-left-color: var(--primary-color);
+            border-left-color: var(--spist-dark-green);
             background: linear-gradient(135deg, #e8f5e8 0%, #f1f8f1 100%);
-            color: #2d5016;
+            color: var(--spist-dark-green);
         }
 
         .stat-card-primary .stat-number {
-            color: var(--primary-color);
+            color: var(--spist-primary-green);
+            font-weight: 700;
         }
 
         .stat-card-primary .stat-label {
-            color: #4a7c59;
+            color: var(--spist-forest-green);
         }
 
         .stat-card-info {
-            border-left-color: var(--secondary-color);
-            background: linear-gradient(135deg, #e3f2fd 0%, #f0f8ff 100%);
-            color: #1565c0;
+            border-left-color: var(--spist-primary-yellow);
+            background: linear-gradient(135deg, #fffde7 0%, #fff8e1 100%);
+            color: var(--spist-dark-yellow);
         }
 
         .stat-card-info .stat-number {
-            color: var(--secondary-color);
+            color: var(--spist-primary-yellow);
+            font-weight: 700;
         }
 
         .stat-card-info .stat-label {
-            color: #1976d2;
+            color: var(--spist-gold);
         }
 
         .stat-card-warning {
-            border-left-color: var(--warning-color);
+            border-left-color: var(--spist-amber);
             background: linear-gradient(135deg, #fff8e1 0%, #fffbf0 100%);
-            color: #e65100;
+            color: var(--spist-dark-yellow);
         }
 
         .stat-card-warning .stat-number {
-            color: var(--warning-color);
+            color: var(--spist-amber);
+            font-weight: 700;
         }
 
         .stat-card-warning .stat-label {
-            color: #f57c00;
+            color: var(--spist-gold);
         }
 
         .stat-card-success {
-            border-left-color: var(--success-color);
-            background: linear-gradient(135deg, #e8f5e8 0%, #f1f8f1 100%);
-            color: #2d5016;
+            border-left-color: var(--spist-emerald);
+            background: linear-gradient(135deg, #e0f2f1 0%, #e8f5e8 100%);
+            color: var(--spist-dark-green);
         }
 
         .stat-card-success .stat-number {
-            color: var(--success-color);
+            color: var(--spist-emerald);
+            font-weight: 700;
         }
 
         .stat-card-success .stat-label {
-            color: #388e3c;
+            color: var(--spist-forest-green);
         }
 
         /* Alert Styles */
@@ -1645,6 +1679,11 @@
                                 <i class="fas fa-book-open me-1"></i>Enrollment
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{% url 'accounts:calendar_view' %}" class="nav-link">
+                                <i class="fas fa-calendar-alt me-1"></i>Calendar
+                            </a>
+                        </li>
                     {% elif user.user_type == 'teacher' %}
                         <li class="nav-item">
                             <a href="{% url 'accounts:teacher_dashboard' %}" class="nav-link">
@@ -1666,6 +1705,11 @@
                                 <li><a class="dropdown-item" href="{% url 'courses:curriculum_list' %}"><i class="fas fa-list me-2"></i>Curricula</a></li>
                                 {% endif %}
                             </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'accounts:calendar_view' %}" class="nav-link">
+                                <i class="fas fa-calendar-alt me-1"></i>Calendar
+                            </a>
                         </li>
                     {% endif %}
                     <li class="nav-item dropdown">

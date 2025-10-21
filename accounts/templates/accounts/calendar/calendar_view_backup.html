@@ -1,0 +1,2123 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}School Calendar - SPIST{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    /* SPIST Calendar - Clean Professional Design */
+    
+    /* Body and Page Layout */
+    .calendar-page {
+        background: linear-gradient(135deg, #e0f2f1 0%, #f8f9fa 100%);
+        min-height: 100vh;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    .calendar-container {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 77, 64, 0.12);
+        overflow: hidden;
+        margin: 1rem 0;
+    }
+
+    /* Calendar Header */
+    .calendar-header {
+        background: linear-gradient(135deg, #26a69a 0%, #00695c 100%);
+        color: white;
+        padding: 2rem;
+        position: relative;
+    }
+
+    .calendar-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+        opacity: 0.3;
+    }
+
+    .calendar-header-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .calendar-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .calendar-title i {
+        font-size: 1.75rem;
+        opacity: 0.9;
+    }
+
+    /* Calendar Controls */
+    .calendar-controls {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .date-navigation {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+    }
+
+    .nav-btn {
+        color: white !important;
+        text-decoration: none;
+        padding: 0.5rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .nav-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-1px);
+    }
+
+    .current-date {
+        font-weight: 600;
+        font-size: 1.1rem;
+        min-width: 180px;
+        text-align: center;
+    }
+
+    .today-btn {
+        background: rgba(255, 255, 255, 0.2);
+        color: white !important;
+        padding: 0.75rem 1.25rem;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .today-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .view-selector {
+        display: flex;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        padding: 0.25rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .view-btn {
+        padding: 0.5rem 1rem;
+        color: white !important;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .view-btn:hover {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .view-btn.active {
+        background: rgba(255, 255, 255, 0.25);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Calendar Body */
+    .calendar-body {
+        padding: 2rem;
+        background: #ffffff;
+    }
+
+    .calendar-actions {
+        margin-bottom: 1.5rem;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        background: linear-gradient(135deg, #26a69a 0%, #00695c 100%);
+        color: white !important;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(38, 166, 154, 0.3);
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(38, 166, 154, 0.4);
+    }
+
+    /* Calendar Grid */
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 1px;
+        background: #e0e7ff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .calendar-day-header {
+        background: #f8fafc;
+        padding: 1rem;
+        font-weight: 600;
+        text-align: center;
+        color: #475569;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    .calendar-day {
+        background: #ffffff;
+        min-height: 120px;
+        padding: 0.75rem;
+        position: relative;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+    }
+
+    .calendar-day:hover {
+        background: #f0fdfa;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-color: #26a69a;
+    }
+
+    .calendar-day.other-month {
+        background: #f8fafc;
+        opacity: 0.5;
+    }
+
+    .calendar-day.today {
+        background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
+        border: 2px solid #26a69a;
+        box-shadow: 0 4px 16px rgba(38, 166, 154, 0.2);
+    }
+
+    .day-number {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+    }
+
+    .calendar-day.today .day-number {
+        color: #00695c;
+        font-weight: 700;
+    }
+
+    /* Event Items */
+    .event-item {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        margin: 0.125rem 0;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: block;
+        text-decoration: none;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .event-item:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
+        color: white;
+    }
+
+    /* Event Categories */
+    .event-item[data-category="examinations"] {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    }
+
+    .event-item[data-category="faculty_meetings"] {
+        background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+    }
+
+    .event-item[data-category="school_activities"] {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+
+    .event-item[data-category="school_holidays"] {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .event-item[data-category="academic_events"] {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    }
+
+    .event-item[data-category="assessments"] {
+        background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    }
+
+    .event-item[data-category="deadlines"] {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    }
+
+    /* Sidebar Styles */
+    .calendar-sidebar {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 8px 32px rgba(0, 77, 64, 0.08);
+        height: fit-content;
+        position: sticky;
+        top: 2rem;
+    }
+
+    .sidebar-section {
+        margin-bottom: 2rem;
+    }
+
+    .sidebar-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .sidebar-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .upcoming-event {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-left: 4px solid #26a69a;
+        padding: 1rem;
+        margin: 0.75rem 0;
+        border-radius: 0 12px 12px 0;
+        transition: all 0.3s ease;
+    }
+
+    .upcoming-event:hover {
+        transform: translateX(4px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .upcoming-event-date {
+        font-size: 0.8rem;
+        color: #6b7280;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .upcoming-event-title {
+        font-weight: 600;
+        color: #1f2937;
+        margin: 0.25rem 0;
+    }
+
+    .upcoming-event-category {
+        display: inline-block;
+        background: #26a69a;
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 6px;
+        font-size: 0.7rem;
+        font-weight: 500;
+    }
+
+    /* Filter Section */
+    .filter-section {
+        border-top: 2px solid #e5e7eb;
+        padding-top: 1.5rem;
+    }
+
+    .filter-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        border-radius: 8px;
+        margin: 0.5rem 0;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .filter-checkbox:hover {
+        background: #f0fdfa;
+    }
+
+    .filter-checkbox input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: #26a69a;
+    }
+
+    .filter-checkbox label {
+        font-weight: 500;
+        color: #374151;
+        cursor: pointer;
+        flex: 1;
+    }
+
+    /* Legend Section */
+    .legend-section {
+        border-top: 2px solid #e5e7eb;
+        padding-top: 1.5rem;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin: 0.75rem 0;
+    }
+
+    .legend-color {
+        width: 20px;
+        height: 20px;
+        border-radius: 6px;
+        flex-shrink: 0;
+    }
+
+    .legend-color.examinations { background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%); }
+    .legend-color.faculty_meetings { background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%); }
+    .legend-color.school_activities { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+    .legend-color.school_holidays { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+    .legend-color.academic_events { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
+    .legend-color.assessments { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); }
+    .legend-color.deadlines { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+
+    .legend-text {
+        font-size: 0.9rem;
+        color: #4b5563;
+        font-weight: 500;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .calendar-page {
+            padding: 1rem 0;
+        }
+
+        .calendar-header {
+            padding: 1.5rem;
+        }
+
+        .calendar-title {
+            font-size: 1.5rem;
+        }
+
+        .calendar-controls {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 1rem;
+        }
+
+        .date-navigation {
+            justify-content: center;
+        }
+
+        .calendar-body {
+            padding: 1rem;
+        }
+
+        .calendar-day {
+            min-height: 80px;
+            padding: 0.5rem;
+        }
+
+        .event-item {
+            font-size: 0.7rem;
+        }
+
+        .calendar-sidebar {
+            margin-top: 2rem;
+            position: static;
+        }
+    }
+
+    /* Loading Animation */
+    .loading {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .loading::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        animation: loading 1.5s infinite;
+    }
+
+    @keyframes loading {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+</style>
+
+    /* Main Calendar Container */
+    .calendar-container {
+        background: var(--calendar-bg);
+        color: var(--calendar-text);
+        border-radius: var(--calendar-radius);
+        box-shadow: 0 4px 24px var(--calendar-shadow);
+        overflow: hidden;
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--calendar-border);
+        transition: all 0.3s ease;
+    }
+
+    .calendar-container:hover {
+        box-shadow: 0 8px 32px var(--calendar-shadow-hover);
+        transform: translateY(-2px);
+    }
+
+    /* Enhanced Calendar Header */
+    .calendar-header {
+        background: linear-gradient(135deg, var(--calendar-primary) 0%, var(--calendar-secondary) 50%, var(--calendar-accent) 100%);
+        color: white;
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .calendar-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm0 0c0 11.046 8.954 20 20 20s20-8.954 20-20-8.954-20-20-20-20 8.954-20 20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+        opacity: 0.1;
+    }
+
+    .calendar-header-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+
+    .calendar-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .calendar-title i {
+        font-size: 1.75rem;
+        opacity: 0.9;
+    }
+
+    /* Enhanced Navigation Controls */
+    .calendar-controls {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 2;
+    }
+
+    .date-navigation {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        padding: 0.75rem 1.25rem;
+        border-radius: 50px;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .nav-btn {
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.2);
+        color: white;
+        padding: 0.75rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 44px;
+        min-height: 44px;
+        font-size: 1rem;
+    }
+
+    .nav-btn:hover {
+        background: rgba(255,255,255,0.25);
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .nav-btn:active {
+        transform: translateY(0) scale(0.95);
+    }
+
+    .current-date {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: white;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        min-width: 180px;
+        text-align: center;
+    }
+
+    .view-selector {
+        display: flex;
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 50px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.2);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .view-btn {
+        background: none;
+        border: none;
+        color: white;
+        padding: 0.75rem 1.25rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        position: relative;
+        text-decoration: none;
+    }
+
+    .view-btn.active {
+        background: rgba(255,255,255,0.25);
+        backdrop-filter: blur(10px);
+        font-weight: 600;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .view-btn:hover:not(.active) {
+        background: rgba(255,255,255,0.15);
+        color: white;
+        text-decoration: none;
+    }
+
+    .today-btn {
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+    }
+
+    .today-btn:hover {
+        background: rgba(255,255,255,0.3);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Enhanced Calendar Body */
+    .calendar-body {
+        padding: 2rem;
+        background: var(--calendar-bg);
+    }
+
+    /* Action Buttons */
+    .calendar-actions {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .action-btn {
+        background: var(--calendar-primary);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.95rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px var(--calendar-shadow);
+    }
+
+    .action-btn:hover {
+        background: var(--calendar-secondary);
+        color: white;
+        text-decoration: none;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px var(--calendar-shadow-hover);
+    }
+
+    .action-btn.secondary {
+        background: var(--calendar-text-light);
+        color: white;
+    }
+
+    .action-btn.secondary:hover {
+        background: var(--calendar-text);
+        color: white;
+    }
+
+    .action-btn i {
+        font-size: 1rem;
+    }
+
+    /* Enhanced Month View */
+    .month-calendar {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 2px;
+        margin-bottom: 1rem;
+        border-radius: var(--calendar-radius);
+        overflow: hidden;
+        box-shadow: 0 2px 12px var(--calendar-shadow);
+    }
+
+    .month-calendar th {
+        background: linear-gradient(135deg, var(--calendar-primary), var(--calendar-secondary));
+        color: white;
+        padding: 1rem 0.5rem;
+        text-align: center;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        position: relative;
+    }
+
+    .month-calendar th:first-child {
+        border-top-left-radius: var(--calendar-radius-small);
+    }
+
+    .month-calendar th:last-child {
+        border-top-right-radius: var(--calendar-radius-small);
+    }
+
+    .calendar-day {
+        padding: 1rem;
+        position: relative;
+        background: var(--calendar-bg);
+        transition: all 0.3s ease;
+        height: 140px;
+        border: 1px solid var(--calendar-border);
+        cursor: pointer;
+    }
+
+    .calendar-day:hover {
+        background: var(--calendar-hover);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px var(--calendar-shadow);
+        border-color: var(--calendar-accent);
+    }
+
+    .calendar-day.other-month {
+        opacity: 0.4;
+        background: #fafafa;
+    }
+
+    [data-theme="dark"] .calendar-day.other-month {
+        background: #1a1a1a;
+    }
+
+    .calendar-day.today {
+        background: linear-gradient(135deg, var(--calendar-light), rgba(38, 166, 154, 0.1));
+        border: 2px solid var(--calendar-accent);
+        box-shadow: 0 0 0 3px rgba(38, 166, 154, 0.1);
+        transform: scale(1.02);
+    }
+
+    .day-number {
+        font-weight: 700;
+        color: var(--calendar-text);
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .calendar-day.today .day-number {
+        color: var(--calendar-primary);
+    }
+
+    .day-indicator {
+        width: 8px;
+        height: 8px;
+        background: var(--calendar-accent);
+        border-radius: 50%;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .calendar-day.today .day-indicator {
+        opacity: 1;
+        animation: pulse 2s infinite;
+    }
+
+    .day-events {
+        max-height: 90px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: var(--calendar-accent) transparent;
+    }
+
+    .day-events::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    .day-events::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .day-events::-webkit-scrollbar-thumb {
+        background: var(--calendar-accent);
+        border-radius: 2px;
+    }
+
+    /* Enhanced Event Items */
+    .event-item {
+        background: var(--calendar-accent);
+        color: white;
+        padding: 0.375rem 0.75rem;
+        margin: 0.25rem 0;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        cursor: pointer;
+        display: block;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        position: relative;
+        border: 1px solid transparent;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .event-item::before {
+        content: '';
+        position: absolute;
+        left: 0.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 4px;
+        background: currentColor;
+        border-radius: 50%;
+        opacity: 0.7;
+    }
+
+    .event-item:hover {
+        transform: translateY(-1px) scale(1.02);
+        box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        color: white;
+        text-decoration: none;
+        border-color: rgba(255,255,255,0.3);
+    }
+
+    /* Priority-based styling */
+    .event-item.priority-normal {
+        background: linear-gradient(135deg, #6c757d, #5a6268);
+    }
+
+    .event-item.priority-high {
+        background: linear-gradient(135deg, #f44336, #d32f2f);
+        box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+    }
+
+    .event-item.priority-critical {
+        background: linear-gradient(135deg, #d32f2f, #b71c1c);
+        box-shadow: 0 2px 8px rgba(211, 47, 47, 0.4);
+        animation: criticalPulse 2s infinite;
+        font-weight: 600;
+    }
+
+    /* Event type styling */
+    .event-item.type-examination {
+        background: linear-gradient(135deg, #ff9800, #f57c00);
+        box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3);
+    }
+
+    .event-item.type-assessment {
+        background: linear-gradient(135deg, #2196f3, #1976d2);
+        box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+    }
+
+    .event-item.type-holiday {
+        background: linear-gradient(135deg, #4caf50, #388e3c);
+        box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+    }
+
+    .event-item.type-academic {
+        background: linear-gradient(135deg, var(--calendar-primary), var(--calendar-secondary));
+        box-shadow: 0 2px 8px var(--calendar-shadow);
+    }
+
+    .event-item.type-meeting {
+        background: linear-gradient(135deg, #9c27b0, #7b1fa2);
+        box-shadow: 0 2px 8px rgba(156, 39, 176, 0.3);
+    }
+
+    .event-item.type-activity {
+        background: linear-gradient(135deg, #f44336, #d32f2f);
+        box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+    }
+
+    .event-item.type-deadline {
+        background: linear-gradient(135deg, #ff5722, #d84315);
+        box-shadow: 0 2px 8px rgba(255, 87, 34, 0.3);
+        position: relative;
+        overflow: visible;
+    }
+
+    .event-item.type-deadline::after {
+        content: '⚠️';
+        position: absolute;
+        right: 0.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.7rem;
+    }
+
+    /* Animations */
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.8; }
+    }
+
+    @keyframes criticalPulse {
+        0%, 100% { 
+            opacity: 1; 
+            transform: scale(1);
+        }
+        50% { 
+            opacity: 0.85; 
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.5);
+        }
+    }
+
+    /* Week View Styles */
+    .week-calendar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 1px;
+        background: var(--calendar-border);
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .week-day {
+        background: var(--calendar-bg);
+        padding: 1rem;
+        min-height: 200px;
+        position: relative;
+    }
+
+    .week-day.today {
+        background: rgba(38, 166, 154, 0.05);
+        border-top: 3px solid var(--calendar-accent);
+    }
+
+    .week-day-header {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--calendar-primary);
+    }
+
+    /* Day View Styles */
+    .day-view {
+        background: var(--calendar-bg);
+        border-radius: 4px;
+        padding: 1rem;
+    }
+
+    .day-view-header {
+        text-align: center;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--calendar-border);
+    }
+
+    .day-view-date {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--calendar-primary);
+    }
+
+    .day-events-list {
+        space-y: 0.5rem;
+    }
+
+    .day-event-card {
+        background: var(--calendar-bg);
+        border: 1px solid var(--calendar-border);
+        border-left: 4px solid var(--calendar-accent);
+        border-radius: 4px;
+        padding: 1rem;
+        margin-bottom: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .day-event-card:hover {
+        transform: translateX(5px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Enhanced Sidebar Styles */
+    .calendar-sidebar {
+        background: var(--calendar-bg);
+        border-radius: var(--calendar-radius);
+        padding: 1.5rem;
+        box-shadow: 0 4px 24px var(--calendar-shadow);
+        border: 1px solid var(--calendar-border);
+        height: fit-content;
+        position: sticky;
+        top: 2rem;
+    }
+
+    .sidebar-section {
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--calendar-border);
+    }
+
+    .sidebar-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .sidebar-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--calendar-primary);
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.95rem;
+    }
+
+    .sidebar-title i {
+        font-size: 1.1rem;
+        opacity: 0.8;
+    }
+
+    /* Enhanced Upcoming Events */
+    .upcoming-event {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1rem;
+        border-radius: var(--calendar-radius-small);
+        margin-bottom: 0.75rem;
+        transition: all 0.3s ease;
+        background: var(--calendar-hover);
+        border: 1px solid var(--calendar-border);
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .upcoming-event::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: var(--calendar-accent);
+        transition: width 0.3s ease;
+    }
+
+    .upcoming-event:hover {
+        background: rgba(38, 166, 154, 0.1);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px var(--calendar-shadow-hover);
+        border-color: var(--calendar-accent);
+    }
+
+    .upcoming-event:hover::before {
+        width: 6px;
+    }
+
+    .event-date-badge {
+        background: linear-gradient(135deg, var(--calendar-primary), var(--calendar-secondary));
+        color: white;
+        padding: 0.5rem 0.75rem;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        min-width: 70px;
+        text-align: center;
+        box-shadow: 0 2px 8px var(--calendar-shadow);
+        flex-shrink: 0;
+    }
+
+    .event-info {
+        flex-grow: 1;
+        min-width: 0;
+    }
+
+    .event-info h6 {
+        margin: 0 0 0.5rem 0;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--calendar-text);
+        line-height: 1.3;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .event-info small {
+        color: var(--calendar-text-light);
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .event-info small .badge {
+        background: var(--calendar-accent);
+        color: white;
+        padding: 0.2rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        font-weight: 500;
+    }
+
+    /* Action Buttons */
+    .calendar-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        background: var(--calendar-primary);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .action-btn:hover {
+        background: var(--calendar-secondary);
+        color: white;
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
+
+    .action-btn.secondary {
+        background: #6c757d;
+    }
+
+    .action-btn.secondary:hover {
+        background: #5a6268;
+    }
+
+    /* Enhanced Filter Section */
+    .filter-section {
+        background: var(--calendar-light);
+        border-radius: var(--calendar-radius-small);
+        padding: 1.25rem;
+        border: 1px solid var(--calendar-border);
+    }
+
+    .filter-group {
+        margin-bottom: 1.25rem;
+    }
+
+    .filter-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .filter-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        color: var(--calendar-text);
+        font-size: 0.9rem;
+    }
+
+    .filter-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.5rem;
+        padding: 0.5rem;
+        border-radius: var(--calendar-radius-small);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .filter-checkbox:hover {
+        background: rgba(38, 166, 154, 0.1);
+    }
+
+    .filter-checkbox input[type="checkbox"] {
+        accent-color: var(--calendar-primary);
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+
+    .filter-checkbox label {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--calendar-text);
+        font-weight: 500;
+        font-size: 0.9rem;
+        margin: 0;
+        flex-grow: 1;
+    }
+
+    .category-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        font-size: 0.8rem;
+    }
+
+    /* Legend Section */
+    .legend-section {
+        background: var(--calendar-hover);
+        border-radius: var(--calendar-radius-small);
+        padding: 1.25rem;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+        padding: 0.5rem;
+        border-radius: var(--calendar-radius-small);
+    }
+
+    .legend-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .legend-color {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .legend-text {
+        font-size: 0.85rem;
+        color: var(--calendar-text);
+        font-weight: 500;
+    }
+
+    .legend-description {
+        font-size: 0.75rem;
+        color: var(--calendar-text-light);
+        margin-top: 0.25rem;
+        line-height: 1.3;
+    }
+
+    /* Enhanced Responsive Design */
+    @media (max-width: 1200px) {
+        .calendar-controls {
+            gap: 0.75rem;
+        }
+        
+        .date-navigation {
+            padding: 0.5rem 1rem;
+        }
+        
+        .current-date {
+            min-width: 160px;
+            font-size: 1rem;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .calendar-sidebar {
+            margin-top: 2rem;
+            position: static;
+        }
+        
+        .sidebar-section {
+            margin-bottom: 1.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .calendar-page {
+            padding: 1rem 0;
+        }
+        
+        .calendar-header {
+            padding: 1.5rem;
+        }
+        
+        .calendar-header-content {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        .calendar-title {
+            font-size: 1.5rem;
+        }
+
+        .calendar-controls {
+            flex-direction: column;
+            width: 100%;
+            gap: 1rem;
+        }
+
+        .date-navigation {
+            order: 1;
+        }
+
+        .view-selector {
+            order: 2;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .today-btn {
+            order: 3;
+            align-self: center;
+        }
+
+        .calendar-body {
+            padding: 1rem;
+        }
+
+        .month-calendar th,
+        .month-calendar td {
+            height: 100px;
+            font-size: 0.8rem;
+        }
+
+        .calendar-day {
+            padding: 0.5rem;
+        }
+
+        .day-number {
+            font-size: 1rem;
+            margin-bottom: 0.375rem;
+        }
+
+        .event-item {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            margin: 0.125rem 0;
+        }
+
+        .week-calendar {
+            grid-template-columns: 1fr;
+            grid-template-rows: repeat(7, 1fr);
+        }
+
+        .upcoming-event {
+            flex-direction: column;
+            gap: 0.75rem;
+            text-align: center;
+        }
+
+        .event-date-badge {
+            align-self: center;
+        }
+
+        .calendar-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .action-btn {
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .calendar-container {
+            border-radius: var(--calendar-radius-small);
+            margin: 0 -0.5rem;
+        }
+
+        .month-calendar th,
+        .month-calendar td {
+            height: 80px;
+            padding: 0.25rem;
+        }
+
+        .calendar-day {
+            padding: 0.375rem;
+        }
+
+        .day-number {
+            font-size: 0.9rem;
+        }
+
+        .event-item {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.4rem;
+        }
+
+        .sidebar-section {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+        }
+
+        .upcoming-event {
+            padding: 0.75rem;
+        }
+
+        .filter-checkbox {
+            padding: 0.375rem;
+        }
+    }
+
+    /* Loading Animation */
+    .calendar-loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+        color: var(--calendar-primary);
+    }
+
+    .spinner {
+        border: 3px solid var(--calendar-border);
+        border-top: 3px solid var(--calendar-primary);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="calendar-page">
+    <div class="container-fluid">
+        <div class="row g-4">
+            <!-- Main Calendar -->
+            <div class="col-lg-9">
+                <div class="calendar-container">
+                    <!-- Enhanced Calendar Header -->
+                    <div class="calendar-header">
+                        <div class="calendar-header-content">
+                            <h1 class="calendar-title">
+                                <i class="fas fa-calendar-alt"></i>
+                                SPIST School Calendar
+                            </h1>
+                            
+                            <!-- Calendar Controls -->
+                            <div class="calendar-controls">
+                                <!-- Date Navigation -->
+                                <div class="date-navigation">
+                                    <a href="?view={{ view_type }}&year={{ prev_date.year }}&month={{ prev_date.month }}&day={{ prev_date.day }}" 
+                                       class="nav-btn" title="Previous Period">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                    
+                                    <div class="current-date">
+                                        {% if view_type == 'month' %}
+                                            {{ calendar_data.month_name }} {{ calendar_data.year }}
+                                        {% elif view_type == 'week' %}
+                                            {{ calendar_data.start_date|date:"M d" }} - {{ calendar_data.end_date|date:"M d, Y" }}
+                                        {% else %}
+                                            {{ current_date|date:"F d, Y" }}
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <a href="?view={{ view_type }}&year={{ next_date.year }}&month={{ next_date.month }}&day={{ next_date.day }}" 
+                                       class="nav-btn" title="Next Period">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </div>
+                                
+                                <!-- Today Button -->
+                                <a href="?view={{ view_type }}" class="today-btn" title="Go to Today">
+                                    <i class="fas fa-calendar-day"></i>
+                                    <span>Today</span>
+                                </a>
+                                
+                                <!-- View Selector -->
+                                <div class="view-selector">
+                                    <a href="?view=month&year={{ current_date.year }}&month={{ current_date.month }}" 
+                                       class="view-btn {% if view_type == 'month' %}active{% endif %}">
+                                        <i class="fas fa-calendar"></i>Month
+                                    </a>
+                                    <a href="?view=week&year={{ current_date.year }}&month={{ current_date.month }}&day={{ current_date.day }}" 
+                                       class="view-btn {% if view_type == 'week' %}active{% endif %}">
+                                        <i class="fas fa-calendar-week"></i>Week
+                                    </a>
+                                    <a href="?view=day&year={{ current_date.year }}&month={{ current_date.month }}&day={{ current_date.day }}" 
+                                       class="view-btn {% if view_type == 'day' %}active{% endif %}">
+                                        <i class="fas fa-calendar-day"></i>Day
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                <!-- Calendar Body -->
+                <div class="calendar-body">
+                    <!-- Action Buttons -->
+                    <div class="calendar-actions">
+                        {% if user.user_type == 'teacher' or user.user_type == 'admin' or user.is_staff %}
+                            <a href="{% url 'accounts:create_event' %}{% if view_type == 'day' %}?date={{ current_date|date:'Y-m-d' }}{% endif %}" 
+                               class="action-btn">
+                                <i class="fas fa-plus"></i>
+                                Create Event
+                            </a>
+                        {% endif %}
+                        
+                        <button type="button" class="action-btn secondary" onclick="refreshCalendar()">
+                            <i class="fas fa-sync-alt"></i>
+                            Refresh
+                        </button>
+                    </div>
+
+                    <!-- Calendar Display -->
+                    {% if view_type == 'month' %}
+                        <!-- Month View -->
+                        <div class="calendar-grid">
+                            <!-- Calendar Headers -->
+                            <div class="calendar-day-header">Monday</div>
+                            <div class="calendar-day-header">Tuesday</div>
+                            <div class="calendar-day-header">Wednesday</div>
+                            <div class="calendar-day-header">Thursday</div>
+                            <div class="calendar-day-header">Friday</div>
+                            <div class="calendar-day-header">Saturday</div>
+                            <div class="calendar-day-header">Sunday</div>
+                            
+                            <!-- Calendar Days -->
+                            {% for week in calendar_data.weeks %}
+                                {% for day in week %}
+                                <div class="calendar-day {% if not day.in_month %}other-month{% endif %} {% if day.is_today %}today{% endif %}">
+                                    <div class="day-number">{{ day.date.day }}</div>
+                                    <div class="day-events">
+                                        {% for event in day.events %}
+                                            <a href="{% url 'accounts:event_detail' event.pk %}" 
+                                               class="event-item"
+                                               title="{{ event.title }} - {{ event.description|truncatechars:50 }}"
+                                               data-category="{{ event.category.slug }}">
+                                                {{ event.title|truncatechars:15 }}
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    
+                    {% elif view_type == 'week' %}
+                        <!-- Week View -->
+                        <div class="week-calendar">
+                            {% for day in calendar_data.days %}
+                            <div class="week-day {% if day.is_today %}today{% endif %}">
+                                <div class="week-day-header">
+                                    {{ day.date|date:"D, M j" }}
+                                </div>
+                                <div class="day-events">
+                                    {% for event in day.events %}
+                                        <a href="{% url 'accounts:event_detail' event.pk %}" 
+                                           class="event-item priority-{{ event.priority }} type-{{ event.event_type }}"
+                                           title="{{ event.description|truncatechars:50 }}">
+                                            {% if event.start_time %}
+                                                {{ event.start_time|time:"H:i" }}
+                                            {% endif %}
+                                            {{ event.title }}
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    
+                    {% else %}
+                        <!-- Day View -->
+                        <div class="day-view">
+                            <div class="day-view-header">
+                                <div class="day-view-date">{{ current_date|date:"l, F d, Y" }}</div>
+                            </div>
+                            
+                            <div class="day-events-list">
+                                {% for event in calendar_data.events %}
+                                    <div class="day-event-card">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div class="flex-grow-1">
+                                                <h5 class="mb-1">
+                                                    <a href="{% url 'accounts:event_detail' event.pk %}" 
+                                                       class="text-decoration-none">
+                                                        {{ event.title }}
+                                                    </a>
+                                                </h5>
+                                                {% if event.description %}
+                                                    <p class="text-muted mb-2">{{ event.description|truncatechars:100 }}</p>
+                                                {% endif %}
+                                                <div class="d-flex gap-3 text-sm text-muted">
+                                                    {% if event.start_time %}
+                                                        <span><i class="fas fa-clock me-1"></i>
+                                                            {{ event.start_time|time:"H:i" }}
+                                                            {% if event.end_time %} - {{ event.end_time|time:"H:i" }}{% endif %}
+                                                        </span>
+                                                    {% else %}
+                                                        <span><i class="fas fa-calendar me-1"></i>All Day</span>
+                                                    {% endif %}
+                                                    {% if event.location %}
+                                                        <span><i class="fas fa-map-marker-alt me-1"></i>{{ event.location }}</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                            <div class="text-end">
+                                                <span class="badge" style="background-color: {{ event.category.color }}">
+                                                    {{ event.category.name }}
+                                                </span>
+                                                <div class="mt-1">
+                                                    <span class="badge badge-priority-{{ event.priority }}">
+                                                        {{ event.get_priority_display }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% empty %}
+                                    <div class="text-center text-muted py-4">
+                                        <i class="fas fa-calendar-check fa-3x mb-3"></i>
+                                        <h5>No events scheduled for this day</h5>
+                                        <p>Enjoy your free time!</p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+            <!-- Enhanced Sidebar -->
+            <div class="col-lg-3">
+                <div class="calendar-sidebar">
+                    <!-- Upcoming Events -->
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">
+                            <i class="fas fa-clock"></i>
+                            Upcoming Events
+                        </h3>
+                        {% for event in upcoming_events %}
+                            <div class="upcoming-event" onclick="window.location.href='{% url 'accounts:event_detail' event.pk %}'">
+                                <div class="upcoming-event-date">{{ event.start_date|date:"M j" }}</div>
+                                <div class="upcoming-event-title">{{ event.title }}</div>
+                                <div class="upcoming-event-category">{{ event.category.name }}</div>
+                            </div>
+                        {% empty %}
+                            <div style="text-align: center; color: #6b7280; padding: 2rem 0;">
+                                <i class="fas fa-calendar-check" style="font-size: 2rem; margin-bottom: 1rem; color: #26a69a;"></i>
+                                <div style="font-weight: 600;">No upcoming events</div>
+                                <div style="font-size: 0.9rem;">Enjoy your free time!</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Event Categories Filter -->
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">
+                            <i class="fas fa-filter"></i>
+                            Filter Categories
+                        </h3>
+                        <div class="filter-section">
+                            {% for category in categories %}
+                                <div class="filter-checkbox">
+                                    <input type="checkbox" id="category-{{ category.id }}" 
+                                           class="category-filter" value="{{ category.id }}" checked>
+                                    <label for="category-{{ category.id }}">
+                                        <span class="category-badge" style="background-color: {{ category.color }}">
+                                            <i class="{{ category.icon }}"></i>
+                                        </span>
+                                        {{ category.name }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Event Legend -->
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">
+                            <i class="fas fa-info-circle"></i>
+                            Event Legend
+                        </h3>
+                        <div class="legend-section">
+                            <div class="legend-item">
+                                <div class="legend-color examinations"></div>
+                                <span class="legend-text">Examinations</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color faculty_meetings"></div>
+                                <span class="legend-text">Faculty Meetings</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color school_activities"></div>
+                                <span class="legend-text">School Activities</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color school_holidays"></div>
+                                <span class="legend-text">School Holidays</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color academic_events"></div>
+                                <span class="legend-text">Academic Events</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color assessments"></div>
+                                <span class="legend-text">Assessments</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color deadlines"></div>
+                                <span class="legend-text">Deadlines</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Enhanced Calendar functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeCalendar();
+        initializeFilters();
+        initializeInteractions();
+        initializeAnimations();
+    });
+
+    function initializeCalendar() {
+        console.log('Enhanced SPIST Calendar initialized for {{ view_type }} view');
+        
+        // Add smooth transitions to calendar days
+        document.querySelectorAll('.calendar-day').forEach(function(day) {
+            day.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            
+            day.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Add loading state to navigation buttons
+        document.querySelectorAll('.nav-btn, .view-btn, .today-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                if (!this.classList.contains('loading')) {
+                    this.classList.add('loading');
+                    const icon = this.querySelector('i');
+                    if (icon) {
+                        icon.className = 'fas fa-spinner fa-spin';
+                    }
+                }
+            });
+        });
+    }
+
+    function initializeFilters() {
+        // Enhanced category filtering with smooth animations
+        document.querySelectorAll('.category-filter').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                filterEventsByCategory();
+                
+                // Visual feedback
+                const label = this.closest('.filter-checkbox');
+                if (this.checked) {
+                    label.style.background = 'rgba(38, 166, 154, 0.1)';
+                } else {
+                    label.style.background = 'rgba(38, 166, 154, 0.05)';
+                }
+                
+                setTimeout(() => {
+                    label.style.background = '';
+                }, 300);
+            });
+        });
+    }
+
+    function filterEventsByCategory() {
+        const selectedCategories = [];
+        document.querySelectorAll('.category-filter:checked').forEach(function(checkbox) {
+            selectedCategories.push(checkbox.value);
+        });
+        
+        // Smooth show/hide animation for events
+        document.querySelectorAll('.event-item').forEach(function(event) {
+            const eventCategory = event.dataset.category;
+            const shouldShow = selectedCategories.length === 0 || selectedCategories.includes(eventCategory);
+            
+            if (shouldShow) {
+                event.style.opacity = '0';
+                event.style.display = 'block';
+                event.style.transform = 'translateY(10px)';
+                
+                setTimeout(() => {
+                    event.style.transition = 'all 0.3s ease';
+                    event.style.opacity = '1';
+                    event.style.transform = 'translateY(0)';
+                }, 50);
+            } else {
+                event.style.transition = 'all 0.3s ease';
+                event.style.opacity = '0';
+                event.style.transform = 'translateY(-10px)';
+                
+                setTimeout(() => {
+                    event.style.display = 'none';
+                }, 300);
+            }
+        });
+
+        // Update filter count
+        updateFilterCount();
+    }
+
+    function updateFilterCount() {
+        const totalEvents = document.querySelectorAll('.event-item').length;
+        const visibleEvents = document.querySelectorAll('.event-item[style*="display: block"], .event-item:not([style*="display: none"])').length;
+        
+        // You can add a count display here if needed
+        console.log(`Showing ${visibleEvents} of ${totalEvents} events`);
+    }
+
+    function initializeInteractions() {
+        // Enhanced event item interactions
+        document.querySelectorAll('.event-item').forEach(function(event) {
+            // Add ripple effect on click
+            event.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                ripple.classList.add('ripple');
+                this.appendChild(ripple);
+                
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+
+            // Enhanced hover tooltips
+            event.addEventListener('mouseenter', function() {
+                const tooltip = this.title;
+                if (tooltip) {
+                    showTooltip(this, tooltip);
+                }
+            });
+
+            event.addEventListener('mouseleave', function() {
+                hideTooltip();
+            });
+        });
+
+        // Smooth scroll to today
+        const todayCell = document.querySelector('.calendar-day.today');
+        if (todayCell && window.innerWidth > 768) {
+            todayCell.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
+    function initializeAnimations() {
+        // Animate upcoming events on load
+        document.querySelectorAll('.upcoming-event').forEach(function(event, index) {
+            event.style.opacity = '0';
+            event.style.transform = 'translateX(-20px)';
+            
+            setTimeout(() => {
+                event.style.transition = 'all 0.5s ease';
+                event.style.opacity = '1';
+                event.style.transform = 'translateX(0)';
+            }, index * 100);
+        });
+
+        // Add floating animation to calendar container
+        const container = document.querySelector('.calendar-container');
+        if (container) {
+            container.style.animation = 'fadeInUp 0.6s ease-out';
+        }
+
+        // Add stagger animation to filter checkboxes
+        document.querySelectorAll('.filter-checkbox').forEach(function(checkbox, index) {
+            checkbox.style.animationDelay = `${index * 50}ms`;
+            checkbox.classList.add('fade-in-stagger');
+        });
+    }
+
+    function showTooltip(element, text) {
+        hideTooltip(); // Remove any existing tooltip
+        
+        const tooltip = document.createElement('div');
+        tooltip.id = 'event-tooltip';
+        tooltip.innerHTML = text;
+        tooltip.style.cssText = `
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            z-index: 1000;
+            pointer-events: none;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            max-width: 200px;
+            word-wrap: break-word;
+        `;
+        
+        document.body.appendChild(tooltip);
+        
+        const rect = element.getBoundingClientRect();
+        tooltip.style.left = rect.left + 'px';
+        tooltip.style.top = (rect.top - tooltip.offsetHeight - 8) + 'px';
+        
+        // Ensure tooltip stays in viewport
+        const tooltipRect = tooltip.getBoundingClientRect();
+        if (tooltipRect.right > window.innerWidth) {
+            tooltip.style.left = (window.innerWidth - tooltipRect.width - 10) + 'px';
+        }
+        if (tooltipRect.top < 0) {
+            tooltip.style.top = (rect.bottom + 8) + 'px';
+        }
+    }
+
+    function hideTooltip() {
+        const tooltip = document.getElementById('event-tooltip');
+        if (tooltip) {
+            tooltip.remove();
+        }
+    }
+
+    function refreshCalendar() {
+        // Add loading animation
+        const container = document.querySelector('.calendar-container');
+        container.style.opacity = '0.7';
+        container.style.transform = 'scale(0.98)';
+        
+        setTimeout(() => {
+            window.location.reload();
+        }, 200);
+    }
+
+    // Enhanced keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey || e.metaKey) {
+            switch(e.key) {
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    const prevBtn = document.querySelector('a[title="Previous Period"]');
+                    if (prevBtn) prevBtn.click();
+                    break;
+                case 'ArrowRight':
+                    e.preventDefault();
+                    const nextBtn = document.querySelector('a[title="Next Period"]');
+                    if (nextBtn) nextBtn.click();
+                    break;
+                case 't':
+                    e.preventDefault();
+                    const todayBtn = document.querySelector('a[title="Go to Today"]');
+                    if (todayBtn) todayBtn.click();
+                    break;
+                case '1':
+                    e.preventDefault();
+                    const monthBtn = document.querySelector('.view-btn[href*="view=month"]');
+                    if (monthBtn) monthBtn.click();
+                    break;
+                case '2':
+                    e.preventDefault();
+                    const weekBtn = document.querySelector('.view-btn[href*="view=week"]');
+                    if (weekBtn) weekBtn.click();
+                    break;
+                case '3':
+                    e.preventDefault();
+                    const dayBtn = document.querySelector('.view-btn[href*="view=day"]');
+                    if (dayBtn) dayBtn.click();
+                    break;
+            }
+        }
+    });
+
+    // Enhanced mobile responsiveness
+    function handleResponsiveChanges() {
+        const isMobile = window.innerWidth < 768;
+        
+        // Adjust event truncation for mobile
+        document.querySelectorAll('.event-item').forEach(function(event) {
+            const originalTitle = event.getAttribute('title') || '';
+            if (isMobile) {
+                const shortTitle = originalTitle.split(' - ')[0];
+                event.textContent = shortTitle.length > 10 ? shortTitle.substring(0, 8) + '...' : shortTitle;
+            }
+        });
+
+        // Adjust sidebar behavior
+        const sidebar = document.querySelector('.calendar-sidebar');
+        if (sidebar) {
+            if (isMobile) {
+                sidebar.style.position = 'static';
+                sidebar.style.top = 'auto';
+            } else {
+                sidebar.style.position = 'sticky';
+                sidebar.style.top = '2rem';
+            }
+        }
+    }
+
+    window.addEventListener('resize', handleResponsiveChanges);
+    handleResponsiveChanges(); // Initial call
+
+    // Add CSS animations
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in-stagger {
+            animation: fadeInUp 0.4s ease-out both;
+        }
+        
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+        
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+</script>
+{% endblock %}

@@ -1,0 +1,432 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Grade Assessment - {{ attempt.assessment.title }} - SPIST{% endblock %}
+
+{% block extra_css %}
+<style>
+    .grading-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+    
+    .student-info-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .question-grading-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        border-left: 4px solid #007bff;
+    }
+    
+    .auto-graded {
+        border-left-color: #28a745;
+    }
+    
+    .manual-grading {
+        border-left-color: #ffc107;
+    }
+    
+    .student-answer {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin: 1rem 0;
+        border-left: 3px solid #007bff;
+    }
+    
+    .correct-answer {
+        background: #d4edda;
+        border-left-color: #28a745;
+    }
+    
+    .score-input {
+        max-width: 100px;
+        text-align: center;
+        font-weight: bold;
+    }
+    
+    .feedback-templates {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+    }
+    
+    .feedback-template {
+        font-size: 0.875rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 15px;
+        cursor: pointer;
+    }
+    
+    .grade-summary {
+        position: sticky;
+        top: 20px;
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .incorrect-answer {
+        background: #f8d7da;
+        border-left-color: #dc3545;
+    }
+    
+    .points-input {
+        width: 100px;
+        display: inline-block;
+    }
+    
+    .feedback-textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+    
+    .grading-summary {
+        position: sticky;
+        top: 20px;
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .grade-badge {
+        font-size: 1.2rem;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="grading-container">
+    <!-- Student Information Header -->
+    <div class="student-info-card">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h2><i class="fas fa-user-graduate me-3"></i>{{ attempt.student.get_full_name }}</h2>
+                <p class="mb-1"><strong>Assessment:</strong> {{ attempt.assessment.title }}</p>
+                <p class="mb-1"><strong>Student ID:</strong> {{ attempt.student.student_profile.student_id }}</p>
+                <p class="mb-0"><strong>Submitted:</strong> {{ attempt.completed_at|date:"M d, Y H:i" }}</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <div class="grade-badge bg-light text-dark">
+                    Current Score: <strong>{{ attempt.percentage|floatformat:1 }}%</strong>
+                </div>
+                <div class="mt-2">
+                    <small>{{ attempt.score }}/{{ attempt.max_score }} points</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Grading Form -->
+            <form method="post" id="grading-form">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="grade_assessment">
+                
+                {% for answer in student_answers %}
+                <div class="question-grading-card {% if answer.question.question_type in 'multiple_choice,true_false'|split:',' %}auto-graded{% else %}manual-grading{% endif %}">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5>Question {{ forloop.counter }} 
+                            <span class="badge bg-primary ms-2">{{ answer.question.points }} points</span>
+                        </h5>
+                        <span class="badge {% if answer.question.question_type in 'multiple_choice,true_false'|split:',' %}bg-success{% else %}bg-warning{% endif %}">
+                            {% if answer.question.question_type in 'multiple_choice,true_false'|split:',' %}
+                                Auto-graded
+                            {% else %}
+                                Manual grading
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    <div class="question-text mb-3">
+                        <strong>Question:</strong>
+                        <p>{{ answer.question.question_text|linebreaks }}</p>
+                    </div>
+                    
+                    <!-- Student Answer -->
+                    <div class="student-answer {% if answer.is_correct %}correct-answer{% elif answer.is_correct == False %}incorrect-answer{% endif %}">
+                        <h6><i class="fas fa-user-edit"></i> Student Answer:</h6>
+                        {% if answer.question.question_type == 'multiple_choice' %}
+                            {% if answer.selected_choice %}
+                                <p><strong>Selected:</strong> {{ answer.selected_choice.choice_text }}</p>
+                                {% if answer.selected_choice.is_correct %}
+                                    <span class="badge bg-success"><i class="fas fa-check"></i> Correct</span>
+                                {% else %}
+                                    <span class="badge bg-danger"><i class="fas fa-times"></i> Incorrect</span>
+                                {% endif %}
+                            {% else %}
+                                <p><em>No answer selected</em></p>
+                            {% endif %}
+                        {% elif answer.question.question_type == 'true_false' %}
+                            <p><strong>Answer:</strong> {{ answer.text_answer|title }}</p>
+                            {% for correct in answer.question.correct_answers.all %}
+                                {% if correct.answer_text.lower == answer.text_answer.lower %}
+                                    <span class="badge bg-success"><i class="fas fa-check"></i> Correct</span>
+                                {% else %}
+                                    <span class="badge bg-danger"><i class="fas fa-times"></i> Incorrect</span>
+                                {% endif %}
+                            {% endfor %}
+                        {% elif answer.question.question_type == 'enumeration' %}
+                            <div>
+                                <strong>Student's List:</strong>
+                                {% if answer.enumeration_answers %}
+                                    <ol>
+                                        {% for item in answer.enumeration_answers %}
+                                            <li>{{ item }}</li>
+                                        {% endfor %}
+                                    </ol>
+                                {% else %}
+                                    <p><em>{{ answer.text_answer|default:"No answer provided" }}</em></p>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <div>
+                                {{ answer.text_answer|linebreaks|default:"<em>No answer provided</em>" }}
+                            </div>
+                            {% if answer.uploaded_file %}
+                                <div class="mt-2">
+                                    <a href="{{ answer.uploaded_file.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-file-download"></i> Download Submitted File
+                                    </a>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Correct Answer (for reference) -->
+                    {% if answer.question.question_type in 'identification,essay,enumeration'|split:',' %}
+                    <div class="mt-3">
+                        <h6><i class="fas fa-key text-success"></i> Reference Answer:</h6>
+                        <div class="alert alert-success">
+                            {% for correct in answer.question.correct_answers.all %}
+                                <p>{{ correct.answer_text|linebreaks }}</p>
+                            {% endfor %}
+                            {% if not answer.question.correct_answers.all %}
+                                <p><em>No reference answer provided</em></p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Grading Section -->
+                    {% if answer.question.question_type not in 'multiple_choice,true_false'|split:',' %}
+                    <div class="grading-section mt-4 p-3 bg-light rounded">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label"><strong>Points Earned:</strong></label>
+                                <div class="input-group">
+                                    <input type="number" 
+                                           class="form-control points-input" 
+                                           name="points_{{ answer.id }}" 
+                                           value="{{ answer.points_earned|default:0 }}"
+                                           min="0" 
+                                           max="{{ answer.question.points }}"
+                                           step="0.5"
+                                           onchange="updateTotalScore()">
+                                    <span class="input-group-text">/ {{ answer.question.points }}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label"><strong>Feedback (Optional):</strong></label>
+                                <textarea class="form-control feedback-textarea" 
+                                          name="feedback_{{ answer.id }}" 
+                                          placeholder="Provide feedback to help the student improve...">{{ answer.feedback|default:"" }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="grading-section mt-3 p-3 bg-light rounded">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <strong>Points Earned:</strong> 
+                                <span class="badge bg-primary">{{ answer.points_earned }}/{{ answer.question.points }}</span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label"><strong>Additional Feedback (Optional):</strong></label>
+                                <textarea class="form-control" 
+                                          name="feedback_{{ answer.id }}" 
+                                          rows="2"
+                                          placeholder="Optional feedback...">{{ answer.feedback|default:"" }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                
+                <!-- Overall Feedback -->
+                <div class="question-grading-card">
+                    <h5><i class="fas fa-comment-alt"></i> Overall Assessment Feedback</h5>
+                    <textarea class="form-control feedback-textarea" 
+                              name="overall_feedback" 
+                              placeholder="Provide general feedback about the student's performance..."
+                              rows="4">{{ attempt.overall_feedback|default:"" }}</textarea>
+                </div>
+                
+                <!-- Submit Grading -->
+                <div class="text-center mt-4">
+                    <button type="button" class="btn btn-outline-secondary me-3" onclick="saveDraft()">
+                        <i class="fas fa-save"></i> Save Draft
+                    </button>
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="fas fa-check"></i> Submit Final Grades
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Grading Summary Sidebar -->
+            <div class="grading-summary">
+                <h5><i class="fas fa-calculator"></i> Grading Summary</h5>
+                <hr>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span>Auto-graded Questions:</span>
+                        <span id="auto-graded-score">{{ auto_graded_score }}/{{ auto_graded_total }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Manual Questions:</span>
+                        <span id="manual-score">{{ manual_score }}/{{ manual_total }}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <strong>Total Score:</strong>
+                        <strong id="total-score">{{ attempt.score }}/{{ attempt.max_score }}</strong>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <strong>Percentage:</strong>
+                        <strong id="percentage-score">{{ attempt.percentage|floatformat:1 }}%</strong>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="progress mb-2">
+                        <div class="progress-bar" id="grade-progress" 
+                             style="width: {{ attempt.percentage }}%"
+                             role="progressbar">
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <span class="badge {% if attempt.percentage >= attempt.assessment.passing_score %}bg-success{% else %}bg-danger{% endif %}">
+                            {% if attempt.percentage >= attempt.assessment.passing_score %}
+                                <i class="fas fa-check"></i> PASSED
+                            {% else %}
+                                <i class="fas fa-times"></i> FAILED
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <small class="text-muted">Passing Score: {{ attempt.assessment.passing_score }}%</small>
+                </div>
+                
+                <!-- Quick Actions -->
+                <hr>
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="viewAllAttempts()">
+                        <i class="fas fa-list"></i> View All Attempts
+                    </button>
+                    <button type="button" class="btn btn-outline-info btn-sm" onclick="exportGrades()">
+                        <i class="fas fa-download"></i> Export Grades
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function updateTotalScore() {
+    let totalScore = 0;
+    let maxScore = {{ attempt.max_score }};
+    
+    // Get all points inputs
+    document.querySelectorAll('input[name^="points_"]').forEach(input => {
+        totalScore += parseFloat(input.value) || 0;
+    });
+    
+    // Add auto-graded points
+    totalScore += {{ auto_graded_score }};
+    
+    let percentage = (totalScore / maxScore) * 100;
+    
+    // Update display
+    document.getElementById('total-score').textContent = totalScore + '/' + maxScore;
+    document.getElementById('percentage-score').textContent = percentage.toFixed(1) + '%';
+    document.getElementById('manual-score').textContent = (totalScore - {{ auto_graded_score }}) + '/{{ manual_total }}';
+    
+    // Update progress bar
+    let progressBar = document.getElementById('grade-progress');
+    progressBar.style.width = percentage + '%';
+    
+    // Update pass/fail status
+    let passFailBadge = document.querySelector('.badge');
+    if (percentage >= {{ attempt.assessment.passing_score }}) {
+        passFailBadge.className = 'badge bg-success';
+        passFailBadge.innerHTML = '<i class="fas fa-check"></i> PASSED';
+    } else {
+        passFailBadge.className = 'badge bg-danger';
+        passFailBadge.innerHTML = '<i class="fas fa-times"></i> FAILED';
+    }
+}
+
+function saveDraft() {
+    const form = document.getElementById('grading-form');
+    const formData = new FormData(form);
+    formData.set('action', 'save_draft');
+    
+    fetch(window.location.href, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('✅ Draft saved successfully!');
+        } else {
+            alert('❌ Error saving draft: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('❌ Error saving draft');
+    });
+}
+
+function viewAllAttempts() {
+    window.open('{% url "assessments:assessment_detail" attempt.assessment.id %}', '_blank');
+}
+
+function exportGrades() {
+    window.open('{% url "assessments:export_grades" attempt.assessment.id %}', '_blank');
+}
+
+// Initialize score calculation on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateTotalScore();
+});
+</script>
+{% endblock %}

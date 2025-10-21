@@ -1,0 +1,1110 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}School Calendar - SPIST{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    /* SPIST Calendar - Clean Professional Design */
+    
+    /* Body and Page Layout */
+    .calendar-page {
+        background: linear-gradient(135deg, #e0f2f1 0%, #f8f9fa 100%);
+        min-height: 100vh;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    .calendar-container {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 77, 64, 0.12);
+        overflow: hidden;
+        margin: 1rem 0;
+    }
+
+    /* Calendar Header */
+    .calendar-header {
+        background: linear-gradient(135deg, #26a69a 0%, #00695c 100%);
+        color: white;
+        padding: 2rem;
+        position: relative;
+    }
+
+    .calendar-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+        opacity: 0.3;
+    }
+
+    .calendar-header-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .calendar-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .calendar-title i {
+        font-size: 1.75rem;
+        opacity: 0.9;
+    }
+
+    /* Calendar Controls */
+    .calendar-controls {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .date-navigation {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+    }
+
+    .nav-btn {
+        color: white !important;
+        text-decoration: none;
+        padding: 0.5rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .nav-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-1px);
+    }
+
+    .current-date {
+        font-weight: 600;
+        font-size: 1.1rem;
+        min-width: 180px;
+        text-align: center;
+    }
+
+    .today-btn {
+        background: rgba(255, 255, 255, 0.2);
+        color: white !important;
+        padding: 0.75rem 1.25rem;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .today-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .view-selector {
+        display: flex;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 12px;
+        padding: 0.25rem;
+        backdrop-filter: blur(10px);
+    }
+
+    .view-btn {
+        padding: 0.5rem 1rem;
+        color: white !important;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .view-btn:hover {
+        background: rgba(255, 255, 255, 0.15);
+    }
+
+    .view-btn.active {
+        background: rgba(255, 255, 255, 0.25);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Calendar Body */
+    .calendar-body {
+        padding: 2rem;
+        background: #ffffff;
+    }
+
+    .calendar-actions {
+        margin-bottom: 1.5rem;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        background: linear-gradient(135deg, #26a69a 0%, #00695c 100%);
+        color: white !important;
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        text-decoration: none;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(38, 166, 154, 0.3);
+        border: none;
+        cursor: pointer;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(38, 166, 154, 0.4);
+    }
+
+    .action-btn.secondary {
+        background: linear-gradient(135deg, #607d8b 0%, #455a64 100%);
+        box-shadow: 0 4px 12px rgba(96, 125, 139, 0.3);
+    }
+
+    .action-btn.secondary:hover {
+        box-shadow: 0 6px 20px rgba(96, 125, 139, 0.4);
+    }
+
+    /* Calendar Wrapper */
+    .calendar-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Calendar Grid - Enhanced */
+    .calendar-grid {
+        display: grid !important;
+        grid-template-columns: repeat(7, 1fr) !important;
+        grid-template-rows: repeat(auto) !important;
+        gap: 1px;
+        background: #e5e7eb;
+        width: 100%;
+        min-width: 700px;
+    }
+
+    /* Ensure grid items fill properly */
+    .calendar-grid > * {
+        grid-column: span 1;
+    }
+
+    .calendar-day-header {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        padding: 1rem;
+        font-weight: 700;
+        text-align: center;
+        color: #475569;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        border-bottom: 2px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .calendar-day {
+        background: #ffffff;
+        min-height: 120px;
+        padding: 0.75rem;
+        position: relative;
+        transition: all 0.3s ease;
+        border: 1px solid #e5e7eb;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    .calendar-day:hover {
+        background: #f0fdfa;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border-color: #26a69a;
+    }
+
+    .calendar-day.other-month {
+        background: #f8fafc;
+        opacity: 0.5;
+    }
+
+    .calendar-day.today {
+        background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
+        border: 2px solid #26a69a;
+        box-shadow: 0 4px 16px rgba(38, 166, 154, 0.2);
+    }
+
+    .day-number {
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: #1f2937;
+        margin-bottom: 0.75rem;
+        padding: 0.25rem;
+        text-align: center;
+        background: rgba(38, 166, 154, 0.05);
+        border-radius: 6px;
+        min-height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .calendar-day.today .day-number {
+        color: white;
+        background: linear-gradient(135deg, #26a69a 0%, #00695c 100%);
+        font-weight: 800;
+        box-shadow: 0 2px 8px rgba(38, 166, 154, 0.3);
+    }
+
+    .calendar-day.other-month .day-number {
+        color: #9ca3af;
+        background: rgba(156, 163, 175, 0.1);
+    }
+
+    .day-events {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        overflow-y: auto;
+        max-height: 80px;
+    }
+
+    /* Event Items */
+    .event-item {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        margin: 0.125rem 0;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: block;
+        text-decoration: none;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .event-item:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
+        color: white;
+    }
+
+    /* Table-based Calendar Enhancements */
+    .calendar-table {
+        font-family: 'Inter', sans-serif;
+    }
+
+    .calendar-day-cell:hover {
+        background: #f0fdfa !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+        cursor: pointer;
+    }
+
+    .calendar-day-cell.today:hover {
+        background: linear-gradient(135deg, #b2dfdb 0%, #80cbc4 100%) !important;
+    }
+
+    .event-item:hover {
+        transform: translateY(-1px) scale(1.02) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+        text-decoration: none !important;
+        color: white !important;
+    }
+
+    /* Event Categories */
+    .event-item[data-category="examinations"] {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    }
+
+    .event-item[data-category="faculty_meetings"] {
+        background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+    }
+
+    .event-item[data-category="school_activities"] {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+
+    .event-item[data-category="school_holidays"] {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .event-item[data-category="academic_events"] {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    }
+
+    .event-item[data-category="assessments"] {
+        background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+    }
+
+    .event-item[data-category="deadlines"] {
+        background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    }
+
+    /* Week View */
+    .week-calendar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 1px;
+        background: #e5e7eb;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .week-day {
+        background: #ffffff;
+        padding: 1rem;
+        min-height: 200px;
+        transition: all 0.3s ease;
+    }
+
+    .week-day:hover {
+        background: #f0fdfa;
+        transform: translateY(-1px);
+    }
+
+    .week-day.today {
+        background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
+        border-left: 4px solid #26a69a;
+    }
+
+    .week-day-header {
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #2d3748;
+        font-size: 1.1rem;
+    }
+
+    /* Day View */
+    .day-calendar {
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .day-header {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .day-header.today {
+        color: #26a69a;
+    }
+
+    /* Sidebar Styles */
+    .calendar-sidebar {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 1.5rem;
+        box-shadow: 0 8px 32px rgba(0, 77, 64, 0.08);
+        height: fit-content;
+        position: sticky;
+        top: 2rem;
+    }
+
+    .sidebar-section {
+        margin-bottom: 2rem;
+    }
+
+    .sidebar-section:last-child {
+        margin-bottom: 0;
+    }
+
+    .sidebar-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .upcoming-event {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-left: 4px solid #26a69a;
+        padding: 1rem;
+        margin: 0.75rem 0;
+        border-radius: 0 12px 12px 0;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .upcoming-event:hover {
+        transform: translateX(4px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .upcoming-event-date {
+        font-size: 0.8rem;
+        color: #6b7280;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .upcoming-event-title {
+        font-weight: 600;
+        color: #1f2937;
+        margin: 0.25rem 0;
+    }
+
+    .upcoming-event-category {
+        display: inline-block;
+        background: #26a69a;
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 6px;
+        font-size: 0.7rem;
+        font-weight: 500;
+    }
+
+    /* Filter Section */
+    .filter-section {
+        border-top: 2px solid #e5e7eb;
+        padding-top: 1.5rem;
+    }
+
+    .filter-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        border-radius: 8px;
+        margin: 0.5rem 0;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .filter-checkbox:hover {
+        background: #f0fdfa;
+    }
+
+    .filter-checkbox input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: #26a69a;
+    }
+
+    .filter-checkbox label {
+        font-weight: 500;
+        color: #374151;
+        cursor: pointer;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .category-badge {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 0.25rem;
+    }
+
+    /* Legend Section */
+    .legend-section {
+        border-top: 2px solid #e5e7eb;
+        padding-top: 1.5rem;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin: 0.75rem 0;
+    }
+
+    .legend-color {
+        width: 20px;
+        height: 20px;
+        border-radius: 6px;
+        flex-shrink: 0;
+    }
+
+    .legend-color.examinations { background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%); }
+    .legend-color.faculty_meetings { background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%); }
+    .legend-color.school_activities { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+    .legend-color.school_holidays { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+    .legend-color.academic_events { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
+    .legend-color.assessments { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); }
+    .legend-color.deadlines { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+
+    .legend-text {
+        font-size: 0.9rem;
+        color: #4b5563;
+        font-weight: 500;
+    }
+
+    /* Browser Compatibility for Grid */
+    .calendar-grid {
+        -ms-display: grid;
+        -webkit-display: grid;
+    }
+
+    /* Grid fallback for older browsers */
+    @supports not (display: grid) {
+        .calendar-grid {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+        
+        .calendar-day-header,
+        .calendar-day {
+            display: table-cell;
+            width: 14.28%;
+            vertical-align: top;
+        }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .calendar-page {
+            padding: 1rem 0;
+        }
+
+        .calendar-header {
+            padding: 1.5rem;
+        }
+
+        .calendar-title {
+            font-size: 1.5rem;
+        }
+
+        .calendar-controls {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 1rem;
+        }
+
+        .date-navigation {
+            justify-content: center;
+        }
+
+        .calendar-body {
+            padding: 1rem;
+        }
+
+        .calendar-grid {
+            min-width: 300px;
+        }
+
+        .calendar-day {
+            min-height: 60px;
+            padding: 0.5rem;
+        }
+
+        .calendar-day-header {
+            padding: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .day-number {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .event-item {
+            font-size: 0.7rem;
+            padding: 0.125rem 0.25rem;
+        }
+
+        .calendar-sidebar {
+            margin-top: 2rem;
+            position: static;
+        }
+    }
+
+    /* Loading Animation */
+    .loading {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .loading::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        animation: loading 1.5s infinite;
+    }
+
+    @keyframes loading {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="calendar-page">
+    <div class="container-fluid">
+        <div class="row g-4">
+            <!-- Main Calendar -->
+            <div class="col-lg-9">
+                <div class="calendar-container">
+                    <!-- Calendar Header -->
+                    <div class="calendar-header">
+                        <div class="calendar-header-content">
+                            <h1 class="calendar-title">
+                                <i class="fas fa-calendar-alt"></i>
+                                SPIST School Calendar
+                            </h1>
+                            
+                            <!-- Calendar Controls -->
+                            <div class="calendar-controls">
+                                <!-- Date Navigation -->
+                                <div class="date-navigation">
+                                    <a href="?view={{ view_type }}&year={{ prev_date.year }}&month={{ prev_date.month }}&day={{ prev_date.day }}" 
+                                       class="nav-btn" title="Previous Period">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </a>
+                                    
+                                    <div class="current-date">
+                                        {% if view_type == 'month' %}
+                                            {{ calendar_data.month_name }} {{ calendar_data.year }}
+                                        {% elif view_type == 'week' %}
+                                            {{ calendar_data.start_date|date:"M d" }} - {{ calendar_data.end_date|date:"M d, Y" }}
+                                        {% else %}
+                                            {{ current_date|date:"F d, Y" }}
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <a href="?view={{ view_type }}&year={{ next_date.year }}&month={{ next_date.month }}&day={{ next_date.day }}" 
+                                       class="nav-btn" title="Next Period">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </a>
+                                </div>
+                                
+                                <!-- Today Button -->
+                                <a href="?view={{ view_type }}" class="today-btn" title="Go to Today">
+                                    <i class="fas fa-calendar-day"></i>
+                                    <span>Today</span>
+                                </a>
+                                
+                                <!-- View Selector -->
+                                <div class="view-selector">
+                                    <a href="?view=month&year={{ current_date.year }}&month={{ current_date.month }}" 
+                                       class="view-btn {% if view_type == 'month' %}active{% endif %}">
+                                        <i class="fas fa-calendar"></i>Month
+                                    </a>
+                                    <a href="?view=week&year={{ current_date.year }}&month={{ current_date.month }}&day={{ current_date.day }}" 
+                                       class="view-btn {% if view_type == 'week' %}active{% endif %}">
+                                        <i class="fas fa-calendar-week"></i>Week
+                                    </a>
+                                    <a href="?view=day&year={{ current_date.year }}&month={{ current_date.month }}&day={{ current_date.day }}" 
+                                       class="view-btn {% if view_type == 'day' %}active{% endif %}">
+                                        <i class="fas fa-calendar-day"></i>Day
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calendar Body -->
+                    <div class="calendar-body">
+                        <!-- Action Buttons -->
+                        <div class="calendar-actions">
+                            {% if user.user_type == 'teacher' or user.user_type == 'admin' or user.is_staff %}
+                                <a href="{% url 'accounts:create_event' %}{% if view_type == 'day' %}?date={{ current_date|date:'Y-m-d' }}{% endif %}" 
+                                   class="action-btn">
+                                    <i class="fas fa-plus"></i>
+                                    Create Event
+                                </a>
+                            {% endif %}
+                            
+                            <button type="button" class="action-btn secondary" onclick="refreshCalendar()">
+                                <i class="fas fa-sync-alt"></i>
+                                Refresh
+                            </button>
+                        </div>
+
+                        <!-- Calendar Display -->
+                        {% if view_type == 'month' %}
+                            <!-- Month View - Guaranteed Table Layout -->
+                            <div class="calendar-wrapper" style="overflow-x: auto; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);">
+                                <table class="calendar-table" style="width: 100%; min-width: 700px; border-collapse: separate; border-spacing: 1px; background: #e5e7eb; border-radius: 12px; overflow: hidden;">
+                                    <thead>
+                                        <tr>
+                                            <th style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 1rem; font-weight: 700; text-align: center; color: #475569; font-size: 0.9rem; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: 2px solid #e5e7eb;">MON</th>
+                                            <th style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 1rem; font-weight: 700; text-align: center; color: #475569; font-size: 0.9rem; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: 2px solid #e5e7eb;">TUE</th>
+                                            <th style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 1rem; font-weight: 700; text-align: center; color: #475569; font-size: 0.9rem; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: 2px solid #e5e7eb;">WED</th>
+                                            <th style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 1rem; font-weight: 700; text-align: center; color: #475569; font-size: 0.9rem; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: 2px solid #e5e7eb;">THU</th>
+                                            <th style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 1rem; font-weight: 700; text-align: center; color: #475569; font-size: 0.9rem; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: 2px solid #e5e7eb;">FRI</th>
+                                            <th style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 1rem; font-weight: 700; text-align: center; color: #475569; font-size: 0.9rem; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: 2px solid #e5e7eb;">SAT</th>
+                                            <th style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 1rem; font-weight: 700; text-align: center; color: #475569; font-size: 0.9rem; letter-spacing: 0.5px; text-transform: uppercase; border-bottom: 2px solid #e5e7eb;">SUN</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for week in calendar_data.weeks %}
+                                        <tr>
+                                            {% for day in week %}
+                                            <td class="calendar-day-cell {% if not day.in_month %}other-month{% endif %} {% if day.is_today %}today{% endif %}" style="background: {% if day.is_today %}linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%){% elif not day.in_month %}#f8fafc{% else %}#ffffff{% endif %}; min-height: 120px; height: 120px; padding: 0.75rem; vertical-align: top; border: {% if day.is_today %}2px solid #26a69a{% else %}1px solid #e5e7eb{% endif %}; position: relative; transition: all 0.3s ease;">
+                                                <div class="day-number" style="font-weight: 700; font-size: 1.2rem; color: {% if day.is_today %}white{% elif not day.in_month %}#9ca3af{% else %}#1f2937{% endif %}; margin-bottom: 0.75rem; padding: 0.25rem; text-align: center; background: {% if day.is_today %}linear-gradient(135deg, #26a69a 0%, #00695c 100%){% elif not day.in_month %}rgba(156, 163, 175, 0.1){% else %}rgba(38, 166, 154, 0.05){% endif %}; border-radius: 6px; min-height: 32px; display: flex; align-items: center; justify-content: center; {% if day.is_today %}box-shadow: 0 2px 8px rgba(38, 166, 154, 0.3);{% endif %}">
+                                                    {{ day.date.day }}
+                                                </div>
+                                                <div class="day-events" style="display: flex; flex-direction: column; gap: 0.25rem; overflow-y: auto; max-height: 60px;">
+                                                    {% for event in day.events %}
+                                                        <a href="{% url 'accounts:event_detail' event.pk %}" 
+                                                           class="event-item"
+                                                           title="{{ event.title }} - {{ event.description|truncatechars:50 }}"
+                                                           data-category="{{ event.category.slug }}"
+                                                           style="background: {% if event.category.slug == 'examinations' %}linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%){% elif event.category.slug == 'faculty_meetings' %}linear-gradient(135deg, #a855f7 0%, #9333ea 100%){% elif event.category.slug == 'school_activities' %}linear-gradient(135deg, #f59e0b 0%, #d97706 100%){% elif event.category.slug == 'school_holidays' %}linear-gradient(135deg, #10b981 0%, #059669 100%){% elif event.category.slug == 'academic_events' %}linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%){% elif event.category.slug == 'assessments' %}linear-gradient(135deg, #06b6d4 0%, #0891b2 100%){% elif event.category.slug == 'deadlines' %}linear-gradient(135deg, #f97316 0%, #ea580c 100%){% else %}linear-gradient(135deg, #667eea 0%, #764ba2 100%){% endif %}; color: white; padding: 0.25rem 0.5rem; margin: 0.125rem 0; border-radius: 6px; font-size: 0.75rem; font-weight: 500; cursor: pointer; transition: all 0.3s ease; display: block; text-decoration: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                                                            {{ event.title|truncatechars:12 }}
+                                                        </a>
+                                                    {% endfor %}
+                                                </div>
+                                            </td>
+                                            {% endfor %}
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        
+                        {% elif view_type == 'week' %}
+                            <!-- Week View -->
+                            <div class="week-calendar">
+                                {% for day in calendar_data.days %}
+                                <div class="week-day {% if day.is_today %}today{% endif %}">
+                                    <div class="week-day-header">
+                                        {{ day.date|date:"D, M j" }}
+                                    </div>
+                                    <div class="day-events">
+                                        {% for event in day.events %}
+                                            <a href="{% url 'accounts:event_detail' event.pk %}" 
+                                               class="event-item"
+                                               title="{{ event.description|truncatechars:50 }}"
+                                               data-category="{{ event.category.slug }}">
+                                                {% if event.start_time %}
+                                                    {{ event.start_time|time:"H:i" }}
+                                                {% endif %}
+                                                {{ event.title }}
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        
+                        {% else %}
+                            <!-- Day View -->
+                            <div class="day-calendar">
+                                <div class="day-header {% if calendar_data.is_today %}today{% endif %}">
+                                    <i class="fas fa-calendar-day"></i>
+                                    {{ current_date|date:"F d, Y" }}
+                                </div>
+                                <div class="day-events">
+                                    {% for event in calendar_data.events %}
+                                        <div class="event-item large" data-category="{{ event.category.slug }}">
+                                            <div class="event-time">
+                                                {% if event.start_time %}
+                                                    {{ event.start_time|time:"H:i" }}
+                                                    {% if event.end_time %} - {{ event.end_time|time:"H:i" }}{% endif %}
+                                                {% else %}
+                                                    All Day
+                                                {% endif %}
+                                            </div>
+                                            <div class="event-title">{{ event.title }}</div>
+                                            <div class="event-description">{{ event.description }}</div>
+                                            <div class="event-category">{{ event.category.name }}</div>
+                                        </div>
+                                    {% empty %}
+                                        <div class="no-events">
+                                            <i class="fas fa-calendar-check"></i>
+                                            <h5>No events scheduled for this day</h5>
+                                            <p>Enjoy your free time!</p>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="calendar-sidebar">
+                    <!-- Upcoming Events -->
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">
+                            <i class="fas fa-clock"></i>
+                            Upcoming Events
+                        </h3>
+                        {% for event in upcoming_events %}
+                            <div class="upcoming-event" onclick="window.location.href='{% url 'accounts:event_detail' event.pk %}'">
+                                <div class="upcoming-event-date">{{ event.start_date|date:"M j" }}</div>
+                                <div class="upcoming-event-title">{{ event.title }}</div>
+                                <div class="upcoming-event-category">{{ event.category.name }}</div>
+                            </div>
+                        {% empty %}
+                            <div style="text-align: center; color: #6b7280; padding: 2rem 0;">
+                                <i class="fas fa-calendar-check" style="font-size: 2rem; margin-bottom: 1rem; color: #26a69a;"></i>
+                                <div style="font-weight: 600;">No upcoming events</div>
+                                <div style="font-size: 0.9rem;">Enjoy your free time!</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Event Categories Filter -->
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">
+                            <i class="fas fa-filter"></i>
+                            Filter Categories
+                        </h3>
+                        <div class="filter-section">
+                            {% for category in categories %}
+                                <div class="filter-checkbox">
+                                    <input type="checkbox" id="category-{{ category.id }}" 
+                                           class="category-filter" value="{{ category.id }}" checked>
+                                    <label for="category-{{ category.id }}">
+                                        <span class="category-badge" style="background-color: {{ category.color }}"></span>
+                                        {{ category.name }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Event Legend -->
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">
+                            <i class="fas fa-info-circle"></i>
+                            Event Legend
+                        </h3>
+                        <div class="legend-section">
+                            <div class="legend-item">
+                                <div class="legend-color examinations"></div>
+                                <span class="legend-text">Examinations</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color faculty_meetings"></div>
+                                <span class="legend-text">Faculty Meetings</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color school_activities"></div>
+                                <span class="legend-text">School Activities</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color school_holidays"></div>
+                                <span class="legend-text">School Holidays</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color academic_events"></div>
+                                <span class="legend-text">Academic Events</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color assessments"></div>
+                                <span class="legend-text">Assessments</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color deadlines"></div>
+                                <span class="legend-text">Deadlines</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Enhanced Calendar functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeCalendar();
+        initializeFilters();
+        initializeInteractions();
+    });
+
+    function initializeCalendar() {
+        console.log('SPIST Calendar initialized with table layout');
+        
+        // Add smooth transitions to calendar day cells
+        document.querySelectorAll('.calendar-day-cell').forEach(function(day) {
+            day.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            
+            day.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Add loading state to navigation buttons
+        document.querySelectorAll('.nav-btn, .view-btn, .today-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                this.classList.add('loading');
+            });
+        });
+
+        // Table layout confirmation
+        const table = document.querySelector('.calendar-table');
+        if (table) {
+            console.log('Calendar table layout active');
+        }
+    }
+
+    function initializeFilters() {
+        // Enhanced category filtering
+        document.querySelectorAll('.category-filter').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                filterEventsByCategory();
+            });
+        });
+    }
+
+    function filterEventsByCategory() {
+        const selectedCategories = [];
+        document.querySelectorAll('.category-filter:checked').forEach(function(checkbox) {
+            selectedCategories.push(checkbox.value);
+        });
+        
+        // Show/hide events based on selected categories
+        document.querySelectorAll('.event-item').forEach(function(event) {
+            const eventCategory = event.dataset.category;
+            if (selectedCategories.length === 0 || selectedCategories.includes(eventCategory)) {
+                event.style.display = 'block';
+                event.style.opacity = '1';
+            } else {
+                event.style.opacity = '0.3';
+            }
+        });
+    }
+
+    function initializeInteractions() {
+        // Enhanced event item interactions
+        document.querySelectorAll('.event-item').forEach(function(event) {
+            event.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-1px) scale(1.02)';
+            });
+
+            event.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Animate upcoming events on load
+        document.querySelectorAll('.upcoming-event').forEach(function(event, index) {
+            event.style.opacity = '0';
+            event.style.transform = 'translateX(-20px)';
+            
+            setTimeout(() => {
+                event.style.transition = 'all 0.5s ease';
+                event.style.opacity = '1';
+                event.style.transform = 'translateX(0)';
+            }, index * 100);
+        });
+    }
+
+    function refreshCalendar() {
+        // Add loading animation
+        const container = document.querySelector('.calendar-container');
+        container.style.opacity = '0.7';
+        
+        setTimeout(() => {
+            window.location.reload();
+        }, 200);
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey || e.metaKey) {
+            switch(e.key) {
+                case 'ArrowLeft':
+                    e.preventDefault();
+                    const prevBtn = document.querySelector('a[title="Previous Period"]');
+                    if (prevBtn) prevBtn.click();
+                    break;
+                case 'ArrowRight':
+                    e.preventDefault();
+                    const nextBtn = document.querySelector('a[title="Next Period"]');
+                    if (nextBtn) nextBtn.click();
+                    break;
+                case 't':
+                    e.preventDefault();
+                    const todayBtn = document.querySelector('a[title="Go to Today"]');
+                    if (todayBtn) todayBtn.click();
+                    break;
+            }
+        }
+    });
+
+    // Mobile responsiveness
+    function handleResponsiveChanges() {
+        const isMobile = window.innerWidth < 768;
+        
+        // Adjust sidebar behavior
+        const sidebar = document.querySelector('.calendar-sidebar');
+        if (sidebar) {
+            if (isMobile) {
+                sidebar.style.position = 'static';
+                sidebar.style.top = 'auto';
+            } else {
+                sidebar.style.position = 'sticky';
+                sidebar.style.top = '2rem';
+            }
+        }
+    }
+
+    window.addEventListener('resize', handleResponsiveChanges);
+    handleResponsiveChanges(); // Initial call
+</script>
+{% endblock %}

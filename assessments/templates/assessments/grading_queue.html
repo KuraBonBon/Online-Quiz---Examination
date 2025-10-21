@@ -1,0 +1,304 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}Grading Queue - SPIST{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-clipboard-check me-2"></i>
+                            Grading Queue
+                        </h4>
+                        <div>
+                            <div class="btn-group">
+                                <button class="btn btn-outline-dark btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-filter me-1"></i>Filter
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="?filter=all">All Assessments</a></li>
+                                    <li><a class="dropdown-item" href="?filter=my">My Assessments Only</a></li>
+                                    <li><a class="dropdown-item" href="?filter=urgent">Urgent (>3 days)</a></li>
+                                </ul>
+                            </div>
+                            <button class="btn btn-dark btn-sm" onclick="refreshQueue()">
+                                <i class="fas fa-sync-alt me-1"></i>Refresh
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if attempts.exists %}
+                        <!-- Queue Statistics -->
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="stat-card text-center p-3 bg-warning bg-opacity-10 rounded">
+                                    <h4 class="text-warning mb-1">{{ attempts.count }}</h4>
+                                    <p class="mb-0 text-muted">Pending Grades</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card text-center p-3 bg-info bg-opacity-10 rounded">
+                                    <h4 class="text-info mb-1">{{ urgent_count|default:0 }}</h4>
+                                    <p class="mb-0 text-muted">Urgent (>3 days)</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card text-center p-3 bg-success bg-opacity-10 rounded">
+                                    <h4 class="text-success mb-1">{{ auto_graded_count|default:0 }}</h4>
+                                    <p class="mb-0 text-muted">Auto-Graded Today</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card text-center p-3 bg-primary bg-opacity-10 rounded">
+                                    <h4 class="text-primary mb-1">{{ manual_graded_count|default:0 }}</h4>
+                                    <p class="mb-0 text-muted">Manual Graded Today</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Grading Queue Table -->
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Priority</th>
+                                        <th>Student</th>
+                                        <th>Assessment</th>
+                                        <th>Subject</th>
+                                        <th>Completed</th>
+                                        <th>Duration</th>
+                                        <th>Questions</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for attempt in attempts %}
+                                    <tr class="{% if attempt.days_pending > 3 %}table-warning{% endif %}">
+                                        <td>
+                                            {% if attempt.days_pending > 3 %}
+                                                <span class="badge bg-danger">
+                                                    <i class="fas fa-exclamation-triangle me-1"></i>Urgent
+                                                </span>
+                                            {% elif attempt.days_pending > 1 %}
+                                                <span class="badge bg-warning">
+                                                    <i class="fas fa-clock me-1"></i>High
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-info">
+                                                    <i class="fas fa-info-circle me-1"></i>Normal
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-user-circle text-primary me-2"></i>
+                                                <div>
+                                                    <div class="fw-bold">{{ attempt.student.get_full_name }}</div>
+                                                    <small class="text-muted">{{ attempt.student.student_profile.student_id|default:"N/A" }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <div class="fw-bold">{{ attempt.assessment.title|truncatechars:30 }}</div>
+                                                <small class="text-muted">
+                                                    <i class="fas fa-user me-1"></i>{{ attempt.assessment.creator.get_full_name }}
+                                                </small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary">{{ attempt.assessment.get_subject_category_display }}</span>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <div class="text-sm">{{ attempt.completed_at|date:"M d, Y" }}</div>
+                                                <small class="text-muted">{{ attempt.completed_at|date:"g:i A" }}</small>
+                                            </div>
+                                            <small class="text-warning">
+                                                <i class="fas fa-calendar-alt me-1"></i>
+                                                {{ attempt.days_pending }} day{{ attempt.days_pending|pluralize }} ago
+                                            </small>
+                                        </td>
+                                        <td>
+                                            {% if attempt.time_taken %}
+                                                <span class="text-success">{{ attempt.time_taken }} min</span>
+                                                <br><small class="text-muted">of {{ attempt.assessment.duration }} min</small>
+                                            {% else %}
+                                                <span class="text-muted">--</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="text-center">
+                                                <div class="fw-bold">{{ attempt.assessment.questions.count }}</div>
+                                                <small class="text-muted">questions</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <a href="{% url 'assessments:grade_assessment' attempt.id %}" 
+                                                   class="btn btn-primary btn-sm" title="Grade Assessment">
+                                                    <i class="fas fa-pencil-alt me-1"></i>Grade
+                                                </a>
+                                                <a href="{% url 'assessments:assessment_result' attempt.id %}" 
+                                                   class="btn btn-outline-info btn-sm" title="View Details">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <div class="btn-group btn-group-sm">
+                                                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" 
+                                                            type="button" data-bs-toggle="dropdown">
+                                                        <i class="fas fa-ellipsis-v"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            <a class="dropdown-item" 
+                                                               href="{% url 'assessments:view_assessment' attempt.assessment.id %}">
+                                                                <i class="fas fa-file-alt me-2"></i>View Assessment
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" href="#" 
+                                                               onclick="contactStudent({{ attempt.student.id }})">
+                                                                <i class="fas fa-envelope me-2"></i>Contact Student
+                                                            </a>
+                                                        </li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        <li>
+                                                            <a class="dropdown-item text-danger" href="#" 
+                                                               onclick="flagAttempt({{ attempt.id }})">
+                                                                <i class="fas fa-flag me-2"></i>Flag for Review
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        {% if attempts.has_other_pages %}
+                        <nav aria-label="Grading queue pagination">
+                            <ul class="pagination justify-content-center">
+                                {% if attempts.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ attempts.previous_page_number }}">Previous</a>
+                                    </li>
+                                {% endif %}
+                                
+                                {% for num in attempts.paginator.page_range %}
+                                    {% if attempts.number == num %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ num }}</span>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                {% if attempts.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ attempts.next_page_number }}">Next</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        {% endif %}
+                    {% else %}
+                        <!-- Empty State -->
+                        <div class="text-center py-5">
+                            <i class="fas fa-clipboard-check fa-4x text-muted mb-3"></i>
+                            <h4 class="text-muted">No Assessments to Grade</h4>
+                            <p class="text-muted">All assessments are up to date! Great job keeping on top of grading.</p>
+                            <div class="mt-4">
+                                <a href="{% url 'assessments:admin_assessments' %}" class="btn btn-primary">
+                                    <i class="fas fa-list me-1"></i>View All Assessments
+                                </a>
+                                <a href="{% url 'assessments:create_assessment' %}" class="btn btn-outline-primary">
+                                    <i class="fas fa-plus me-1"></i>Create New Assessment
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions Modal -->
+<div class="modal fade" id="quickActionsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Quick Actions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-success" onclick="gradeAllAutomatic()">
+                        <i class="fas fa-magic me-2"></i>Auto-Grade All Multiple Choice
+                    </button>
+                    <button class="btn btn-warning" onclick="bulkAssignGrader()">
+                        <i class="fas fa-users me-2"></i>Bulk Assign to Grader
+                    </button>
+                    <button class="btn btn-info" onclick="exportGradingReport()">
+                        <i class="fas fa-download me-2"></i>Export Grading Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function refreshQueue() {
+    location.reload();
+}
+
+function contactStudent(studentId) {
+    // Implement student contact functionality
+    alert('Contact student functionality would be implemented here');
+}
+
+function flagAttempt(attemptId) {
+    if (confirm('Flag this attempt for review? This will notify administrators.')) {
+        // Implement flagging functionality
+        alert('Attempt flagged for review');
+    }
+}
+
+function gradeAllAutomatic() {
+    if (confirm('Auto-grade all multiple choice and true/false questions? This action cannot be undone.')) {
+        // Implement bulk auto-grading
+        alert('Auto-grading process started');
+    }
+}
+
+function bulkAssignGrader() {
+    // Implement bulk assignment functionality
+    alert('Bulk assignment functionality would be implemented here');
+}
+
+function exportGradingReport() {
+    window.open('/assessments/grading-report/?export=pdf', '_blank');
+}
+
+// Auto-refresh every 5 minutes
+setInterval(function() {
+    const lastActivity = new Date() - 5 * 60 * 1000; // 5 minutes ago
+    if (document.visibilityState === 'visible') {
+        location.reload();
+    }
+}, 5 * 60 * 1000);
+</script>
+{% endblock %}

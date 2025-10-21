@@ -1117,3 +1117,38 @@ def class_list_view(request, offering_id):
     }
     
     return render(request, 'courses/class_list.html', context)
+
+@login_required
+def admin_courses_view(request):
+    """Admin view of all courses"""
+    if not (request.user.is_staff or request.user.is_superuser):
+        messages.error(request, 'Access denied. Admin privileges required.')
+        return redirect('accounts:dashboard_redirect')
+    
+    courses = Course.objects.all().select_related(
+        'department'
+    ).annotate(
+        offering_count=Count('offerings'),
+        enrollment_count=Count('offerings__enrollments')
+    ).order_by('-created_at')
+    
+    # Get statistics
+    total_courses = Course.objects.count()
+    active_courses = Course.objects.filter(is_active=True).count()
+    total_enrollments = StudentEnrollment.objects.count()
+    active_offerings = CourseOffering.objects.filter(
+        enrollment_start__lte=timezone.now(),
+        enrollment_end__gte=timezone.now()
+    ).count()
+    
+    # Get departments for filter
+    departments = Department.objects.all()
+    
+    return render(request, 'courses/admin_courses.html', {
+        'courses': courses,
+        'total_courses': total_courses,
+        'active_courses': active_courses,
+        'total_enrollments': total_enrollments,
+        'active_offerings': active_offerings,
+        'departments': departments
+    })

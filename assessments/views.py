@@ -4,13 +4,16 @@ from django.contrib import messages
 from django.urls import reverse
 from django.utils import timezone
 from django.db.models import Q, Count, Avg
-from django.db import models
+from django.db import models, transaction
 from django.forms import formset_factory
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 import json
+import logging
 from datetime import datetime, timedelta
+
+logger = logging.getLogger(__name__)
 
 from .models import Assessment, Question, Choice, CorrectAnswer, StudentAttempt, StudentAnswer
 from .forms import (
@@ -522,12 +525,6 @@ def available_assessments_view(request):
     }
     return render(request, 'assessments/available_assessments.html', context)
 
-@login_required
-@feature_not_implemented("Assessment Taking", redirect_url='assessments:available_assessments')
-def take_assessment_view(request, assessment_id):
-    """View for students to take an assessment"""
-    pass  # This won't be executed due to decorator
-
 # ==========================================
 # SECURITY-ENHANCED ASSESSMENT TAKING VIEWS
 # ==========================================
@@ -542,7 +539,7 @@ def take_assessment_view(request, assessment_id):
     assessment = get_object_or_404(Assessment, id=assessment_id)
     
     # Check if assessment is available
-    if not assessment.is_published:
+    if assessment.status != 'published':
         messages.error(request, 'This assessment is not available.')
         return redirect('assessments:available_assessments')
     
@@ -576,7 +573,11 @@ def take_assessment_view(request, assessment_id):
         if time_elapsed.total_seconds() > (assessment.time_limit * 60):
             current_attempt.is_completed = True
             current_attempt.completed_at = timezone.now()
-            current_attempt.auto_submit_reason = 'Time expired'
+            current_attempt.is_auto_submitted = True
+            # Store the reason in violation_flags
+            violation_flags = current_attempt.violation_flags or {}
+            violation_flags['auto_submit_reason'] = 'Time expired'
+            current_attempt.violation_flags = violation_flags
             current_attempt.save()
             messages.warning(request, 'Assessment time has expired.')
             return redirect('assessments:assessment_result', attempt_id=current_attempt.id)
@@ -751,13 +752,14 @@ def submit_assessment_view(request, assessment_id):
         except json.JSONDecodeError:
             pass
     
-    # Save all answers
+    # Save all answers and calculate score
     total_score = 0
     max_score = 0
     
     for question in assessment.questions.all():
         max_score += question.points
-        answer_key = f'question_{question.id}'
+        student_answer = None
+        points_earned = 0
         
         if question.question_type == 'enumeration':
             # Handle enumeration questions
@@ -766,48 +768,68 @@ def submit_assessment_view(request, assessment_id):
                 item_key = f'question_{question.id}_item_{i}'
                 if item_key in request.POST and request.POST[item_key].strip():
                     enumeration_answers.append(request.POST[item_key].strip())
-            answer_text = '; '.join(enumeration_answers)
-        else:
-            answer_text = request.POST.get(answer_key, '')
-        
-        if answer_text:
-            # Create or update student answer
-            student_answer, created = StudentAnswer.objects.update_or_create(
-                attempt=attempt,
-                question=question,
-                defaults={'answer_text': answer_text}
-            )
             
-            # Calculate score based on question type
-            if question.question_type == 'multiple_choice':
-                try:
-                    choice_id = int(answer_text)
-                    correct_choice = question.choices.filter(is_correct=True).first()
-                    if correct_choice and correct_choice.id == choice_id:
-                        student_answer.points_earned = question.points
-                        total_score += question.points
-                except (ValueError, TypeError):
-                    student_answer.points_earned = 0
-                    
-            elif question.question_type == 'true_false':
-                correct_answer = question.correct_answers.first()
-                if correct_answer and correct_answer.answer_text.lower() == answer_text.lower():
-                    student_answer.points_earned = question.points
-                    total_score += question.points
-                else:
-                    student_answer.points_earned = 0
-                    
-            # For other question types, manual grading is needed
-            elif question.question_type in ['identification', 'essay', 'enumeration']:
-                student_answer.points_earned = None  # Requires manual grading
+            if enumeration_answers:
+                student_answer, created = StudentAnswer.objects.update_or_create(
+                    attempt=attempt,
+                    question=question,
+                    defaults={
+                        'enumeration_answers': enumeration_answers,
+                        'text_answer': '; '.join(enumeration_answers),
+                        'points_earned': 0  # Manual grading required
+                    }
+                )
                 
-            student_answer.save()
+        else:
+            # Handle other question types
+            answer_key = f'question_{question.id}'
+            answer_text = request.POST.get(answer_key, '').strip()
+            
+            if answer_text:
+                # Calculate points based on question type
+                if question.question_type == 'multiple_choice':
+                    try:
+                        choice_id = int(answer_text)
+                        correct_choice = question.choices.filter(is_correct=True).first()
+                        if correct_choice and correct_choice.id == choice_id:
+                            points_earned = question.points
+                    except (ValueError, TypeError):
+                        points_earned = 0
+                        
+                elif question.question_type == 'true_false':
+                    correct_answer = question.correct_answers.first()
+                    if correct_answer and correct_answer.answer_text.lower() == answer_text.lower():
+                        points_earned = question.points
+                    else:
+                        points_earned = 0
+                        
+                # For identification and essay, set to 0 (manual grading required)
+                elif question.question_type in ['identification', 'essay']:
+                    points_earned = 0
+                
+                # Create or update student answer
+                student_answer, created = StudentAnswer.objects.update_or_create(
+                    attempt=attempt,
+                    question=question,
+                    defaults={
+                        'text_answer': answer_text,
+                        'points_earned': points_earned,
+                        'is_correct': points_earned > 0
+                    }
+                )
+        
+        # Add to total score (only for auto-gradable questions)
+        if student_answer and question.question_type in ['multiple_choice', 'true_false']:
+            total_score += student_answer.points_earned
     
     # Complete the attempt
     attempt.is_completed = True
     attempt.completed_at = timezone.now()
-    attempt.total_score = total_score
+    attempt.is_submitted = True
+    attempt.score = total_score
+    attempt.max_score = max_score
     attempt.percentage = (total_score / max_score * 100) if max_score > 0 else 0
+    attempt.is_passed = attempt.percentage >= assessment.passing_score
     attempt.save()
     
     # Success message with security summary
@@ -855,8 +877,357 @@ def assessment_result_view(request, attempt_id):
     
     return render(request, 'assessments/assessment_result.html', context)
 
+# Removed old assessment_results_view - replaced with assessment_result_view above
+
 @login_required
-@feature_not_implemented("Assessment Results", redirect_url='assessments:available_assessments')
-def assessment_results_view(request, attempt_id):
-    """View for showing assessment results"""
-    pass  # This won't be executed due to decorator
+def grade_assessment_view(request, attempt_id):
+    """Comprehensive manual grading interface for teachers"""
+    attempt = get_object_or_404(StudentAttempt, id=attempt_id)
+    
+    # Check if user is the assessment creator (teacher)
+    if request.user != attempt.assessment.creator:
+        messages.error(request, 'You are not authorized to grade this assessment.')
+        return redirect('accounts:dashboard')
+    
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        if action == 'save_draft':
+            # Save grading progress without finalizing
+            return _save_grading_draft(request, attempt)
+        elif action == 'grade_assessment':
+            # Finalize grading
+            return _finalize_grading(request, attempt)
+    
+    # Get all student answers with related questions
+    student_answers = attempt.answers.all().select_related('question').order_by('question__order')
+    
+    # Calculate scoring breakdown
+    auto_graded_score = 0
+    auto_graded_total = 0
+    manual_score = 0
+    manual_total = 0
+    
+    for answer in student_answers:
+        if answer.question.question_type in ['multiple_choice', 'true_false']:
+            auto_graded_score += answer.points_earned or 0
+            auto_graded_total += answer.question.points
+        else:
+            manual_score += answer.points_earned or 0
+            manual_total += answer.question.points
+    
+    context = {
+        'attempt': attempt,
+        'student_answers': student_answers,
+        'auto_graded_score': auto_graded_score,
+        'auto_graded_total': auto_graded_total,
+        'manual_score': manual_score,
+        'manual_total': manual_total,
+    }
+    
+    return render(request, 'assessments/grade_assessment.html', context)
+
+def _save_grading_draft(request, attempt):
+    """Save grading progress as draft"""
+    try:
+        updated_answers = 0
+        
+        for key, value in request.POST.items():
+            if key.startswith('points_'):
+                answer_id = key.replace('points_', '')
+                try:
+                    answer = StudentAnswer.objects.get(id=answer_id, attempt=attempt)
+                    points = float(value) if value else 0
+                    
+                    # Validate points don't exceed maximum
+                    if points > answer.question.points:
+                        points = answer.question.points
+                    
+                    answer.points_earned = points
+                    answer.is_correct = points > 0
+                    answer.save()
+                    updated_answers += 1
+                except (StudentAnswer.DoesNotExist, ValueError):
+                    continue
+            
+            elif key.startswith('feedback_'):
+                answer_id = key.replace('feedback_', '')
+                try:
+                    answer = StudentAnswer.objects.get(id=answer_id, attempt=attempt)
+                    answer.feedback = value.strip()
+                    answer.save()
+                except StudentAnswer.DoesNotExist:
+                    continue
+        
+        # Save overall feedback
+        overall_feedback = request.POST.get('overall_feedback', '').strip()
+        if overall_feedback:
+            attempt.overall_feedback = overall_feedback
+            attempt.save()
+        
+        return JsonResponse({
+            'success': True,
+            'message': f'Draft saved! Updated {updated_answers} answers.',
+            'updated_count': updated_answers
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        })
+
+def _finalize_grading(request, attempt):
+    """Finalize the grading process"""
+    try:
+        total_score = 0
+        max_score = 0
+        graded_answers = 0
+        
+        # Process all answer scores and feedback
+        for key, value in request.POST.items():
+            if key.startswith('points_'):
+                answer_id = key.replace('points_', '')
+                try:
+                    answer = StudentAnswer.objects.get(id=answer_id, attempt=attempt)
+                    points = float(value) if value else 0
+                    
+                    # Validate points don't exceed maximum
+                    if points > answer.question.points:
+                        points = answer.question.points
+                    
+                    answer.points_earned = points
+                    answer.is_correct = points > 0
+                    answer.is_graded = True
+                    answer.graded_at = timezone.now()
+                    answer.graded_by = request.user
+                    answer.save()
+                    
+                    total_score += points
+                    graded_answers += 1
+                    
+                except (StudentAnswer.DoesNotExist, ValueError):
+                    continue
+            
+            elif key.startswith('feedback_'):
+                answer_id = key.replace('feedback_', '')
+                try:
+                    answer = StudentAnswer.objects.get(id=answer_id, attempt=attempt)
+                    answer.feedback = value.strip()
+                    answer.save()
+                except StudentAnswer.DoesNotExist:
+                    continue
+        
+        # Calculate total possible score
+        for answer in attempt.answers.all():
+            max_score += answer.question.points
+        
+        # Update attempt with final scores
+        attempt.score = total_score
+        attempt.max_score = max_score
+        attempt.percentage = (total_score / max_score * 100) if max_score > 0 else 0
+        attempt.is_passed = attempt.percentage >= attempt.assessment.passing_score
+        attempt.is_graded = True
+        attempt.graded_at = timezone.now()
+        attempt.graded_by = request.user
+        
+        # Save overall feedback
+        overall_feedback = request.POST.get('overall_feedback', '').strip()
+        if overall_feedback:
+            attempt.overall_feedback = overall_feedback
+        
+        attempt.save()
+        
+        # Send notification to student (if notification system exists)
+        messages.success(request, f'Assessment graded successfully! Student score: {attempt.percentage:.1f}% ({graded_answers} answers graded)')
+        
+        return redirect('assessments:assessment_detail', assessment_id=attempt.assessment.id)
+        
+    except Exception as e:
+        messages.error(request, f'Error finalizing grades: {str(e)}')
+        return redirect('assessments:grade_assessment', attempt_id=attempt.id)
+
+@login_required
+def export_grades_view(request, assessment_id):
+    """Export assessment grades to CSV"""
+    assessment = get_object_or_404(Assessment, id=assessment_id)
+    
+    # Check if user is the assessment creator
+    if request.user != assessment.creator:
+        messages.error(request, 'You are not authorized to export grades for this assessment.')
+        return redirect('accounts:dashboard')
+    
+    import csv
+    from django.http import HttpResponse
+    
+    # Create CSV response
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="{assessment.title}_grades.csv"'
+    
+    writer = csv.writer(response)
+    
+    # Write header
+    writer.writerow([
+        'Student ID',
+        'Student Name',
+        'Email',
+        'Score',
+        'Max Score',
+        'Percentage',
+        'Grade',
+        'Status',
+        'Submitted At',
+        'Graded At',
+        'Time Taken (minutes)',
+        'Tab Switches',
+        'Copy/Paste Attempts',
+        'Overall Feedback'
+    ])
+    
+    # Write student data
+    attempts = StudentAttempt.objects.filter(
+        assessment=assessment,
+        is_submitted=True
+    ).select_related('student', 'student__student_profile').order_by(
+        'student__student_profile__student_id'
+    )
+    
+    for attempt in attempts:
+        time_taken = ''
+        if attempt.started_at and attempt.completed_at:
+            time_diff = attempt.completed_at - attempt.started_at
+            time_taken = round(time_diff.total_seconds() / 60, 2)
+        
+        writer.writerow([
+            attempt.student.student_profile.student_id if hasattr(attempt.student, 'student_profile') else '',
+            attempt.student.get_full_name(),
+            attempt.student.email,
+            attempt.score,
+            attempt.max_score,
+            f"{attempt.percentage:.1f}%",
+            'A' if attempt.percentage >= 90 else 'B' if attempt.percentage >= 80 else 'C' if attempt.percentage >= 70 else 'D' if attempt.percentage >= 60 else 'F',
+            'PASSED' if attempt.is_passed else 'FAILED',
+            attempt.completed_at.strftime('%Y-%m-%d %H:%M:%S') if attempt.completed_at else '',
+            attempt.graded_at.strftime('%Y-%m-%d %H:%M:%S') if attempt.graded_at else '',
+            time_taken,
+            attempt.tab_switches,
+            attempt.copy_paste_attempts,
+            attempt.overall_feedback or ''
+        ])
+    
+    return response
+
+# Additional views for dashboard functionality
+@login_required
+def available_assessments_view(request):
+    """View available assessments for students"""
+    if request.user.user_type != 'student':
+        messages.error(request, 'Access denied.')
+        return redirect('accounts:dashboard_redirect')
+    
+    # This would be implemented with proper course enrollment logic
+    assessments = Assessment.objects.filter(
+        status='published',
+        available_from__lte=timezone.now()
+    ).order_by('-created_at')
+    
+    return render(request, 'assessments/available_assessments.html', {
+        'assessments': assessments
+    })
+
+@login_required
+def assessment_results_view(request, assessment_id):
+    """View results for a specific assessment"""
+    assessment = get_object_or_404(Assessment, id=assessment_id)
+    
+    # Check if user has permission to view results
+    if not (request.user == assessment.creator or request.user.is_staff):
+        messages.error(request, 'Access denied.')
+        return redirect('accounts:dashboard_redirect')
+    
+    attempts = StudentAttempt.objects.filter(
+        assessment=assessment,
+        is_completed=True
+    ).select_related('student').order_by('-completed_at')
+    
+    # Calculate statistics
+    total_attempts = StudentAttempt.objects.filter(assessment=assessment).count()
+    completed_attempts_count = attempts.count()
+    avg_score = attempts.aggregate(avg=Avg('percentage'))['avg'] or 0
+    pass_rate = attempts.filter(percentage__gte=60).count() / max(attempts.count(), 1) * 100
+    
+    return render(request, 'assessments/assessment_results.html', {
+        'assessment': assessment,
+        'attempts': attempts,
+        'total_attempts': total_attempts,
+        'completed_attempts_count': completed_attempts_count,
+        'avg_score': avg_score,
+        'pass_rate': pass_rate
+    })
+
+@login_required
+def view_assessment_view(request, assessment_id):
+    """View assessment details"""
+    assessment = get_object_or_404(Assessment, id=assessment_id)
+    
+    # Check if user has permission to view
+    if not (request.user == assessment.creator or request.user.is_staff):
+        messages.error(request, 'Access denied.')
+        return redirect('accounts:dashboard_redirect')
+    
+    questions = assessment.questions.all().order_by('order')
+    
+    # Get attempt statistics
+    all_attempts = assessment.attempts.all()
+    completed_attempts = all_attempts.filter(is_completed=True)
+    in_progress_attempts = all_attempts.filter(is_completed=False)
+    graded_attempts = completed_attempts.filter(is_graded=True)
+    
+    # Calculate average score if there are graded attempts
+    avg_score = graded_attempts.aggregate(avg=Avg('percentage'))['avg'] or 0
+    
+    return render(request, 'assessments/view_assessment.html', {
+        'assessment': assessment,
+        'avg_score': avg_score,
+        'questions': questions,
+        'total_attempts': all_attempts.count(),
+        'completed_attempts_count': completed_attempts.count(),
+        'in_progress_attempts_count': in_progress_attempts.count(),
+        'graded_attempts_count': graded_attempts.count(),
+    })
+
+@login_required
+def grading_queue_view(request):
+    """View all assessments requiring grading"""
+    if request.user.user_type not in ['teacher', 'admin'] and not request.user.is_staff:
+        messages.error(request, 'Access denied.')
+        return redirect('accounts:dashboard_redirect')
+    
+    # Get assessments needing grading
+    attempts = StudentAttempt.objects.filter(
+        assessment__creator=request.user,
+        is_completed=True,
+        percentage__isnull=True
+    ).select_related('student', 'assessment').order_by('-completed_at')
+    
+    return render(request, 'assessments/grading_queue.html', {
+        'attempts': attempts
+    })
+
+@login_required
+def admin_assessments_view(request):
+    """Admin view of all assessments"""
+    if not (request.user.is_staff or request.user.is_superuser):
+        messages.error(request, 'Access denied. Admin privileges required.')
+        return redirect('accounts:dashboard_redirect')
+    
+    assessments = Assessment.objects.all().select_related(
+        'creator'
+    ).annotate(
+        total_attempts=Count('attempts'),
+        completed_attempts=Count('attempts', filter=Q(attempts__is_completed=True))
+    ).order_by('-created_at')
+    
+    return render(request, 'assessments/admin_assessments.html', {
+        'assessments': assessments
+    })

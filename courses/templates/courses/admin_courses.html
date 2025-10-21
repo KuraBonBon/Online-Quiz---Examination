@@ -1,0 +1,411 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}Admin Courses - SPIST{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-graduation-cap me-2"></i>
+                            Course Administration
+                        </h4>
+                        <div>
+                            <a href="{% url 'courses:course_create' %}" class="btn btn-success btn-sm">
+                                <i class="fas fa-plus me-1"></i>Create Course
+                            </a>
+                            <a href="{% url 'courses:course_offerings' %}" class="btn btn-info btn-sm">
+                                <i class="fas fa-calendar-alt me-1"></i>Course Offerings
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Statistics Overview -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="stat-card text-center p-3 bg-primary bg-opacity-10 rounded">
+                                <h4 class="text-primary mb-1">{{ total_courses }}</h4>
+                                <p class="mb-0 text-muted">Total Courses</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card text-center p-3 bg-success bg-opacity-10 rounded">
+                                <h4 class="text-success mb-1">{{ active_courses }}</h4>
+                                <p class="mb-0 text-muted">Active Courses</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card text-center p-3 bg-warning bg-opacity-10 rounded">
+                                <h4 class="text-warning mb-1">{{ total_enrollments }}</h4>
+                                <p class="mb-0 text-muted">Total Enrollments</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card text-center p-3 bg-info bg-opacity-10 rounded">
+                                <h4 class="text-info mb-1">{{ active_offerings }}</h4>
+                                <p class="mb-0 text-muted">Active Offerings</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card bg-light">
+                                <div class="card-body p-3">
+                                    <h6 class="mb-3">Quick Actions</h6>
+                                    <div class="row g-2">
+                                        <div class="col-md-3">
+                                            <a href="{% url 'courses:bulk_enrollment' %}" class="btn btn-outline-primary btn-sm w-100">
+                                                <i class="fas fa-users me-1"></i>Bulk Enrollment
+                                            </a>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <a href="{% url 'courses:enrollment_management' %}" class="btn btn-outline-success btn-sm w-100">
+                                                <i class="fas fa-clipboard-list me-1"></i>Manage Enrollments
+                                            </a>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <a href="{% url 'courses:curriculum_list' %}" class="btn btn-outline-info btn-sm w-100">
+                                                <i class="fas fa-list-alt me-1"></i>Curriculums
+                                            </a>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <a href="#" onclick="exportCourseReport()" class="btn btn-outline-secondary btn-sm w-100">
+                                                <i class="fas fa-download me-1"></i>Export Report
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card bg-light">
+                                <div class="card-body p-3">
+                                    <form method="GET" class="row g-3">
+                                        <div class="col-md-3">
+                                            <label class="form-label">Status</label>
+                                            <select name="status" class="form-select form-select-sm">
+                                                <option value="">All Statuses</option>
+                                                <option value="active" {% if request.GET.status == 'active' %}selected{% endif %}>Active</option>
+                                                <option value="inactive" {% if request.GET.status == 'inactive' %}selected{% endif %}>Inactive</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Department</label>
+                                            <select name="department" class="form-select form-select-sm">
+                                                <option value="">All Departments</option>
+                                                {% for dept in departments %}
+                                                    <option value="{{ dept.id }}" {% if request.GET.department == dept.id|stringformat:'s' %}selected{% endif %}>
+                                                        {{ dept.name }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">Search</label>
+                                            <input type="text" name="search" class="form-control form-control-sm" 
+                                                   placeholder="Course code or title..." value="{{ request.GET.search }}">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">&nbsp;</label>
+                                            <div class="d-flex gap-2">
+                                                <button type="submit" class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-search me-1"></i>Filter
+                                                </button>
+                                                <a href="{% url 'courses:admin_courses' %}" class="btn btn-outline-secondary btn-sm">
+                                                    <i class="fas fa-times me-1"></i>Clear
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Courses Table -->
+                    {% if courses.exists %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Course</th>
+                                        <th>Department</th>
+                                        <th>Units</th>
+                                        <th>Status</th>
+                                        <th>Enrollments</th>
+                                        <th>Offerings</th>
+                                        <th>Created</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for course in courses %}
+                                    <tr>
+                                        <td>
+                                            <div>
+                                                <div class="fw-bold">{{ course.code }}</div>
+                                                <div class="text-muted">{{ course.title|truncatechars:40 }}</div>
+                                                {% if course.prerequisites.exists %}
+                                                    <small class="text-info">
+                                                        <i class="fas fa-link me-1"></i>Has Prerequisites
+                                                    </small>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary">{{ course.department.name }}</span>
+                                        </td>
+                                        <td>
+                                            <div class="text-center">
+                                                <span class="fw-bold">{{ course.units }}</span>
+                                                <br><small class="text-muted">unit{{ course.units|pluralize }}</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-{% if course.is_active %}success{% else %}secondary{% endif %}">
+                                                {% if course.is_active %}Active{% else %}Inactive{% endif %}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="text-center">
+                                                <div class="fw-bold text-primary">{{ course.enrollments_count|default:0 }}</div>
+                                                <small class="text-muted">students</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="text-center">
+                                                <div class="fw-bold text-success">{{ course.offerings_count|default:0 }}</div>
+                                                <small class="text-muted">offerings</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <div class="text-sm">{{ course.created_at|date:"M d, Y" }}</div>
+                                                <small class="text-muted">{{ course.created_at|date:"g:i A" }}</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <a href="{% url 'courses:course_detail' course.id %}" 
+                                                   class="btn btn-outline-info btn-sm" title="View Details">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="{% url 'courses:course_edit' course.id %}" 
+                                                   class="btn btn-outline-warning btn-sm" title="Edit Course">
+                                                    <i class="fas fa-edit"></i>
+                                                </a>
+                                                <div class="btn-group btn-group-sm">
+                                                    <button class="btn btn-outline-secondary btn-sm dropdown-toggle" 
+                                                            type="button" data-bs-toggle="dropdown">
+                                                        <i class="fas fa-ellipsis-v"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li>
+                                                            <a class="dropdown-item" 
+                                                               href="{% url 'courses:class_list' course.id %}">
+                                                                <i class="fas fa-users me-2"></i>View Enrollments
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" href="#" 
+                                                               onclick="createOffering({{ course.id }})">
+                                                                <i class="fas fa-plus me-2"></i>Create Offering
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" href="#" 
+                                                               onclick="duplicateCourse({{ course.id }})">
+                                                                <i class="fas fa-copy me-2"></i>Duplicate Course
+                                                            </a>
+                                                        </li>
+                                                        <li><hr class="dropdown-divider"></li>
+                                                        {% if course.is_active %}
+                                                            <li>
+                                                                <a class="dropdown-item text-warning" href="#" 
+                                                                   onclick="deactivateCourse({{ course.id }})">
+                                                                    <i class="fas fa-pause me-2"></i>Deactivate
+                                                                </a>
+                                                            </li>
+                                                        {% else %}
+                                                            <li>
+                                                                <a class="dropdown-item text-success" href="#" 
+                                                                   onclick="activateCourse({{ course.id }})">
+                                                                    <i class="fas fa-play me-2"></i>Activate
+                                                                </a>
+                                                            </li>
+                                                        {% endif %}
+                                                        <li>
+                                                            <a class="dropdown-item text-danger" href="#" 
+                                                               onclick="deleteCourse({{ course.id }})">
+                                                                <i class="fas fa-trash me-2"></i>Delete
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        {% if courses.has_other_pages %}
+                        <nav aria-label="Courses pagination">
+                            <ul class="pagination justify-content-center">
+                                {% if courses.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ courses.previous_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.department %}&department={{ request.GET.department }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Previous</a>
+                                    </li>
+                                {% endif %}
+                                
+                                {% for num in courses.paginator.page_range %}
+                                    {% if courses.number == num %}
+                                        <li class="page-item active">
+                                            <span class="page-link">{{ num }}</span>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ num }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.department %}&department={{ request.GET.department }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">{{ num }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                {% if courses.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ courses.next_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.department %}&department={{ request.GET.department }}{% endif %}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}">Next</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                        {% endif %}
+                    {% else %}
+                        <!-- Empty State -->
+                        <div class="text-center py-5">
+                            <i class="fas fa-graduation-cap fa-4x text-muted mb-3"></i>
+                            <h4 class="text-muted">No Courses Found</h4>
+                            <p class="text-muted">No courses match your current filters.</p>
+                            <div class="mt-4">
+                                <a href="{% url 'courses:course_create' %}" class="btn btn-primary">
+                                    <i class="fas fa-plus me-1"></i>Create First Course
+                                </a>
+                                <a href="{% url 'courses:admin_courses' %}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times me-1"></i>Clear Filters
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Action Modal -->
+<div class="modal fade" id="actionModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="actionModalTitle">Confirm Action</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="actionModalBody">
+                <!-- Dynamic content -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmActionBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentCourseId = null;
+let currentAction = null;
+
+function createOffering(courseId) {
+    window.location.href = `/courses/offerings/create/?course=${courseId}`;
+}
+
+function duplicateCourse(courseId) {
+    if (confirm('Create a copy of this course?')) {
+        window.location.href = `/courses/${courseId}/duplicate/`;
+    }
+}
+
+function activateCourse(courseId) {
+    currentCourseId = courseId;
+    currentAction = 'activate';
+    
+    document.getElementById('actionModalTitle').textContent = 'Activate Course';
+    document.getElementById('actionModalBody').innerHTML = 
+        '<p>Are you sure you want to activate this course? Students will be able to enroll in its offerings.</p>';
+    document.getElementById('confirmActionBtn').className = 'btn btn-success';
+    document.getElementById('confirmActionBtn').textContent = 'Activate';
+    
+    new bootstrap.Modal(document.getElementById('actionModal')).show();
+}
+
+function deactivateCourse(courseId) {
+    currentCourseId = courseId;
+    currentAction = 'deactivate';
+    
+    document.getElementById('actionModalTitle').textContent = 'Deactivate Course';
+    document.getElementById('actionModalBody').innerHTML = 
+        '<p>Are you sure you want to deactivate this course? Students will no longer be able to enroll.</p>';
+    document.getElementById('confirmActionBtn').className = 'btn btn-warning';
+    document.getElementById('confirmActionBtn').textContent = 'Deactivate';
+    
+    new bootstrap.Modal(document.getElementById('actionModal')).show();
+}
+
+function deleteCourse(courseId) {
+    currentCourseId = courseId;
+    currentAction = 'delete';
+    
+    document.getElementById('actionModalTitle').textContent = 'Delete Course';
+    document.getElementById('actionModalBody').innerHTML = 
+        '<p class="text-danger"><strong>Warning:</strong> This action cannot be undone. All associated data including enrollments and offerings will be permanently deleted.</p>';
+    document.getElementById('confirmActionBtn').className = 'btn btn-danger';
+    document.getElementById('confirmActionBtn').textContent = 'Delete';
+    
+    new bootstrap.Modal(document.getElementById('actionModal')).show();
+}
+
+function exportCourseReport() {
+    window.open('/courses/export-report/?format=pdf', '_blank');
+}
+
+document.getElementById('confirmActionBtn').addEventListener('click', function() {
+    if (currentCourseId && currentAction) {
+        // Create form to perform action
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/courses/${currentCourseId}/${currentAction}/`;
+        
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'csrfmiddlewaretoken';
+        csrfInput.value = csrfToken;
+        form.appendChild(csrfInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+});
+</script>
+{% endblock %}

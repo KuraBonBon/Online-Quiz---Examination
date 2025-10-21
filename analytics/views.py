@@ -97,7 +97,7 @@ def student_analytics(request):
     
     # Apply filters
     if course_filter:
-        attempts = attempts.filter(assessment__course_id=course_filter)
+        attempts = attempts.filter(assessment__subject_category=course_filter)
     if semester_filter:
         attempts = attempts.filter(assessment__created_at__year=semester_filter)
     if student_filter:
@@ -203,7 +203,7 @@ def assessment_analytics(request):
     assessments = Assessment.objects.annotate(
         attempt_count=Count('attempts', filter=Q(attempts__is_completed=True)),
         avg_score=Avg('attempts__percentage', filter=Q(attempts__is_completed=True)),
-        completion_rate=Count('attempts', filter=Q(attempts__is_completed=True)) * 100.0 / Count('attempts'),
+        calculated_completion_rate=Count('attempts', filter=Q(attempts__is_completed=True)) * 100.0 / Count('attempts'),
         pass_rate=Count('attempts', filter=Q(attempts__is_passed=True)) * 100.0 / Count('attempts', filter=Q(attempts__is_completed=True))
     ).filter(status='published').order_by('-attempt_count')
     

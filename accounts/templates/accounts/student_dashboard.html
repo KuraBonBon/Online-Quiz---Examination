@@ -34,26 +34,26 @@
 <div class="row mb-4">
     <div class="col-md-3 mb-3">
         <div class="stat-card stat-card-primary text-center">
-            <div class="stat-number">{{ enrolled_courses|default:5 }}</div>
+            <div class="stat-number">{{ student_stats.total_courses|default:0 }}</div>
             <div class="stat-label">Enrolled Courses</div>
         </div>
     </div>
     <div class="col-md-3 mb-3">
         <div class="stat-card stat-card-info text-center">
-            <div class="stat-number">{{ pending_assessments|default:3 }}</div>
-            <div class="stat-label">Pending Assessments</div>
+            <div class="stat-number">{{ student_stats.available_assessments_count|default:0 }}</div>
+            <div class="stat-label">Available Tests</div>
         </div>
     </div>
     <div class="col-md-3 mb-3">
         <div class="stat-card stat-card-success text-center">
-            <div class="stat-number">{{ completed_assessments|default:12 }}</div>
+            <div class="stat-number">{{ student_stats.total_completed|default:0 }}</div>
             <div class="stat-label">Completed</div>
         </div>
     </div>
     <div class="col-md-3 mb-3">
         <div class="stat-card stat-card-warning text-center">
-            <div class="stat-number">85%</div>
-            <div class="stat-label">Average Grade</div>
+            <div class="stat-number">{{ student_stats.avg_score|floatformat:1|default:"N/A" }}%</div>
+            <div class="stat-label">Average Score</div>
         </div>
     </div>
 </div>
@@ -95,43 +95,74 @@
             </div>
         </div>
 
-        <!-- Recent Activity -->
+        <!-- Available Assessments -->
         <div class="modern-card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5><i class="fas fa-history me-2"></i>Recent Activity</h5>
-                <span class="badge bg-primary">Live</span>
+                <h5><i class="fas fa-clipboard-list me-2"></i>Available Assessments</h5>
+                <a href="{% url 'assessments:available_assessments' %}" class="btn btn-sm btn-outline-primary">View All</a>
             </div>
             <div class="card-body">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="bg-success rounded-circle p-2 me-3">
-                        <i class="fas fa-check text-white"></i>
+                {% if available_assessments %}
+                    {% for assessment in available_assessments|slice:":4" %}
+                    <div class="d-flex justify-content-between align-items-center mb-3 p-3 border rounded">
+                        <div>
+                            <h6 class="mb-1">{{ assessment.title }}</h6>
+                            <small class="text-muted">{{ assessment.get_subject_category_display }} • {{ assessment.creator.get_full_name }}</small>
+                            <br><small class="text-info">
+                                <i class="fas fa-clock"></i> {{ assessment.time_limit|default:"No limit" }} minutes
+                                {% if assessment.available_until %}
+                                    • Available until: {{ assessment.available_until|date:"M d, Y" }}
+                                {% endif %}
+                            </small>
+                        </div>
+                        <div class="text-end">
+                            <a href="{% url 'assessments:take_assessment' assessment.id %}" 
+                               class="btn btn-sm btn-primary">Take Now</a>
+                        </div>
                     </div>
-                    <div>
-                        <h6 class="mb-0">Assessment Completed</h6>
-                        <small class="text-muted">Mathematics Quiz 1 - Score: 95%</small>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-clipboard-check fa-3x mb-3"></i>
+                        <h6>No Available Assessments</h6>
+                        <p class="small">All caught up! Check back later for new assessments.</p>
                     </div>
-                    <small class="text-muted ms-auto">2 hours ago</small>
-                </div>
-                <div class="d-flex align-items-center mb-3">
-                    <div class="bg-info rounded-circle p-2 me-3">
-                        <i class="fas fa-bell text-white"></i>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Recent Results -->
+        <div class="modern-card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-line me-2"></i>Recent Results</h5>
+            </div>
+            <div class="card-body">
+                {% if completed_attempts %}
+                    {% for attempt in completed_attempts|slice:":5" %}
+                    <div class="d-flex justify-content-between align-items-center mb-3 p-2 bg-light rounded">
+                        <div>
+                            <h6 class="mb-1">{{ attempt.assessment.title }}</h6>
+                            <small class="text-muted">{{ attempt.assessment.get_subject_category_display }}</small>
+                            <br><small class="text-info">Completed: {{ attempt.completed_at|date:"M d, Y g:i A" }}</small>
+                        </div>
+                        <div class="text-end">
+                            {% if attempt.percentage is not None %}
+                                <span class="badge {% if attempt.percentage >= 75 %}bg-success{% elif attempt.percentage >= 60 %}bg-warning{% else %}bg-danger{% endif %} fs-6">
+                                    {{ attempt.percentage|floatformat:1 }}%
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary">Pending</span>
+                            {% endif %}
+                        </div>
                     </div>
-                    <div>
-                        <h6 class="mb-0">New Assignment</h6>
-                        <small class="text-muted">Physics Lab Report due next week</small>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-chart-bar fa-3x mb-3"></i>
+                        <h6>No Results Yet</h6>
+                        <p class="small">Take your first assessment to see results here.</p>
                     </div>
-                    <small class="text-muted ms-auto">1 day ago</small>
-                </div>
-                <div class="d-flex align-items-center">
-                    <div class="bg-warning rounded-circle p-2 me-3">
-                        <i class="fas fa-calendar text-white"></i>
-                    </div>
-                    <div>
-                        <h6 class="mb-0">Upcoming Exam</h6>
-                        <small class="text-muted">Chemistry Midterm - March 15</small>
-                    </div>
-                    <small class="text-muted ms-auto">3 days ago</small>
-                </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -174,23 +205,60 @@
             </div>
         </div>
 
-        <!-- Announcements -->
-        <div class="modern-card">
+        <!-- Upcoming Assessments -->
+        <div class="modern-card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5><i class="fas fa-bullhorn me-2"></i>Announcements</h5>
-                <span class="badge bg-danger">2 New</span>
+                <h5><i class="fas fa-calendar-alt me-2"></i>Upcoming</h5>
+                <span class="badge bg-info">{{ student_stats.upcoming_assessments_count|default:0 }}</span>
             </div>
             <div class="card-body">
-                <div class="announcement-item mb-3 p-3 bg-light rounded">
-                    <h6 class="mb-1">🎉 Welcome to SPIST Portal!</h6>
-                    <p class="small mb-0 text-muted">Your academic journey starts here. Explore all the features available.</p>
-                    <small class="text-primary">Today</small>
-                </div>
-                <div class="announcement-item p-3 bg-light rounded">
-                    <h6 class="mb-1">📚 Semester Registration</h6>
-                    <p class="small mb-0 text-muted">Don't forget to register for next semester. Deadline: March 20.</p>
-                    <small class="text-primary">2 days ago</small>
-                </div>
+                {% if upcoming_assessments %}
+                    {% for assessment in upcoming_assessments|slice:":3" %}
+                    <div class="d-flex justify-content-between align-items-center mb-3 p-2 border rounded">
+                        <div>
+                            <h6 class="mb-1">{{ assessment.title|truncatechars:25 }}</h6>
+                            <small class="text-muted">{{ assessment.get_subject_category_display }}</small>
+                            <br><small class="text-warning">
+                                <i class="fas fa-clock"></i> {{ assessment.start_date|date:"M d, g:i A" }}
+                            </small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center text-muted py-3">
+                        <i class="fas fa-calendar-check fa-2x mb-2"></i>
+                        <p class="small">No upcoming assessments</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Performance by Course -->
+        <div class="modern-card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-pie me-2"></i>Performance</h5>
+            </div>
+            <div class="card-body">
+                {% if performance_by_course %}
+                    {% for course_name, stats in performance_by_course.items %}
+                    <div class="d-flex justify-content-between mb-3">
+                        <div>
+                            <h6 class="mb-1">{{ course_name|truncatechars:20 }}</h6>
+                            <small class="text-muted">{{ stats.attempts_count }} attempt{{ stats.attempts_count|pluralize }}</small>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge {% if stats.avg_score >= 75 %}bg-success{% elif stats.avg_score >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
+                                {{ stats.avg_score|floatformat:1 }}%
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center text-muted py-3">
+                        <i class="fas fa-chart-line fa-2x mb-2"></i>
+                        <p class="small">Complete assessments to see performance</p>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

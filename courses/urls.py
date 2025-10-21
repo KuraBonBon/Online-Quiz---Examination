@@ -37,4 +37,7 @@ urlpatterns = [
     # Enrollment codes
     path('use-enrollment-code/', views.use_enrollment_code_view, name='use_enrollment_code'),
     path('manage-enrollment-codes/', views.manage_enrollment_codes_view, name='manage_enrollment_codes'),
+    
+    # Admin URLs
+    path('admin/', views.admin_courses_view, name='admin_courses'),
 ]

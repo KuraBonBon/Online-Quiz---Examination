@@ -1,0 +1,267 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}View Assessment - SPIST{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-eye me-2"></i>
+                            {{ assessment.title }}
+                        </h4>
+                        <div>
+                            <a href="{% url 'assessments:my_assessments' %}" class="btn btn-light btn-sm">
+                                <i class="fas fa-arrow-left me-1"></i>Back to Assessments
+                            </a>
+                            {% if request.user == assessment.creator or request.user.is_staff %}
+                                <a href="{% url 'assessments:edit_assessment' assessment.id %}" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit me-1"></i>Edit
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Assessment Details -->
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <div class="assessment-info">
+                                <h5 class="text-primary mb-3">Assessment Information</h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>Subject Category:</strong> {{ assessment.get_subject_category_display }}</p>
+                                        <p><strong>Assessment Type:</strong> {{ assessment.get_assessment_type_display }}</p>
+                                        <p><strong>Difficulty Level:</strong> {{ assessment.get_difficulty_level_display }}</p>
+                                        <p><strong>Duration:</strong> {{ assessment.duration }} minutes</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Status:</strong> 
+                                            <span class="badge bg-{% if assessment.status == 'published' %}success{% elif assessment.status == 'draft' %}secondary{% else %}warning{% endif %}">
+                                                {{ assessment.get_status_display }}
+                                            </span>
+                                        </p>
+                                        <p><strong>Created By:</strong> {{ assessment.creator.get_full_name }}</p>
+                                        <p><strong>Created:</strong> {{ assessment.created_at|date:"M d, Y g:i A" }}</p>
+                                        <p><strong>Total Questions:</strong> {{ assessment.questions.count }}</p>
+                                    </div>
+                                </div>
+                                {% if assessment.description %}
+                                <div class="mt-3">
+                                    <strong>Description:</strong>
+                                    <p class="mt-2">{{ assessment.description|linebreaks }}</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="stats-card p-3 bg-light rounded">
+                                <h6 class="text-success mb-3">Statistics</h6>
+                                <div class="stat-item mb-2">
+                                    <i class="fas fa-users text-primary me-2"></i>
+                                    <strong>{{ total_attempts }}</strong> Total Attempts
+                                </div>
+                                <div class="stat-item mb-2">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <strong>{{ completed_attempts_count }}</strong> Completed
+                                </div>
+                                <div class="stat-item mb-2">
+                                    <i class="fas fa-clock text-warning me-2"></i>
+                                    <strong>{{ in_progress_attempts_count }}</strong> In Progress
+                                </div>
+                                {% if graded_attempts_count > 0 %}
+                                <div class="stat-item">
+                                    <i class="fas fa-chart-line text-info me-2"></i>
+                                    <strong>{{ avg_score|floatformat:1 }}%</strong> Average Score
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Questions Preview -->
+                    <div class="questions-section">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="text-primary mb-0">Questions Preview</h5>
+                            {% if request.user == assessment.creator or request.user.is_staff %}
+                                <a href="{% url 'assessments:manage_questions' assessment.id %}" class="btn btn-outline-primary btn-sm">
+                                    <i class="fas fa-cogs me-1"></i>Manage Questions
+                                </a>
+                            {% endif %}
+                        </div>
+
+                        {% if assessment.questions.exists %}
+                            <div class="questions-list">
+                                {% for question in assessment.questions.all %}
+                                <div class="question-card card mb-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div class="question-content flex-grow-1">
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <span class="badge bg-secondary me-2">{{ forloop.counter }}</span>
+                                                    <span class="badge bg-info me-2">{{ question.get_question_type_display }}</span>
+                                                    <span class="badge bg-success">{{ question.points }} point{{ question.points|pluralize }}</span>
+                                                </div>
+                                                <h6 class="question-text">{{ question.question_text }}</h6>
+                                                
+                                                {% if question.question_type == 'multiple_choice' %}
+                                                    <div class="choices mt-2">
+                                                        {% for choice in question.choices.all %}
+                                                        <div class="choice-item d-flex align-items-center mb-1">
+                                                            <span class="choice-label me-2 text-muted">{{ choice.choice_letter }}.</span>
+                                                            <span class="choice-text">{{ choice.choice_text }}</span>
+                                                            {% if choice.is_correct %}
+                                                                <i class="fas fa-check-circle text-success ms-2" title="Correct Answer"></i>
+                                                            {% endif %}
+                                                        </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% elif question.question_type == 'true_false' %}
+                                                    <div class="tf-answer mt-2">
+                                                        <span class="text-muted">Correct Answer: </span>
+                                                        <span class="fw-bold">{{ question.correct_answer.answer_text }}</span>
+                                                    </div>
+                                                {% elif question.question_type == 'short_answer' %}
+                                                    <div class="sa-answer mt-2">
+                                                        <span class="text-muted">Expected Answer: </span>
+                                                        <span class="fw-bold">{{ question.correct_answer.answer_text }}</span>
+                                                    </div>
+                                                {% endif %}
+                                                
+                                                {% if question.explanation %}
+                                                <div class="explanation mt-2">
+                                                    <small class="text-muted">
+                                                        <strong>Explanation:</strong> {{ question.explanation }}
+                                                    </small>
+                                                </div>
+                                                {% endif %}
+                                            </div>
+                                            {% if request.user == assessment.creator or request.user.is_staff %}
+                                                <div class="question-actions ms-3">
+                                                    <div class="btn-group btn-group-sm">
+                                                        <a href="{% url 'assessments:edit_question' question.id %}" 
+                                                           class="btn btn-outline-warning btn-sm" title="Edit Question">
+                                                            <i class="fas fa-edit"></i>
+                                                        </a>
+                                                        <button class="btn btn-outline-danger btn-sm" 
+                                                                onclick="deleteQuestion({{ question.id }})" title="Delete Question">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-5">
+                                <i class="fas fa-question-circle fa-3x text-muted mb-3"></i>
+                                <h5 class="text-muted">No Questions Added Yet</h5>
+                                <p class="text-muted">Add questions to make this assessment available to students.</p>
+                                {% if request.user == assessment.creator or request.user.is_staff %}
+                                    <a href="{% url 'assessments:add_question' assessment.id %}" class="btn btn-primary">
+                                        <i class="fas fa-plus me-1"></i>Add First Question
+                                    </a>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Assessment Settings -->
+                    {% if request.user == assessment.creator or request.user.is_staff %}
+                    <div class="settings-section mt-4">
+                        <h5 class="text-primary mb-3">Assessment Settings</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="setting-card p-3 border rounded">
+                                    <h6 class="mb-2">Availability</h6>
+                                    <p class="mb-1">
+                                        <strong>Available From:</strong> 
+                                        {{ assessment.available_from|date:"M d, Y g:i A"|default:"Not set" }}
+                                    </p>
+                                    <p class="mb-0">
+                                        <strong>Available Until:</strong> 
+                                        {{ assessment.available_until|date:"M d, Y g:i A"|default:"Not set" }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="setting-card p-3 border rounded">
+                                    <h6 class="mb-2">Grading & Security</h6>
+                                    <p class="mb-1">
+                                        <strong>Grading Method:</strong> {{ assessment.get_grading_method_display }}
+                                    </p>
+                                    <p class="mb-1">
+                                        <strong>Max Attempts:</strong> {{ assessment.max_attempts|default:"Unlimited" }}
+                                    </p>
+                                    <p class="mb-0">
+                                        <strong>Randomize Questions:</strong> 
+                                        <span class="badge bg-{% if assessment.randomize_questions %}success{% else %}secondary{% endif %}">
+                                            {% if assessment.randomize_questions %}Yes{% else %}No{% endif %}
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Question Modal -->
+<div class="modal fade" id="deleteQuestionModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this question? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteQuestion">Delete Question</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let questionToDelete = null;
+
+function deleteQuestion(questionId) {
+    questionToDelete = questionId;
+    const modal = new bootstrap.Modal(document.getElementById('deleteQuestionModal'));
+    modal.show();
+}
+
+document.getElementById('confirmDeleteQuestion').addEventListener('click', function() {
+    if (questionToDelete) {
+        // Create form to delete question
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/assessments/questions/${questionToDelete}/delete/`;
+        
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = 'csrfmiddlewaretoken';
+        csrfInput.value = csrfToken;
+        form.appendChild(csrfInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+    }
+});
+</script>
+{% endblock %}

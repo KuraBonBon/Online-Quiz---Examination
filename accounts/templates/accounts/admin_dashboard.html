@@ -1,0 +1,284 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}SPIST - Admin Dashboard{% endblock %}
+
+{% block content %}
+<!-- Welcome Banner -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="modern-card bg-gradient" style="background: linear-gradient(135deg, var(--spist-dark-green) 0%, var(--spist-primary-green) 100%); color: white;">
+            <div class="card-body text-center py-5">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 class="mb-3"><i class="fas fa-cog me-3"></i>System Administration</h2>
+                        <p class="lead mb-0">SPIST School Management System</p>
+                        <small class="opacity-75">Welcome, {{ user.get_full_name }}</small>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card bg-white bg-opacity-20 border-0" style="backdrop-filter: blur(10px);">
+                            <div class="text-center text-white">
+                                <h3 class="mb-1">{{ system_stats.total_users }}</h3>
+                                <small>Total Users</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- System Overview Stats -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="stat-card stat-card-primary text-center">
+            <div class="stat-number">{{ system_stats.total_students }}</div>
+            <div class="stat-label">Students</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card stat-card-info text-center">
+            <div class="stat-number">{{ system_stats.total_teachers }}</div>
+            <div class="stat-label">Teachers</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card stat-card-success text-center">
+            <div class="stat-number">{{ system_stats.total_assessments }}</div>
+            <div class="stat-label">Assessments</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card stat-card-warning text-center">
+            <div class="stat-number">{{ system_stats.total_courses }}</div>
+            <div class="stat-label">Courses</div>
+        </div>
+    </div>
+</div>
+
+<!-- Activity Overview -->
+<div class="row mb-4">
+    <div class="col-md-4 mb-3">
+        <div class="modern-card">
+            <div class="card-body text-center">
+                <h3 class="text-primary">{{ system_stats.recent_registrations }}</h3>
+                <p class="text-muted mb-0">New Users (30 days)</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="modern-card">
+            <div class="card-body text-center">
+                <h3 class="text-success">{{ system_stats.avg_completion_rate|floatformat:1 }}%</h3>
+                <p class="text-muted mb-0">Completion Rate</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="modern-card">
+            <div class="card-body text-center">
+                <h3 class="text-info">{{ system_stats.avg_system_score|floatformat:1 }}%</h3>
+                <p class="text-muted mb-0">Average Score</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content Grid -->
+<div class="row">
+    <!-- Left Column -->
+    <div class="col-lg-8">
+        <!-- Admin Actions -->
+        <div class="modern-card mb-4">
+            <div class="card-header">
+                <h5><i class="fas fa-tools me-2"></i>Administrative Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <a href="/admin/" class="btn btn-modern btn-primary-modern w-100">
+                            <i class="fas fa-database"></i> Django Admin
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{% url 'accounts:user_management' %}" class="btn btn-modern w-100" style="background: linear-gradient(135deg, var(--success-color) 0%, #388e3c 100%); color: white;">
+                            <i class="fas fa-users-cog"></i> Manage Users
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{% url 'courses:admin_courses' %}" class="btn btn-modern w-100" style="background: linear-gradient(135deg, var(--secondary-color) 0%, #1976d2 100%); color: white;">
+                            <i class="fas fa-graduation-cap"></i> Manage Courses
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{% url 'assessments:admin_assessments' %}" class="btn btn-modern w-100" style="background: linear-gradient(135deg, var(--accent-color) 0%, #f57c00 100%); color: white;">
+                            <i class="fas fa-clipboard-list"></i> All Assessments
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="{% url 'analytics:system_analytics' %}" class="btn btn-modern w-100" style="background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%); color: white;">
+                            <i class="fas fa-chart-bar"></i> System Analytics
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-modern w-100" style="background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%); color: white;" onclick="showSystemReport()">
+                            <i class="fas fa-file-alt"></i> Generate Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Users -->
+        <div class="modern-card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="fas fa-user-plus me-2"></i>Recent Registrations</h5>
+                <a href="{% url 'accounts:user_management' %}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                {% if recent_users %}
+                    {% for user in recent_users|slice:":5" %}
+                    <div class="d-flex justify-content-between align-items-center mb-3 p-3 border rounded">
+                        <div>
+                            <h6 class="mb-1">{{ user.get_full_name }}</h6>
+                            <small class="text-muted">{{ user.email }}</small>
+                            <br><span class="badge {% if user.user_type == 'student' %}bg-primary{% elif user.user_type == 'teacher' %}bg-success{% else %}bg-warning{% endif %}">
+                                {{ user.get_user_type_display }}
+                            </span>
+                        </div>
+                        <div class="text-end">
+                            <small class="text-muted">{{ user.date_joined|timesince }} ago</small>
+                            <br><small class="text-info">{{ user.date_joined|date:"M d, Y" }}</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-user-friends fa-3x mb-3"></i>
+                        <p>No recent registrations</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Active Assessments Overview -->
+        <div class="modern-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="fas fa-tasks me-2"></i>Active Assessments</h5>
+                <a href="{% url 'assessments:admin_assessments' %}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                {% if active_assessments %}
+                    {% for assessment in active_assessments|slice:":5" %}
+                    <div class="d-flex justify-content-between align-items-center mb-3 p-3 bg-light rounded">
+                        <div>
+                            <h6 class="mb-1">{{ assessment.title }}</h6>
+                            <small class="text-muted">{{ assessment.get_subject_category_display }} • {{ assessment.creator.get_full_name }}</small>
+                            <br><small class="text-info">
+                                <i class="fas fa-users"></i> {{ assessment.attempts.count }} attempts
+                                <i class="fas fa-question-circle ms-2"></i> {{ assessment.questions.count }} questions
+                            </small>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-success">Active</span>
+                            <br><small class="text-muted">{{ assessment.created_at|date:"M d, Y" }}</small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-clipboard-list fa-3x mb-3"></i>
+                        <p>No active assessments</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="col-lg-4">
+        <!-- System Health -->
+        <div class="modern-card mb-4">
+            <div class="card-header">
+                <h5><i class="fas fa-heartbeat me-2"></i>System Health</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Pending Grading</span>
+                    <span class="badge {% if system_stats.pending_grading > 0 %}bg-warning{% else %}bg-success{% endif %}">
+                        {{ system_stats.pending_grading }}
+                    </span>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Draft Assessments</span>
+                    <span class="badge bg-info">{{ system_stats.draft_assessments }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Total Attempts</span>
+                    <span class="badge bg-primary">{{ system_stats.total_attempts }}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span>Active Enrollments</span>
+                    <span class="badge bg-success">{{ system_stats.total_enrollments }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Popular Courses -->
+        <div class="modern-card mb-4">
+            <div class="card-header">
+                <h5><i class="fas fa-trophy me-2"></i>Popular Courses</h5>
+            </div>
+            <div class="card-body">
+                {% if popular_courses %}
+                    {% for course in popular_courses %}
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h6 class="mb-1">{{ course.name|truncatechars:25 }}</h6>
+                            <small class="text-muted">{{ course.code }}</small>
+                        </div>
+                        <span class="badge bg-primary">{{ course.enrollment_count }} enrolled</span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center text-muted py-3">
+                        <i class="fas fa-graduation-cap fa-2x mb-2"></i>
+                        <p class="small">No course data available</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Quick System Stats -->
+        <div class="modern-card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-line me-2"></i>30-Day Activity</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="small">New Registrations</span>
+                    <strong class="text-primary">{{ system_stats.recent_registrations }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="small">New Assessments</span>
+                    <strong class="text-success">{{ system_stats.recent_assessments }}</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="small">Assessment Attempts</span>
+                    <strong class="text-info">{{ system_stats.recent_attempts }}</strong>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="small">System Uptime</span>
+                    <strong class="text-warning">99.9%</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showSystemReport() {
+    alert('System Report Generation feature will be implemented in the next phase. This will include comprehensive analytics, user activity reports, and performance metrics.');
+}
+</script>
+{% endblock %}

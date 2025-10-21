@@ -1,0 +1,196 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}Assessment Results - SPIST{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-chart-bar me-2"></i>
+                            {{ assessment.title }} - Results
+                        </h4>
+                        <div>
+                            <a href="{% url 'assessments:assessment_detail' assessment.id %}" class="btn btn-light btn-sm">
+                                <i class="fas fa-arrow-left me-1"></i>Back to Assessment
+                            </a>
+                            <a href="{% url 'assessments:export_grades' assessment.id %}" class="btn btn-success btn-sm">
+                                <i class="fas fa-download me-1"></i>Export Results
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Assessment Info -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="info-card p-3 bg-light rounded">
+                                <h6 class="text-primary mb-2">Assessment Details</h6>
+                                <p class="mb-1"><strong>Subject:</strong> {{ assessment.get_subject_category_display }}</p>
+                                <p class="mb-1"><strong>Type:</strong> {{ assessment.get_assessment_type_display }}</p>
+                                <p class="mb-1"><strong>Duration:</strong> {{ assessment.duration }} minutes</p>
+                                <p class="mb-0"><strong>Total Questions:</strong> {{ assessment.questions.count }}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="info-card p-3 bg-light rounded">
+                                <h6 class="text-success mb-2">Statistics</h6>
+                                <p class="mb-1"><strong>Total Attempts:</strong> {{ total_attempts }}</p>
+                                <p class="mb-1"><strong>Completed:</strong> {{ completed_attempts_count }}</p>
+                                <p class="mb-1"><strong>Average Score:</strong> {{ avg_score|floatformat:1 }}%</p>
+                                <p class="mb-0"><strong>Pass Rate:</strong> {{ pass_rate|floatformat:1 }}%</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results Table -->
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Attempt</th>
+                                    <th>Score</th>
+                                    <th>Percentage</th>
+                                    <th>Time Taken</th>
+                                    <th>Status</th>
+                                    <th>Completed At</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for attempt in attempts %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-user-circle text-primary me-2"></i>
+                                            <div>
+                                                <div class="fw-bold">{{ attempt.student.get_full_name }}</div>
+                                                <small class="text-muted">{{ attempt.student.student_profile.student_id|default:"N/A" }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-info">#{{ attempt.attempt_number }}</span>
+                                    </td>
+                                    <td>
+                                        <strong>{{ attempt.score|default:"--" }}/{{ attempt.max_score|default:assessment.questions.count }}</strong>
+                                    </td>
+                                    <td>
+                                        {% if attempt.percentage %}
+                                            <div class="d-flex align-items-center">
+                                                <div class="progress me-2" style="width: 60px; height: 8px;">
+                                                    <div class="progress-bar 
+                                                        {% if attempt.percentage >= 80 %}bg-success
+                                                        {% elif attempt.percentage >= 60 %}bg-warning
+                                                        {% else %}bg-danger{% endif %}" 
+                                                        style="width: {{ attempt.percentage }}%"></div>
+                                                </div>
+                                                <span class="fw-bold">{{ attempt.percentage|floatformat:1 }}%</span>
+                                            </div>
+                                        {% else %}
+                                            <span class="text-muted">--</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if attempt.time_taken %}
+                                            {{ attempt.time_taken }} min
+                                        {% else %}
+                                            <span class="text-muted">--</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if attempt.is_completed %}
+                                            {% if attempt.is_graded %}
+                                                <span class="badge bg-success">
+                                                    <i class="fas fa-check me-1"></i>Graded
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-warning">
+                                                    <i class="fas fa-clock me-1"></i>Pending Grade
+                                                </span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="badge bg-secondary">
+                                                <i class="fas fa-hourglass-half me-1"></i>In Progress
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if attempt.completed_at %}
+                                            {{ attempt.completed_at|date:"M d, Y g:i A" }}
+                                        {% else %}
+                                            <span class="text-muted">Not completed</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            {% if attempt.is_completed %}
+                                                <a href="{% url 'assessments:assessment_result' attempt.id %}" 
+                                                   class="btn btn-outline-primary btn-sm" title="View Details">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                {% if not attempt.is_graded and assessment.grading_method != 'automatic' %}
+                                                    <a href="{% url 'assessments:grade_assessment' attempt.id %}" 
+                                                       class="btn btn-outline-warning btn-sm" title="Grade">
+                                                        <i class="fas fa-pencil-alt"></i>
+                                                    </a>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="8" class="text-center py-4">
+                                        <div class="text-muted">
+                                            <i class="fas fa-inbox fa-2x mb-2"></i>
+                                            <p>No attempts found for this assessment.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    {% if attempts.has_other_pages %}
+                    <nav aria-label="Results pagination">
+                        <ul class="pagination justify-content-center">
+                            {% if attempts.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ attempts.previous_page_number }}">Previous</a>
+                                </li>
+                            {% endif %}
+                            
+                            {% for num in attempts.paginator.page_range %}
+                                {% if attempts.number == num %}
+                                    <li class="page-item active">
+                                        <span class="page-link">{{ num }}</span>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if attempts.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ attempts.next_page_number }}">Next</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

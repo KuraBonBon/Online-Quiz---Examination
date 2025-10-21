@@ -4505,3 +4505,1521 @@ Watching for file changes with StatReloader
 "GET /student/dashboard/ HTTP/1.1" 200 72335
 "GET /courses/my-enrollment/ HTTP/1.1" 200 157840
 "GET /student/dashboard/ HTTP/1.1" 200 72335
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 65420
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 7856
+Watching for file changes with StatReloader
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 7856
+"GET /login/?next=/student/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/student/dashboard/ HTTP/1.1" 302 0
+"GET /student/dashboard/ HTTP/1.1" 200 72335
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET / HTTP/1.1" 200 65420
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 7856
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /assessments/create/ HTTP/1.1" 200 73052
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /assessments/create/ HTTP/1.1" 200 73052
+"POST /assessments/create/ HTTP/1.1" 302 0
+"GET /assessments/create/quiz/ HTTP/1.1" 200 74308
+"GET /assessments/create/ HTTP/1.1" 200 73052
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /assessments/my-assessments/ HTTP/1.1" 200 87424
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /courses/ HTTP/1.1" 200 82904
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /courses/enrollments/ HTTP/1.1" 200 71108
+"GET /admin/courses/studentenrollment/ HTTP/1.1" 302 0
+"GET /admin/login/?next=/admin/courses/studentenrollment/ HTTP/1.1" 200 3748
+"GET /static/admin/css/base.css HTTP/1.1" 304 0
+"GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+"GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+"GET /static/admin/js/theme.js HTTP/1.1" 304 0
+"GET /static/admin/css/login.css HTTP/1.1" 304 0
+"GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+"GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /admin/ HTTP/1.1" 302 0
+"GET /admin/login/?next=/admin/ HTTP/1.1" 200 4170
+"POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+"GET /admin/ HTTP/1.1" 200 22362
+"GET /static/admin/css/dashboard.css HTTP/1.1" 304 0
+"GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+"GET /static/admin/img/icon-changelink.svg HTTP/1.1" 304 0
+"GET /static/admin/img/icon-deletelink.svg HTTP/1.1" 304 0
+"GET /admin/courses/academicyear/ HTTP/1.1" 200 19958
+"GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+"GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+"GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+"GET /static/admin/js/core.js HTTP/1.1" 304 0
+"GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+"GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+"GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+"GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+"GET /static/admin/js/actions.js HTTP/1.1" 304 0
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /static/admin/img/icon-no.svg HTTP/1.1" 304 0
+"GET /static/admin/img/icon-yes.svg HTTP/1.1" 304 0
+"GET /static/admin/js/filters.js HTTP/1.1" 304 0
+"GET /static/admin/img/tooltag-add.svg HTTP/1.1" 304 0
+"GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 304 0
+- Broken pipe from ('127.0.0.1', 52264)
+"GET /admin/courses/courseoffering/ HTTP/1.1" 200 42855
+"GET /static/admin/css/forms.css HTTP/1.1" 304 0
+"GET /static/admin/img/search.svg HTTP/1.1" 304 0
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+"GET /static/admin/img/sorting-icons.svg HTTP/1.1" 304 0
+"GET /admin/courses/course/ HTTP/1.1" 200 40534
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET / HTTP/1.1" 200 69771
+"GET /teacher/dashboard/ HTTP/1.1" 200 76966
+"GET /courses/ HTTP/1.1" 200 84526
+"GET /courses/enrollments/bulk/ HTTP/1.1" 200 68935
+"GET /courses/enrollments/bulk/ HTTP/1.1" 200 68935
+"GET /courses/enrollments/ HTTP/1.1" 200 71490
+"GET /teacher/dashboard/ HTTP/1.1" 200 76966
+"GET /courses/offerings/ HTTP/1.1" 200 101766
+"GET /courses/offerings/9/ HTTP/1.1" 200 72715
+"GET /courses/offerings/9/class-list/ HTTP/1.1" 200 67395
+"GET /admin/courses/studentenrollment/add/?course_offering=9 HTTP/1.1" 200 27311
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /static/admin/css/autocomplete.css HTTP/1.1" 200 9185
+"GET /static/admin/css/vendor/select2/select2.css HTTP/1.1" 200 17358
+"GET /static/admin/js/prepopulate_init.js HTTP/1.1" 304 0
+"GET /static/admin/js/calendar.js HTTP/1.1" 200 9141
+"GET /static/admin/js/admin/DateTimeShortcuts.js HTTP/1.1" 200 19319
+"GET /static/admin/js/vendor/select2/i18n/en.js HTTP/1.1" 200 844
+"GET /static/admin/js/autocomplete.js HTTP/1.1" 200 1060
+"GET /static/admin/js/change_form.js HTTP/1.1" 304 0
+"GET /static/admin/js/vendor/select2/select2.full.js HTTP/1.1" 200 173566
+"GET /static/admin/img/icon-calendar.svg HTTP/1.1" 304 0
+"GET /static/admin/img/icon-clock.svg HTTP/1.1" 304 0
+"GET /admin/autocomplete/?app_label=courses&model_name=studentenrollment&field_name=student HTTP/1.1" 200 234
+"GET /admin/autocomplete/?app_label=courses&model_name=studentenrollment&field_name=course_offering HTTP/1.1" 200 1277
+"POST /admin/courses/studentenrollment/add/?course_offering=9 HTTP/1.1" 302 0
+"GET /admin/courses/studentenrollment/ HTTP/1.1" 200 24045
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET / HTTP/1.1" 200 69771
+"GET /teacher/dashboard/ HTTP/1.1" 200 76966
+"GET /courses/enrollments/ HTTP/1.1" 200 74483
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/student/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/student/dashboard/ HTTP/1.1" 302 0
+"GET /student/dashboard/ HTTP/1.1" 200 72311
+"GET /courses/my-enrollment/ HTTP/1.1" 200 149853
+"GET /media/avatars/student/7/download_1.jfif HTTP/1.1" 200 5236
+"GET /profile/ HTTP/1.1" 200 78152
+"POST /profile/avatar/upload/ HTTP/1.1" 302 0
+"GET /profile/ HTTP/1.1" 200 79266
+"GET /media/avatars/student/7/WTC_smoking_on_9-11.jpeg HTTP/1.1" 200 160823
+"GET /profile/edit/ HTTP/1.1" 200 74851
+"GET /profile/ HTTP/1.1" 200 78721
+"GET /media/avatars/student/7/WTC_smoking_on_9-11.jpeg HTTP/1.1" 304 0
+"GET /profile/settings/ HTTP/1.1" 200 88574
+"POST /profile/settings/ HTTP/1.1" 302 0
+"GET /profile/settings/ HTTP/1.1" 200 88574
+Internal Server Error: /profile/export-data/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views_profile.py", line 314, in export_data_view
+    response = JsonResponse(user_data, indent=2)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\http\response.py", line 752, in __init__
+    super().__init__(content=data, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\http\response.py", line 375, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+TypeError: HttpResponseBase.__init__() got an unexpected keyword argument 'indent'
+"GET /profile/export-data/ HTTP/1.1" 500 87654
+Internal Server Error: /profile/deactivate/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views_profile.py", line 252, in deactivate_account_view
+    return render(request, 'accounts/profile/deactivate_account.html', {'form': form})
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader.py", line 19, in get_template
+    raise TemplateDoesNotExist(template_name, chain=chain)
+django.template.exceptions.TemplateDoesNotExist: accounts/profile/deactivate_account.html
+"GET /profile/deactivate/ HTTP/1.1" 500 89039
+"GET /courses/my-enrollment/ HTTP/1.1" 200 149862
+"GET /media/avatars/student/7/WTC_smoking_on_9-11.jpeg HTTP/1.1" 304 0
+"GET /courses/offerings/9/ HTTP/1.1" 302 0
+Not Found: /accounts/login/
+"GET /accounts/login/?next=/courses/offerings/9/ HTTP/1.1" 404 7895
+"GET /courses/offerings/9/ HTTP/1.1" 302 0
+Not Found: /accounts/login/
+"GET /accounts/login/?next=/courses/offerings/9/ HTTP/1.1" 404 7895
+"GET /courses/offerings/9/ HTTP/1.1" 302 0
+Not Found: /accounts/login/
+"GET /accounts/login/?next=/courses/offerings/9/ HTTP/1.1" 404 7895
+"GET /courses/offerings/9/ HTTP/1.1" 302 0
+Not Found: /accounts/login/
+"GET /accounts/login/?next=/courses/offerings/9/ HTTP/1.1" 404 7895
+"GET /courses/offerings/9/ HTTP/1.1" 302 0
+Not Found: /accounts/login/
+"GET /accounts/login/?next=/courses/offerings/9/ HTTP/1.1" 404 7895
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 65420
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 63730
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /courses/manage-enrollment-codes/ HTTP/1.1" 200 71431
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /analytics/ HTTP/1.1" 200 95884
+Internal Server Error: /analytics/students/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\analytics\views.py", line 156, in student_analytics
+    return render(request, 'analytics/student_analytics.html', context)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\defaulttags.py", line 199, in render
+    len_values = len(values)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 366, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 216, in __iter__
+    for row in compiler.results_iter(
+               ~~~~~~~~~~~~~~~~~~~~~^
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ):
+    ^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 1572, in results_iter
+    results = self.execute_sql(
+        MULTI, chunked_fetch=chunked_fetch, chunk_size=chunk_size
+    )
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 1610, in execute_sql
+    sql, params = self.as_sql()
+                  ~~~~~~~~~~~^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 766, in as_sql
+    extra_select, order_by, group_by = self.pre_sql_setup(
+                                       ~~~~~~~~~~~~~~~~~~^
+        with_col_aliases=with_col_aliases or bool(combinator),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 85, in pre_sql_setup
+    self.setup_query(with_col_aliases=with_col_aliases)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 74, in setup_query
+    self.select, self.klass_info, self.annotation_col_map = self.get_select(
+                                                            ~~~~~~~~~~~~~~~^
+        with_col_aliases=with_col_aliases,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 316, in get_select
+    sql, params = self.compile(col)
+                  ~~~~~~~~~~~~^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 575, in compile
+    sql, params = vendor_impl(self, self.connection)
+                  ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\expressions.py", line 29, in as_sqlite
+    sql, params = self.as_sql(compiler, connection, **extra_context)
+                  ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\expressions.py", line 1724, in as_sql
+    if self._output_field_or_none is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\expressions.py", line 341, in _output_field_or_none
+    return self.output_field
+           ^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\utils\functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\expressions.py", line 327, in output_field
+    output_field = self._resolve_output_field()
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\expressions.py", line 365, in _resolve_output_field
+    raise FieldError(
+    ...<6 lines>...
+    )
+django.core.exceptions.FieldError: Expression contains mixed types: IntegerField, FloatField. You must set output_field.
+"GET /analytics/students/ HTTP/1.1" 500 234186
+"GET / HTTP/1.1" 200 69389
+"GET /teacher/dashboard/ HTTP/1.1" 200 76863
+"GET /analytics/ HTTP/1.1" 200 95884
+- Broken pipe from ('127.0.0.1', 52358)
+Watching for file changes with StatReloader
+"GET /teacher/dashboard/ HTTP/1.1" 302 0
+"GET /login/ HTTP/1.1" 200 63730
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 7856
+"POST /login/ HTTP/1.1" 302 0
+"GET /student/dashboard/ HTTP/1.1" 200 72335
+"GET /assessments/available/ HTTP/1.1" 200 66346
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+"GET /assessments/available/ HTTP/1.1" 200 66346
+"GET /student/dashboard/ HTTP/1.1" 200 72335
+"GET /assessments/available/ HTTP/1.1" 200 66346
+Watching for file changes with StatReloader
+"GET /assessments/available/?id=805dd81e-4862-4379-8e04-7a88da27b953&vscodeBrowserReqId=1759219818465 HTTP/1.1" 302 0
+Not Found: /accounts/login/
+"GET /accounts/login/?next=/assessments/available/%3Fid%3D805dd81e-4862-4379-8e04-7a88da27b953%26vscodeBrowserReqId%3D1759219818465 HTTP/1.1" 404 7978
+"GET /assessments/available/ HTTP/1.1" 200 79060
+"GET /student/dashboard/ HTTP/1.1" 200 72335
+"GET /assessments/available/ HTTP/1.1" 200 79060
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+"GET /assessments/11/take/?id=3a26183e-bc3f-4eff-8c2c-f7a1d6cb4298&vscodeBrowserReqId=1759278353360 HTTP/1.1" 302 0
+Not Found: /accounts/login/
+"GET /accounts/login/?next=/assessments/11/take/%3Fid%3D3a26183e-bc3f-4eff-8c2c-f7a1d6cb4298%26vscodeBrowserReqId%3D1759278353360 HTTP/1.1" 404 7976
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\feature_utils.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\urls.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\models.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\courses\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\courses\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\urls.py changed, reloading.
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 70254
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 8398
+Internal Server Error: /student/dashboard/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views.py", line 72, in student_dashboard_view
+    from courses.models import Course, Enrollment
+ImportError: cannot import name 'Enrollment' from 'courses.models' (C:\Users\shizu\Desktop\Online Quiz & Examination\courses\models.py)
+"GET /student/dashboard/ HTTP/1.1" 500 68080
+"GET /courses/my-enrollment/ HTTP/1.1" 200 159479
+"GET /media/avatars/student/1/download-_1_.png HTTP/1.1" 200 64438
+"GET /courses/enroll/10/ HTTP/1.1" 200 1848
+"POST /courses/enroll/10/ HTTP/1.1" 200 87
+"GET / HTTP/1.1" 200 70254
+Internal Server Error: /student/dashboard/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views.py", line 72, in student_dashboard_view
+    from courses.models import Course, Enrollment
+ImportError: cannot import name 'Enrollment' from 'courses.models' (C:\Users\shizu\Desktop\Online Quiz & Examination\courses\models.py)
+"GET /student/dashboard/ HTTP/1.1" 500 68080
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /?id=3a26183e-bc3f-4eff-8c2c-f7a1d6cb4298&vscodeBrowserReqId=1759286497403 HTTP/1.1" 200 67059
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 70254
+"GET / HTTP/1.1" 200 70254
+Internal Server Error: /student/dashboard/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views.py", line 98, in student_dashboard_view
+    ).select_related('assessment', 'assessment__course').order_by('-submitted_at')
+                                                         ~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1722, in order_by
+    obj.query.add_ordering(*field_names)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\query.py", line 2305, in add_ordering
+    self.names_to_path(item.split(LOOKUP_SEP), self.model._meta)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\query.py", line 1806, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'submitted_at' into field. Choices are: answers, assessment, assessment_id, attempt_number, browser_info, completed_at, copy_paste_attempts, current_question, graded_at, graded_by, graded_by_id, id, ip_address, is_auto_submitted, is_completed, is_graded, is_passed, is_submitted, max_score, overall_feedback, percentage, question_sequence, score, started_at, student, student_id, tab_switches, time_per_question, time_remaining, time_taken, user_agent, violation_flags, weighted_score
+"GET /student/dashboard/ HTTP/1.1" 500 87285
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /student/dashboard/?id=3a26183e-bc3f-4eff-8c2c-f7a1d6cb4298&vscodeBrowserReqId=1759287575803 HTTP/1.1" 302 0
+"GET /login/ HTTP/1.1" 200 65369
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\analytics\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /?id=3a26183e-bc3f-4eff-8c2c-f7a1d6cb4298&vscodeBrowserReqId=1759287691412 HTTP/1.1" 200 67059
+Internal Server Error: /student/dashboard/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views.py", line 115, in student_dashboard_view
+    recent_grades = completed_attempts.filter(
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        percentage__isnull=False
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    ).order_by('-graded_at', '-completed_at')[:5]
+    ^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1493, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1505, in _filter_or_exclude
+    raise TypeError("Cannot filter a query once a slice has been taken.")
+TypeError: Cannot filter a query once a slice has been taken.
+"GET /student/dashboard/ HTTP/1.1" 500 78952
+"GET / HTTP/1.1" 200 70254
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 67059
+"GET /login/?next=/student/dashboard/ HTTP/1.1" 200 65369
+"POST /login/?next=/student/dashboard/ HTTP/1.1" 302 0
+Internal Server Error: /student/dashboard/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views.py", line 115, in student_dashboard_view
+    recent_grades = completed_attempts.filter(
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        percentage__isnull=False
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+    ).order_by('-graded_at', '-completed_at')[:5]
+    ^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1493, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1505, in _filter_or_exclude
+    raise TypeError("Cannot filter a query once a slice has been taken.")
+TypeError: Cannot filter a query once a slice has been taken.
+"GET /student/dashboard/ HTTP/1.1" 500 79120
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /student/dashboard/?id=3a26183e-bc3f-4eff-8c2c-f7a1d6cb4298&vscodeBrowserReqId=1759288852242 HTTP/1.1" 302 0
+"GET /login/ HTTP/1.1" 200 65369
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\courses\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /?id=3a26183e-bc3f-4eff-8c2c-f7a1d6cb4298&vscodeBrowserReqId=1759290549178 HTTP/1.1" 200 67059
+"GET /login/?next=/student/dashboard/ HTTP/1.1" 200 68564
+"GET /login/?next=/student/dashboard/ HTTP/1.1" 200 68564
+"POST /login/?next=/student/dashboard/ HTTP/1.1" 302 0
+"GET /student/dashboard/ HTTP/1.1" 200 76363
+"GET /courses/my-enrollment/ HTTP/1.1" 200 159479
+"GET /courses/enroll/10/ HTTP/1.1" 200 1848
+"POST /courses/enroll/10/ HTTP/1.1" 200 87
+"GET /courses/my-enrollment/ HTTP/1.1" 200 159479
+"GET /assessments/7/take/ HTTP/1.1" 200 72995
+"POST /assessments/7/submit/ HTTP/1.1" 302 0
+Internal Server Error: /assessments/result/1/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\smartif.py", line 180, in translate_token
+    op = OPERATORS[token]
+         ~~~~~~~~~^^^^^^^
+KeyError: "'multiple_choice,true_false'|split:','"
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py", line 878, in assessment_result_view
+    return render(request, 'assessments/assessment_result.html', context)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\defaulttags.py", line 961, in do_if
+    condition = TemplateIfParser(parser, bits).parse()
+                ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\defaulttags.py", line 894, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\smartif.py", line 171, in __init__
+    mapped_tokens.append(self.translate_token(token))
+                         ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\smartif.py", line 182, in translate_token
+    return self.create_var(token)
+           ~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\defaulttags.py", line 897, in create_var
+    return TemplateLiteral(self.template_parser.compile_filter(value), value)
+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'split'
+"GET /assessments/result/1/ HTTP/1.1" 500 324085
+"POST /assessments/7/submit/ HTTP/1.1" 302 0
+Internal Server Error: /assessments/available/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py", line 1129, in available_assessments_view
+    assessments = Assessment.objects.filter(
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        status='published',
+        ^^^^^^^^^^^^^^^^^^^
+        start_date__lte=timezone.now()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ).order_by('-created_at')
+    ^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1493, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1511, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1518, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\query.py", line 1646, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\query.py", line 1678, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<7 lines>...
+        update_join_types=update_join_types,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\query.py", line 1526, in build_filter
+    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)
+                                        ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\query.py", line 1333, in solve_lookup_type
+    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+                                ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\query.py", line 1806, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'start_date' into field. Choices are: allow_backtrack, allow_review, analytics, assessment_type, attempts, auto_submit, available_from, available_until, average_score, completion_rate, created_at, created_from_import, created_from_import_id, created_from_template, created_from_template_id, creator, creator_id, description, difficulty_level, disable_copy_paste, documentimport, email_results, estimated_duration, grading_method, groups, id, ip_restrictions, last_accessed, late_submission_penalty, max_attempts, notify_on_submission, partial_credit, passing_score, questions, questions_per_page, randomize_choices, randomize_questions, require_lockdown_browser, require_webcam, show_correct_answers, show_correct_answers_after, source_question_bank, source_question_bank_id, status, subject_category, tags, time_limit, title, total_points, updated_at, view_count, weighted_scoring
+"POST /assessments/7/submit/ HTTP/1.1" 302 0
+- Broken pipe from ('127.0.0.1', 55573)
+Internal Server Error: /assessments/available/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py", line 1129, in available_assessments_view
+    assessments = Assessment.objects.filter(
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        status='published',
+        ^^^^^^^^^^^^^^^^^^^
+        start_date__lte=timezone.now()
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ).order_by('-created_at')
+    ^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1493, in filter
+    return self._filter_or_exclude(False, args, kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1511, in _filter_or_exclude
+    clone._filter_or_exclude_inplace(negate, args, kwargs)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1518, in _filter_or_exclude_inplace
+    self._query.add_q(Q(*args, **kwargs))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\query.py", line 1646, in add_q
+    clause, _ = self._add_q(q_object, can_reuse)
+                ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\query.py", line 1678, in _add_q
+    child_clause, needed_inner = self.build_filter(
+                                 ~~~~~~~~~~~~~~~~~^
+        child,
+        ^^^^^^
+    ...<7 lines>...
+        update_join_types=update_join_types,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\query.py", line 1526, in build_filter
+    lookups, parts, reffed_expression = self.solve_lookup_type(arg, summarize)
+                                        ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\query.py", line 1333, in solve_lookup_type
+    _, field, _, lookup_parts = self.names_to_path(lookup_splitted, self.get_meta())
+                                ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\query.py", line 1806, in names_to_path
+    raise FieldError(
+    ...<2 lines>...
+    )
+django.core.exceptions.FieldError: Cannot resolve keyword 'start_date' into field. Choices are: allow_backtrack, allow_review, analytics, assessment_type, attempts, auto_submit, available_from, available_until, average_score, completion_rate, created_at, created_from_import, created_from_import_id, created_from_template, created_from_template_id, creator, creator_id, description, difficulty_level, disable_copy_paste, documentimport, email_results, estimated_duration, grading_method, groups, id, ip_restrictions, last_accessed, late_submission_penalty, max_attempts, notify_on_submission, partial_credit, passing_score, questions, questions_per_page, randomize_choices, randomize_questions, require_lockdown_browser, require_webcam, show_correct_answers, show_correct_answers_after, source_question_bank, source_question_bank_id, status, subject_category, tags, time_limit, title, total_points, updated_at, view_count, weighted_scoring
+"GET /assessments/available/ HTTP/1.1" 500 123526
+"GET /student/dashboard/ HTTP/1.1" 200 78477
+"GET /courses/my-enrollment/ HTTP/1.1" 200 159479
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 67059
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 65369
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+Internal Server Error: /teacher/dashboard/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views.py", line 308, in teacher_dashboard_view
+    ).annotate(
+      ~~~~~~~~^
+        question_count=Count('questions'),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        average_score=Avg('attempts__percentage', filter=Q(attempts__is_completed=True))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ).order_by('-created_at')
+    ^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1649, in annotate
+    return self._annotate(args, kwargs, select=True)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1694, in _annotate
+    raise ValueError(
+    ...<2 lines>...
+    )
+ValueError: The annotation 'average_score' conflicts with a field on the model.
+"GET /teacher/dashboard/ HTTP/1.1" 500 80503
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 69338
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+"GET /student/dashboard/ HTTP/1.1" 200 77116
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 67059
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 65369
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+Internal Server Error: /teacher/dashboard/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views.py", line 308, in teacher_dashboard_view
+    ).annotate(
+      ~~~~~~~~^
+        question_count=Count('questions'),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        average_score=Avg('attempts__percentage', filter=Q(attempts__is_completed=True))
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ).order_by('-created_at')
+    ^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1649, in annotate
+    return self._annotate(args, kwargs, select=True)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1694, in _annotate
+    raise ValueError(
+    ...<2 lines>...
+    )
+ValueError: The annotation 'average_score' conflicts with a field on the model.
+"GET /teacher/dashboard/ HTTP/1.1" 500 80503
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\analytics\views.py changed, reloading.
+Watching for file changes with StatReloader
+Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+"GET /teacher/dashboard/ HTTP/1.1" 200 85140
+Not Found: /assessments/grade/7/
+"GET /assessments/grade/7/ HTTP/1.1" 404 13233
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 67059
+"GET /login/?next=/student/dashboard/ HTTP/1.1" 200 65369
+"POST /login/?next=/student/dashboard/ HTTP/1.1" 302 0
+"GET /student/dashboard/ HTTP/1.1" 200 77116
+"GET /profile/ HTTP/1.1" 302 0
+Not Found: /accounts/login/
+"GET /accounts/login/?next=/profile/ HTTP/1.1" 404 8425
+"GET / HTTP/1.1" 200 67059
+C:\Users\shizu\Desktop\Online Quiz & Examination\courses\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 67059
+"GET /login/?next=/student/dashboard/ HTTP/1.1" 200 65369
+- Broken pipe from ('127.0.0.1', 56899)
+"POST /login/?next=/student/dashboard/ HTTP/1.1" 200 65757
+"POST /login/?next=/student/dashboard/ HTTP/1.1" 302 0
+"GET /student/dashboard/ HTTP/1.1" 200 75083
+"GET /assessments/available/ HTTP/1.1" 200 70973
+"GET /courses/my-enrollment/ HTTP/1.1" 200 93741
+"GET /profile/ HTTP/1.1" 200 76405
+"POST /profile/avatar/upload/ HTTP/1.1" 302 0
+"GET /profile/ HTTP/1.1" 200 78010
+"GET /media/avatars/student/11/download-_1_.png HTTP/1.1" 200 64438
+"GET /profile/edit/ HTTP/1.1" 200 76538
+"GET /profile/ HTTP/1.1" 200 77465
+"GET /profile/edit/ HTTP/1.1" 200 76538
+"GET /profile/ HTTP/1.1" 200 77465
+"GET /media/avatars/student/11/download-_1_.png HTTP/1.1" 304 0
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 67059
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 65369
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+"GET /teacher/dashboard/ HTTP/1.1" 200 80228
+Internal Server Error: /assessments/13/view/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py", line 1180, in view_assessment_view
+    return render(request, 'assessments/view_assessment.html', {
+        'assessment': assessment,
+        'avg_score': avg_score,
+        'questions': questions
+    })
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 489, in parse
+    raise self.error(token, e)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 487, in parse
+    filter_expression = self.compile_filter(token.contents)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 710, in __init__
+    raise TemplateSyntaxError(
+    ...<2 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Could not parse the remainder: '=True.count' from 'assessment.attempts.filter.is_completed=True.count'
+"GET /assessments/13/view/ HTTP/1.1" 500 263271
+"GET /assessments/create/ HTTP/1.1" 200 74695
+"POST /assessments/create/ HTTP/1.1" 302 0
+"GET /assessments/create/quiz/ HTTP/1.1" 200 75951
+"GET /assessments/create/ HTTP/1.1" 200 74695
+"GET /teacher/dashboard/ HTTP/1.1" 200 80228
+"GET /assessments/my-assessments/ HTTP/1.1" 200 74212
+"GET /assessments/13/ HTTP/1.1" 200 74344
+"GET /teacher/dashboard/ HTTP/1.1" 200 80228
+"GET /courses/ HTTP/1.1" 200 84545
+"GET /teacher/dashboard/ HTTP/1.1" 200 80228
+"GET /courses/enrollments/ HTTP/1.1" 200 72751
+"GET /teacher/dashboard/ HTTP/1.1" 200 80228
+"GET /courses/offerings/ HTTP/1.1" 200 68434
+"GET /teacher/dashboard/ HTTP/1.1" 200 80228
+"GET /analytics/ HTTP/1.1" 200 83871
+Internal Server Error: /analytics/students/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\analytics\views.py", line 156, in student_analytics
+    return render(request, 'analytics/student_analytics.html', context)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\defaulttags.py", line 199, in render
+    len_values = len(values)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 366, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 1949, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\query.py", line 216, in __iter__
+    for row in compiler.results_iter(
+               ~~~~~~~~~~~~~~~~~~~~~^
+        chunked_fetch=self.chunked_fetch, chunk_size=self.chunk_size
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ):
+    ^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 1572, in results_iter
+    results = self.execute_sql(
+        MULTI, chunked_fetch=chunked_fetch, chunk_size=chunk_size
+    )
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 1610, in execute_sql
+    sql, params = self.as_sql()
+                  ~~~~~~~~~~~^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 766, in as_sql
+    extra_select, order_by, group_by = self.pre_sql_setup(
+                                       ~~~~~~~~~~~~~~~~~~^
+        with_col_aliases=with_col_aliases or bool(combinator),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 85, in pre_sql_setup
+    self.setup_query(with_col_aliases=with_col_aliases)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 74, in setup_query
+    self.select, self.klass_info, self.annotation_col_map = self.get_select(
+                                                            ~~~~~~~~~~~~~~~^
+        with_col_aliases=with_col_aliases,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 316, in get_select
+    sql, params = self.compile(col)
+                  ~~~~~~~~~~~~^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\sql\compiler.py", line 575, in compile
+    sql, params = vendor_impl(self, self.connection)
+                  ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\expressions.py", line 29, in as_sqlite
+    sql, params = self.as_sql(compiler, connection, **extra_context)
+                  ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\expressions.py", line 1724, in as_sql
+    if self._output_field_or_none is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\expressions.py", line 341, in _output_field_or_none
+    return self.output_field
+           ^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\utils\functional.py", line 47, in __get__
+    res = instance.__dict__[self.name] = self.func(instance)
+                                         ~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\expressions.py", line 327, in output_field
+    output_field = self._resolve_output_field()
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\db\models\expressions.py", line 365, in _resolve_output_field
+    raise FieldError(
+    ...<6 lines>...
+    )
+django.core.exceptions.FieldError: Expression contains mixed types: IntegerField, FloatField. You must set output_field.
+"GET /analytics/students/ HTTP/1.1" 500 235326
+Internal Server Error: /assessments/13/view/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py", line 1180, in view_assessment_view
+    return render(request, 'assessments/view_assessment.html', {
+        'assessment': assessment,
+        'avg_score': avg_score,
+        'questions': questions
+    })
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 489, in parse
+    raise self.error(token, e)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 487, in parse
+    filter_expression = self.compile_filter(token.contents)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 710, in __init__
+    raise TemplateSyntaxError(
+    ...<2 lines>...
+    )
+django.template.exceptions.TemplateSyntaxError: Could not parse the remainder: '=True.count' from 'assessment.attempts.filter.is_completed=True.count'
+"GET /assessments/13/view/ HTTP/1.1" 500 263271
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /assessments/13/view/ HTTP/1.1" 200 82518
+"GET /assessments/13/edit/ HTTP/1.1" 200 69497
+"POST /assessments/13/edit/ HTTP/1.1" 200 69505
+"POST /assessments/13/edit/ HTTP/1.1" 200 69513
+"GET /teacher/dashboard/ HTTP/1.1" 200 80228
+"GET /assessments/13/results/ HTTP/1.1" 200 77275
+Internal Server Error: /assessments/result/3/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\smartif.py", line 180, in translate_token
+    op = OPERATORS[token]
+         ~~~~~~~~~^^^^^^^
+KeyError: "'multiple_choice,true_false'|split:','"
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py", line 878, in assessment_result_view
+    return render(request, 'assessments/assessment_result.html', context)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\defaulttags.py", line 961, in do_if
+    condition = TemplateIfParser(parser, bits).parse()
+                ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\defaulttags.py", line 894, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\smartif.py", line 171, in __init__
+    mapped_tokens.append(self.translate_token(token))
+                         ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\smartif.py", line 182, in translate_token
+    return self.create_var(token)
+           ~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\defaulttags.py", line 897, in create_var
+    return TemplateLiteral(self.template_parser.compile_filter(value), value)
+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'split'
+"GET /assessments/result/3/ HTTP/1.1" 500 323867
+Internal Server Error: /assessments/result/7/
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\smartif.py", line 180, in translate_token
+    op = OPERATORS[token]
+         ~~~~~~~~~^^^^^^^
+KeyError: "'multiple_choice,true_false'|split:','"
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\contrib\auth\decorators.py", line 59, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\shizu\Desktop\Online Quiz & Examination\assessments\views.py", line 878, in assessment_result_view
+    return render(request, 'assessments/assessment_result.html', context)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader.py", line 61, in render_to_string
+    template = get_template(template_name, using=using)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader.py", line 15, in get_template
+    return engine.get_template(template_name)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\backends\django.py", line 79, in get_template
+    return Template(self.engine.get_template(template_name), self)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\engine.py", line 177, in get_template
+    template, origin = self.find_template(template_name)
+                       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\engine.py", line 159, in find_template
+    template = loader.get_template(name, skip=skip)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loaders\cached.py", line 57, in get_template
+    template = super().get_template(template_name, skip)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loaders\base.py", line 28, in get_template
+    return Template(
+        contents,
+    ...<2 lines>...
+        self.engine,
+    )
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 154, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 196, in compile_nodelist
+    nodelist = parser.parse()
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader_tags.py", line 299, in do_extends
+    nodelist = parser.parse()
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\loader_tags.py", line 234, in do_block
+    nodelist = parser.parse(("endblock",))
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\defaulttags.py", line 862, in do_for
+    nodelist_loop = parser.parse(
+        (
+    ...<2 lines>...
+        )
+    )
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 518, in parse
+    raise self.error(token, e)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 516, in parse
+    compiled_result = compile_func(self, token)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\defaulttags.py", line 961, in do_if
+    condition = TemplateIfParser(parser, bits).parse()
+                ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\defaulttags.py", line 894, in __init__
+    super().__init__(*args, **kwargs)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\smartif.py", line 171, in __init__
+    mapped_tokens.append(self.translate_token(token))
+                         ~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\smartif.py", line 182, in translate_token
+    return self.create_var(token)
+           ~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\defaulttags.py", line 897, in create_var
+    return TemplateLiteral(self.template_parser.compile_filter(value), value)
+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 609, in compile_filter
+    return FilterExpression(token, self)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 705, in __init__
+    filter_func = parser.find_filter(filter_name)
+  File "C:\Users\shizu\AppData\Roaming\Python\Python313\site-packages\django\template\base.py", line 615, in find_filter
+    raise TemplateSyntaxError("Invalid filter: '%s'" % filter_name)
+django.template.exceptions.TemplateSyntaxError: Invalid filter: 'split'
+"GET /assessments/result/7/ HTTP/1.1" 500 323835
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 67059
+"GET /login/?next=/student/dashboard/ HTTP/1.1" 200 65369
+"POST /login/?next=/student/dashboard/ HTTP/1.1" 302 0
+"GET /student/dashboard/ HTTP/1.1" 200 75083
+"GET /assessments/available/ HTTP/1.1" 200 70973
+"GET /student/dashboard/ HTTP/1.1" 200 75083
+"GET /profile/ HTTP/1.1" 200 77465
+"GET /media/avatars/student/11/download-_1_.png HTTP/1.1" 304 0
+"GET /profile/activity/ HTTP/1.1" 200 76237
+"GET /profile/activity/?activity_type=login&date_from=&date_to= HTTP/1.1" 200 76237
+"GET /profile/activity/?activity_type=&date_from=&date_to= HTTP/1.1" 200 76237
+"GET /profile/ HTTP/1.1" 200 77465
+"GET /profile/edit/ HTTP/1.1" 200 76538
+"GET /profile/ HTTP/1.1" 200 77465
+"GET /profile/settings/ HTTP/1.1" 200 90219
+"POST /profile/settings/ HTTP/1.1" 302 0
+"GET /profile/settings/ HTTP/1.1" 200 90219
+"GET /student/dashboard/ HTTP/1.1" 200 75083
+"GET /student/dashboard/ HTTP/1.1" 200 75083
+"GET /courses/my-enrollment/ HTTP/1.1" 200 93722
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 67059
+"GET /admin HTTP/1.1" 301 0
+"GET /admin/ HTTP/1.1" 302 0
+"GET /admin/login/?next=/admin/ HTTP/1.1" 200 4170
+"GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+"GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+"GET /static/admin/css/login.css HTTP/1.1" 200 951
+"GET /static/admin/css/dark_mode.css HTTP/1.1" 200 2808
+"GET /static/admin/css/responsive.css HTTP/1.1" 200 16565
+"GET /static/admin/css/base.css HTTP/1.1" 200 22120
+"GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+"POST /admin/login/?next=/admin/ HTTP/1.1" 302 0
+"GET /admin/ HTTP/1.1" 200 18613
+"GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+"GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 331
+"GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 380
+"GET /admin/accounts/user/ HTTP/1.1" 200 24546
+"GET /static/admin/css/changelists.css HTTP/1.1" 200 6878
+"GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+"GET /static/admin/js/core.js HTTP/1.1" 200 6208
+"GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /static/admin/js/actions.js HTTP/1.1" 200 8076
+"GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+"GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+"GET /static/admin/img/icon-no.svg HTTP/1.1" 200 560
+"GET /static/admin/img/search.svg HTTP/1.1" 200 458
+"GET /static/admin/img/icon-yes.svg HTTP/1.1" 200 436
+"GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+"GET /static/admin/js/filters.js HTTP/1.1" 200 978
+"GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+"GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 331
+"GET /static/admin/img/icon-viewlink.svg HTTP/1.1" 200 581
+"GET /static/admin/img/sorting-icons.svg HTTP/1.1" 200 1097
+"GET /admin/accounts/user/8/change/ HTTP/1.1" 200 44151
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /static/admin/css/forms.css HTTP/1.1" 200 8525
+"GET /static/admin/js/calendar.js HTTP/1.1" 200 9141
+"GET /static/admin/js/SelectBox.js HTTP/1.1" 200 4530
+"GET /static/admin/js/SelectFilter2.js HTTP/1.1" 200 15845
+"GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+"GET /static/admin/js/admin/DateTimeShortcuts.js HTTP/1.1" 200 19319
+"GET /static/admin/css/widgets.css HTTP/1.1" 200 11991
+"GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+"GET /static/admin/img/selector-icons.svg HTTP/1.1" 200 3291
+"GET /static/admin/img/icon-clock.svg HTTP/1.1" 200 677
+"GET /static/admin/img/icon-calendar.svg HTTP/1.1" 200 1086
+"POST /admin/accounts/user/8/change/ HTTP/1.1" 200 44400
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/accounts/user/ HTTP/1.1" 200 24546
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/assessments/assessment/ HTTP/1.1" 200 22368
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/assessments/assessment/13/change/ HTTP/1.1" 200 50393
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/assessments/choice/ HTTP/1.1" 200 26480
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/assessments/correctanswer/ HTTP/1.1" 200 18462
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/assessments/studentanswer/ HTTP/1.1" 200 28191
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /static/admin/img/icon-unknown.svg HTTP/1.1" 200 655
+"GET /admin/courses/academicyear/ HTTP/1.1" 200 19959
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/courses/courseoffering/ HTTP/1.1" 200 19751
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/courses/course/ HTTP/1.1" 200 24973
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/courses/curriculum/ HTTP/1.1" 200 25356
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"POST /admin/courses/curriculum/ HTTP/1.1" 302 0
+"GET /admin/courses/curriculum/ HTTP/1.1" 200 25549
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /static/admin/img/icon-alert.svg HTTP/1.1" 200 504
+"GET / HTTP/1.1" 200 69704
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 67059
+"GET /login/?next=/teacher/dashboard/ HTTP/1.1" 200 65369
+"POST /login/?next=/teacher/dashboard/ HTTP/1.1" 302 0
+"GET /teacher/dashboard/ HTTP/1.1" 200 80228
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\admin.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\admin.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\views_calendar.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\admin.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\admin.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\admin.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\admin.py changed, reloading.
+Watching for file changes with StatReloader
+"GET / HTTP/1.1" 200 71289
+"GET /teacher/dashboard/ HTTP/1.1" 200 80485
+"GET /calendar/ HTTP/1.1" 200 97522
+"GET /calendar/?view=month&year=2025&month=9&day=1 HTTP/1.1" 200 94565
+"GET /calendar/?view=month&year=2025&month=10&day=1 HTTP/1.1" 200 97522
+"GET /calendar/?view=month&year=2025&month=11&day=1 HTTP/1.1" 200 96014
+"GET /calendar/?view=month&year=2025&month=10&day=1 HTTP/1.1" 200 97522
+"GET /teacher/dashboard/ HTTP/1.1" 200 80485
+"GET /calendar/ HTTP/1.1" 200 107340
+"GET /calendar/ HTTP/1.1" 200 107340
+"GET /calendar/ HTTP/1.1" 200 107340
+"GET /calendar/ HTTP/1.1" 200 107340
+"GET /calendar/ HTTP/1.1" 200 107340
+"GET /calendar/ HTTP/1.1" 200 107340
+"GET /calendar/create/ HTTP/1.1" 200 72627
+"POST /calendar/create/ HTTP/1.1" 200 73493
+"GET /calendar/ HTTP/1.1" 200 107340
+"GET /teacher/dashboard/ HTTP/1.1" 200 80485
+"GET /calendar/ HTTP/1.1" 200 97123
+"GET /calendar/?view=month&year=2025&month=10 HTTP/1.1" 200 97123
+"GET /calendar/?view=week&year=2025&month=10&day=2 HTTP/1.1" 200 79996
+"GET /calendar/?view=day&year=2025&month=10&day=2 HTTP/1.1" 200 77650
+"GET /calendar/?view=month&year=2025&month=10 HTTP/1.1" 200 97123
+"GET /calendar/?view=month HTTP/1.1" 200 97123
+"GET /calendar/create/ HTTP/1.1" 200 72627
+"GET /calendar/event/1/ HTTP/1.1" 200 71279
+"GET /calendar/ HTTP/1.1" 200 97123
+"GET /calendar/ HTTP/1.1" 200 132069
+"GET /calendar/?view=month&year=2025&month=11&day=1 HTTP/1.1" 200 128877
+"GET /calendar/event/5/ HTTP/1.1" 200 71246
+"GET /calendar/ HTTP/1.1" 200 132069
+"GET /calendar/?view=month&year=2025&month=9&day=1 HTTP/1.1" 200 125952
+"GET /calendar/?view=month&year=2025&month=10&day=1 HTTP/1.1" 200 132069
+"GET /calendar/create/ HTTP/1.1" 200 72627
+"GET /calendar/ HTTP/1.1" 200 132069
+"GET /calendar/event/4/ HTTP/1.1" 200 71407
+"GET /calendar/ HTTP/1.1" 200 132069
+"POST /logout/ HTTP/1.1" 302 0
+"GET / HTTP/1.1" 200 67059
+"GET /login/?next=/student/dashboard/ HTTP/1.1" 200 65369
+"POST /login/?next=/student/dashboard/ HTTP/1.1" 302 0
+"GET /student/dashboard/ HTTP/1.1" 200 75340
+"GET /calendar/ HTTP/1.1" 200 133499
+"GET /calendar/event/1/ HTTP/1.1" 200 70506
+"GET /calendar/event/2/ HTTP/1.1" 200 70592
+"GET /calendar/ HTTP/1.1" 200 133499
+"GET /student/dashboard/ HTTP/1.1" 200 75340

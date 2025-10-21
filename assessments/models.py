@@ -669,6 +669,12 @@ class StudentAttempt(models.Model):
     question_sequence = models.JSONField(default=list, blank=True)
     time_per_question = models.JSONField(default=dict, blank=True)
     
+    # Grading fields
+    is_graded = models.BooleanField(default=False)
+    graded_at = models.DateTimeField(null=True, blank=True)
+    graded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='graded_attempts')
+    overall_feedback = models.TextField(blank=True, null=True)
+    
     class Meta:
         unique_together = ['student', 'assessment', 'attempt_number']
         ordering = ['-started_at']
@@ -759,6 +765,12 @@ class StudentAnswer(models.Model):
     
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    # Grading fields
+    is_graded = models.BooleanField(default=False)
+    graded_at = models.DateTimeField(null=True, blank=True)
+    graded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='graded_answers')
+    feedback = models.TextField(blank=True, null=True)
     
     class Meta:
         unique_together = ['attempt', 'question']
