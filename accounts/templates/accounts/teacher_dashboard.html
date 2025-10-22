@@ -1,313 +1,637 @@
-{% extends 'accounts/base.html' %}
+{% extends "accounts/base.html" %}
+{% load static %}
 
-{% block title %}SPIST - Teacher Dashboard{% endblock %}
+{% block title %}Teacher Dashboard - SPIST{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Teacher Dashboard Specific Styles */
+    .teaching-tool-card {
+        background: var(--bg-card);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: var(--shadow);
+        transition: all var(--transition);
+        border: 1px solid var(--border-light);
+        cursor: pointer;
+        text-decoration: none;
+        display: block;
+        color: var(--text-primary);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .teaching-tool-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+        transform: scaleX(0);
+        transition: transform var(--transition);
+    }
+    
+    .teaching-tool-card:hover::before {
+        transform: scaleX(1);
+    }
+    
+    .teaching-tool-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-lg);
+        color: var(--text-primary);
+    }
+    
+    .tool-icon {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        color: white;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin: 0 auto 1rem;
+        transition: all var(--transition-fast);
+    }
+    
+    .teaching-tool-card:hover .tool-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+    
+    .course-card {
+        background: var(--bg-card);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: var(--shadow);
+        border-left: 4px solid var(--primary);
+        transition: all var(--transition);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .course-card::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(46, 125, 50, 0.05) 0%, transparent 70%);
+        opacity: 0;
+        transition: opacity var(--transition);
+    }
+    
+    .course-card:hover::after {
+        opacity: 1;
+    }
+    
+    .course-card:hover {
+        box-shadow: var(--shadow-md);
+        transform: translateX(5px);
+    }
+    
+    .pending-grade-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: var(--warning);
+        color: var(--text-primary);
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius);
+        font-weight: 600;
+        font-size: 0.875rem;
+        box-shadow: var(--shadow);
+    }
+    
+    .student-progress-item {
+        padding: 1rem;
+        border-bottom: 1px solid var(--border-light);
+        transition: background var(--transition-fast);
+    }
+    
+    .student-progress-item:hover {
+        background: var(--bg-hover);
+    }
+    
+    .student-progress-item:last-child {
+        border-bottom: none;
+    }
+    
+    .progress-bar-custom {
+        height: 8px;
+        background: var(--border-light);
+        border-radius: var(--radius);
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+        border-radius: var(--radius);
+        transition: width var(--transition-slow);
+    }
+    
+    .grade-distribution-chart {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        height: 150px;
+        gap: 0.5rem;
+        padding: 1rem 0;
+    }
+    
+    .chart-bar {
+        flex: 1;
+        background: linear-gradient(180deg, var(--primary) 0%, var(--primary-light) 100%);
+        border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+        position: relative;
+        transition: all var(--transition);
+        cursor: pointer;
+    }
+    
+    .chart-bar:hover {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+    
+    .chart-label {
+        text-align: center;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-top: 0.5rem;
+        font-weight: 600;
+    }
+    
+    .notification-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background: var(--danger);
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        font-weight: 700;
+        box-shadow: var(--shadow);
+    }
+    
+    /* ===== REAL-TIME CLOCK STYLING ===== */
+    .dashboard-clock {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        border-radius: var(--radius-lg);
+        padding: 1.25rem 1.75rem;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        min-width: 200px;
+        height: 100px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    .clock-time {
+        font-size: 2.25rem;
+        font-weight: 700;
+        font-family: 'Courier New', monospace;
+        color: white;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        letter-spacing: 2px;
+        margin-bottom: 0.25rem;
+        line-height: 1;
+    }
+    
+    .clock-date {
+        font-size: 0.875rem;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .clock-divider {
+        display: inline-block;
+        animation: blink 1s infinite;
+    }
+    
+    @keyframes blink {
+        0%, 50% { opacity: 1; }
+        51%, 100% { opacity: 0.3; }
+    }
+    
+    /* Light Mode Clock Styling - High Contrast */
+    [data-theme="light"] .dashboard-clock {
+        background: rgba(255, 255, 255, 0.95) !important;
+        border: 2px solid rgba(27, 94, 32, 0.3) !important;
+        box-shadow: 0 4px 12px rgba(27, 94, 32, 0.15) !important;
+    }
+    
+    [data-theme="light"] .clock-time {
+        color: var(--spist-green-dark) !important;
+        text-shadow: none !important;
+    }
+    
+    [data-theme="light"] .clock-date {
+        color: var(--spist-green) !important;
+    }
+    
+    @media (max-width: 768px) {
+        .clock-time {
+            font-size: 1.75rem;
+        }
+        
+        .dashboard-clock {
+            padding: 1rem 1.25rem;
+            min-width: 150px;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<!-- Feature not implemented notification -->
-{% include 'accounts/partials/feature_notification.html' %}
-<!-- Welcome Banner -->
-<div class="row mb-4">
+<div class="row g-4">
+    <!-- Welcome Banner -->
     <div class="col-12">
-        <div class="modern-card bg-gradient" style="background: linear-gradient(135deg, var(--spist-primary-green) 0%, var(--spist-light-green) 100%); color: white;">
-            <div class="card-body text-center py-5">
+        <div class="welcome-banner">
+            <div class="content">
                 <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <h2 class="mb-3"><i class="fas fa-chalkboard-teacher me-3"></i>Welcome Back, Prof. {{ user.last_name }}!</h2>
-                        <p class="lead mb-0">{{ user.teacher_profile.department }} Department</p>
-                        <small class="opacity-75">Employee ID: {{ user.teacher_profile.employee_id }}</small>
+                    <div class="col-lg-7 col-md-6">
+                        <h1 class="mb-2" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 2.5rem;">
+                            Welcome back, Prof. {{ user.last_name }}! 👨‍🏫
+                        </h1>
+                        <p class="mb-0" style="font-size: 1.125rem; opacity: 0.9;">
+                            <span id="live-date"></span> • You have {{ pending_grading_count }} assessment{{ pending_grading_count|pluralize }} pending review
+                        </p>
                     </div>
-                    <div class="col-md-4">
-                        <div class="stat-card bg-white bg-opacity-20 border-0" style="backdrop-filter: blur(10px);">
-                            <div class="text-center text-white">
-                                <h3 class="mb-1">{{ active_courses|default:0 }}</h3>
-                                <small>Active Courses</small>
+                    <div class="col-lg-3 col-md-4 mt-3 mt-md-0">
+                        <div class="dashboard-clock">
+                            <div class="clock-time">
+                                <span id="hours">00</span><span class="clock-divider">:</span><span id="minutes">00</span>
+                            </div>
+                            <div class="clock-date">
+                                <i class="fas fa-calendar-day me-1"></i>
+                                <span id="day-name"></span>
                             </div>
                         </div>
+                    </div>
+                    <div class="col-lg-2 col-md-2 text-md-end mt-3 mt-md-0">
+                        <a href="{% url 'assessments:create_assessment' %}" class="btn btn-light btn-lg w-100">
+                            <i class="fas fa-plus me-2"></i>Create
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
-<!-- Quick Stats -->
-<div class="row mb-4">
-    <div class="col-md-3 mb-3">
-        <div class="stat-card stat-card-primary text-center">
-            <div class="stat-number">{{ total_assessments|default:0 }}</div>
-            <div class="stat-label">Total Assessments</div>
-        </div>
-    </div>
-    <div class="col-md-3 mb-3">
-        <div class="stat-card stat-card-info text-center">
-            <div class="stat-number">{{ total_attempts|default:0 }}</div>
-            <div class="stat-label">Student Attempts</div>
-        </div>
-    </div>
-    <div class="col-md-3 mb-3">
-        <div class="stat-card stat-card-warning text-center">
-            <div class="stat-number">{{ pending_grading|default:0 }}</div>
-            <div class="stat-label">Pending Grades</div>
-        </div>
-    </div>
-    <div class="col-md-3 mb-3">
-        <div class="stat-card stat-card-success text-center">
-            <div class="stat-number">{{ avg_score|floatformat:1|default:"N/A" }}%</div>
-            <div class="stat-label">Average Score</div>
-        </div>
-    </div>
-</div>
-
-<!-- Main Content Grid -->
-<div class="row">
-    <!-- Left Column -->
-    <div class="col-lg-8">
-        <!-- Quick Actions -->
-        <div class="modern-card mb-4">
-            <div class="card-header">
-                <h5><i class="fas fa-rocket me-2"></i>Teaching Tools</h5>
+    
+    <!-- Statistics Cards -->
+    <div class="col-lg-3 col-md-6">
+        <div class="stat-card stat-card-primary">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="stat-number">{{ total_assessments }}</div>
+                    <div class="stat-label">Total Assessments</div>
+                </div>
+                <div>
+                    <i class="fas fa-clipboard-list fa-3x" style="color: var(--primary); opacity: 0.2;"></i>
+                </div>
             </div>
-            <div class="card-body">
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6">
+        <div class="stat-card stat-card-secondary">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="stat-number">{{ total_attempts }}</div>
+                    <div class="stat-label">Student Attempts</div>
+                </div>
+                <div>
+                    <i class="fas fa-users fa-3x" style="color: var(--secondary); opacity: 0.2;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6">
+        <div class="stat-card stat-card-warning">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="stat-number">{{ pending_grading_count }}</div>
+                    <div class="stat-label">Pending Grading</div>
+                </div>
+                <div>
+                    <i class="fas fa-clock fa-3x" style="color: var(--warning); opacity: 0.2;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-3 col-md-6">
+        <div class="stat-card stat-card-success">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <div class="stat-number">{{ average_class_score|floatformat:0 }}%</div>
+                    <div class="stat-label">Avg. Class Score</div>
+                </div>
+                <div>
+                    <i class="fas fa-chart-line fa-3x" style="color: var(--success); opacity: 0.2;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Teaching Tools -->
+    <div class="col-12">
+        <div class="modern-card">
+            <div class="modern-card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-toolbox me-2"></i>Teaching Tools
+                </h5>
+            </div>
+            <div class="modern-card-body">
                 <div class="row g-3">
-                    <div class="col-md-4">
-                        <a href="{% url 'assessments:assessment_selection' %}" 
-                           class="btn btn-modern btn-primary-modern w-100">
-                            <i class="fas fa-plus-circle"></i>Create Assessment
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <a href="{% url 'assessments:create_assessment' %}" class="teaching-tool-card">
+                            <div class="tool-icon">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                            <div style="font-weight: 600; font-size: 1rem; margin-bottom: 0.5rem;">Create Assessment</div>
+                            <p style="font-size: 0.875rem; color: var(--text-muted); margin: 0;">New quiz or exam</p>
                         </a>
                     </div>
-                    <div class="col-md-4">
-                        <a href="{% url 'assessments:my_assessments' %}" 
-                           class="btn btn-modern w-100" style="background: linear-gradient(135deg, var(--success-color) 0%, #388e3c 100%); color: white;">
-                            <i class="fas fa-list-check"></i>My Assessments
+                    
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <a href="{% url 'assessments:my_assessments' %}" class="teaching-tool-card">
+                            <div class="tool-icon" style="background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <div style="font-weight: 600; font-size: 1rem; margin-bottom: 0.5rem;">My Assessments</div>
+                            <p style="font-size: 0.875rem; color: var(--text-muted); margin: 0;">Manage tests</p>
+                            {% if pending_grading_count > 0 %}
+                            <span class="notification-badge">{{ pending_grading_count }}</span>
+                            {% endif %}
                         </a>
                     </div>
-                    <div class="col-md-4">
-                        <a href="{% url 'courses:dashboard' %}" class="btn btn-modern w-100" style="background: linear-gradient(135deg, var(--secondary-color) 0%, #1976d2 100%); color: white;">
-                            <i class="fas fa-cogs"></i>Manage Courses
+                    
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <a href="{% url 'courses:dashboard' %}" class="teaching-tool-card">
+                            <div class="tool-icon" style="background: linear-gradient(135deg, var(--success) 0%, #00E676 100%);">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                            </div>
+                            <div style="font-weight: 600; font-size: 1rem; margin-bottom: 0.5rem;">Manage Courses</div>
+                            <p style="font-size: 0.875rem; color: var(--text-muted); margin: 0;">Course content</p>
                         </a>
                     </div>
-                    <div class="col-md-4">
-                        <a href="{% url 'courses:enrollment_management' %}" class="btn btn-modern w-100" style="background: linear-gradient(135deg, var(--accent-color) 0%, #f57c00 100%); color: white;">
-                            <i class="fas fa-users"></i>View Enrollments
+                    
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <a href="{% url 'courses:view_enrollments' %}" class="teaching-tool-card">
+                            <div class="tool-icon" style="background: linear-gradient(135deg, #2196F3 0%, #64B5F6 100%);">
+                                <i class="fas fa-user-graduate"></i>
+                            </div>
+                            <div style="font-weight: 600; font-size: 1rem; margin-bottom: 0.5rem;">View Enrollments</div>
+                            <p style="font-size: 0.875rem; color: var(--text-muted); margin: 0;">Student roster</p>
                         </a>
                     </div>
-                    <div class="col-md-4">
-                        <a href="{% url 'courses:course_offerings' %}" class="btn btn-modern w-100" style="background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%); color: white;">
-                            <i class="fas fa-calendar-alt"></i>Course Offerings
+                    
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <a href="{% url 'courses:course_offerings' %}" class="teaching-tool-card">
+                            <div class="tool-icon" style="background: linear-gradient(135deg, #FF6F00 0%, #FF8F00 100%);">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <div style="font-weight: 600; font-size: 1rem; margin-bottom: 0.5rem;">Course Offerings</div>
+                            <p style="font-size: 0.875rem; color: var(--text-muted); margin: 0;">Browse catalog</p>
                         </a>
                     </div>
-                    <div class="col-md-4">
-                        <a href="{% url 'analytics:dashboard' %}" class="btn btn-modern w-100" style="background: linear-gradient(135deg, #e91e63 0%, #c2185b 100%); color: white;">
-                            <i class="fas fa-chart-line"></i>Analytics
+                    
+                    <div class="col-lg-2 col-md-4 col-6">
+                        <a href="{% url 'analytics:dashboard' %}" class="teaching-tool-card">
+                            <div class="tool-icon" style="background: linear-gradient(135deg, #9C27B0 0%, #AB47BC 100%);">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <div style="font-weight: 600; font-size: 1rem; margin-bottom: 0.5rem;">Analytics</div>
+                            <p style="font-size: 0.875rem; color: var(--text-muted); margin: 0;">View insights</p>
                         </a>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Recent Activity -->
-        <div class="modern-card mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5><i class="fas fa-clock me-2"></i>Recent Activity</h5>
-                <span class="badge bg-success">Real-time</span>
-            </div>
-            <div class="card-body">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="bg-primary rounded-circle p-2 me-3">
-                        <i class="fas fa-user-check text-white"></i>
-                    </div>
-                    <div>
-                        <h6 class="mb-0">New Student Enrollment</h6>
-                        <small class="text-muted">John Doe enrolled in Mathematics 101</small>
-                    </div>
-                    <small class="text-muted ms-auto">30 min ago</small>
-                </div>
-                <div class="d-flex align-items-center mb-3">
-                    <div class="bg-success rounded-circle p-2 me-3">
-                        <i class="fas fa-clipboard-check text-white"></i>
-                    </div>
-                    <div>
-                        <h6 class="mb-0">Assessment Submitted</h6>
-                        <small class="text-muted">Physics Quiz 2 - 25 submissions received</small>
-                    </div>
-                    <small class="text-muted ms-auto">2 hours ago</small>
-                </div>
-                <div class="d-flex align-items-center mb-3">
-                    <div class="bg-warning rounded-circle p-2 me-3">
-                        <i class="fas fa-exclamation-triangle text-white"></i>
-                    </div>
-                    <div>
-                        <h6 class="mb-0">Grade Reminder</h6>
-                        <small class="text-muted">5 assessments need grading</small>
-                    </div>
-                    <small class="text-muted ms-auto">1 day ago</small>
-                </div>
-                <div class="text-center">
-                    <a href="#" class="btn btn-sm btn-outline-primary">View All Activity</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Active Assessments -->
+    </div>
+    
+    <!-- My Courses & Grade Distribution -->
+    <div class="col-lg-8">
         <div class="modern-card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5><i class="fas fa-tasks me-2"></i>My Active Assessments</h5>
-                <a href="{% url 'assessments:my_assessments' %}" class="btn btn-sm btn-outline-primary">View All</a>
+            <div class="modern-card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chalkboard me-2"></i>My Courses
+                    </h5>
+                    <a href="{% url 'courses:dashboard' %}" class="btn btn-light btn-sm">
+                        View All <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
             </div>
-            <div class="card-body">
-                {% if active_assessments_list %}
-                    {% for assessment in active_assessments_list|slice:":4" %}
-                    <div class="border rounded p-3 mb-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div class="flex-grow-1">
-                                <h6 class="text-primary mb-1">{{ assessment.title }}</h6>
-                                <p class="small text-muted mb-2">{{ assessment.description|truncatechars:60 }}</p>
-                                <div class="d-flex gap-3">
-                                    <small class="text-info">
-                                        <i class="fas fa-users"></i> {{ assessment.attempts.count }} attempts
-                                    </small>
-                                    <small class="text-success">
-                                        <i class="fas fa-clock"></i> {{ assessment.time_limit|default:"No limit" }} min
-                                    </small>
+            <div class="modern-card-body">
+                {% if teacher_courses %}
+                    {% for course in teacher_courses|slice:":4" %}
+                    <div class="course-card">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h6 class="mb-1">{{ course.course_name }}</h6>
+                                <p class="mb-2 text-muted" style="font-size: 0.875rem;">
+                                    {{ course.description|truncatewords:15 }}
+                                </p>
+                                <div class="d-flex align-items-center text-muted" style="font-size: 0.875rem;">
+                                    <i class="fas fa-code me-2"></i>{{ course.course_code }}
+                                    <span class="mx-2">•</span>
+                                    <i class="fas fa-users me-2"></i>{{ course.enrollments.count }} student{{ course.enrollments.count|pluralize }}
+                                    <span class="mx-2">•</span>
+                                    <i class="fas fa-clipboard-list me-2"></i>{{ course.assessments.count }} assessment{{ course.assessments.count|pluralize }}
                                 </div>
                             </div>
-                            <div class="text-end">
-                                <div class="dropdown">
-                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                        Actions
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="{% url 'assessments:view_assessment' assessment.id %}">
-                                            <i class="fas fa-eye"></i> View Details</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'assessments:assessment_results' assessment.id %}">
-                                            <i class="fas fa-chart-bar"></i> View Results</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'assessments:edit_assessment' assessment.id %}">
-                                            <i class="fas fa-edit"></i> Edit</a></li>
-                                    </ul>
-                                </div>
+                            <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                                <a href="{% url 'courses:course_detail' course.id %}" class="btn btn-primary-modern btn-sm">
+                                    <i class="fas fa-eye me-2"></i>View Course
+                                </a>
                             </div>
                         </div>
                     </div>
                     {% endfor %}
                 {% else %}
-                    <div class="text-center text-muted py-4">
-                        <i class="fas fa-clipboard-list fa-3x mb-3"></i>
-                        <h6>No Active Assessments</h6>
-                        <p class="small">Create your first assessment to get started</p>
-                        <a href="{% url 'assessments:assessment_selection' %}" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> Create Assessment
-                        </a>
+                    <div class="text-center py-5">
+                        <i class="fas fa-chalkboard fa-3x mb-3" style="color: var(--text-muted); opacity: 0.5;"></i>
+                        <p class="text-muted mb-0">You haven't been assigned any courses yet.</p>
                     </div>
                 {% endif %}
             </div>
         </div>
     </div>
-
-    <!-- Right Column -->
+    
+    <!-- Student Progress & Grade Distribution -->
     <div class="col-lg-4">
-        <!-- Teacher Profile -->
+        <!-- Grade Distribution -->
         <div class="modern-card mb-4">
-            <div class="card-header">
-                <h5><i class="fas fa-user-tie me-2"></i>Faculty Profile</h5>
+            <div class="modern-card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-column me-2"></i>Grade Distribution
+                </h5>
             </div>
-            <div class="card-body">
-                <div class="text-center mb-3">
-                    <div class="bg-info rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
-                        <i class="fas fa-chalkboard-teacher fa-2x text-white"></i>
+            <div class="modern-card-body">
+                <div class="grade-distribution-chart">
+                    <div>
+                        <div class="chart-bar" style="height: {{ grade_distribution.A|default:0 }}%;" title="A: {{ grade_distribution.A|default:0 }}%"></div>
+                        <div class="chart-label">A</div>
+                    </div>
+                    <div>
+                        <div class="chart-bar" style="height: {{ grade_distribution.B|default:0 }}%; background: linear-gradient(180deg, var(--secondary) 0%, var(--secondary-light) 100%);" title="B: {{ grade_distribution.B|default:0 }}%"></div>
+                        <div class="chart-label">B</div>
+                    </div>
+                    <div>
+                        <div class="chart-bar" style="height: {{ grade_distribution.C|default:0 }}%; background: linear-gradient(180deg, var(--warning) 0%, #FFD54F 100%);" title="C: {{ grade_distribution.C|default:0 }}%"></div>
+                        <div class="chart-label">C</div>
+                    </div>
+                    <div>
+                        <div class="chart-bar" style="height: {{ grade_distribution.D|default:0 }}%; background: linear-gradient(180deg, #FF6F00 0%, #FF8F00 100%);" title="D: {{ grade_distribution.D|default:0 }}%"></div>
+                        <div class="chart-label">D</div>
+                    </div>
+                    <div>
+                        <div class="chart-bar" style="height: {{ grade_distribution.F|default:0 }}%; background: linear-gradient(180deg, var(--danger) 0%, #EF5350 100%);" title="F: {{ grade_distribution.F|default:0 }}%"></div>
+                        <div class="chart-label">F</div>
                     </div>
                 </div>
-                <table class="table table-borderless small">
-                    <tr>
-                        <td><strong>Name:</strong></td>
-                        <td>{{ user.get_full_name }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Email:</strong></td>
-                        <td>{{ user.email }}</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Department:</strong></td>
-                        <td>{{ user.teacher_profile.department }}</td>
-                    </tr>
-                    {% if user.teacher_profile.specialization %}
-                    <tr>
-                        <td><strong>Specialization:</strong></td>
-                        <td>{{ user.teacher_profile.specialization }}</td>
-                    </tr>
-                    {% endif %}
-                    <tr>
-                        <td><strong>Since:</strong></td>
-                        <td>{{ user.teacher_profile.hire_date|date:"M Y" }}</td>
-                    </tr>
-                </table>
+                <p class="text-center text-muted mb-0 mt-3" style="font-size: 0.875rem;">
+                    Based on all assessed students
+                </p>
             </div>
         </div>
-
-        <!-- Grading Queue -->
-        <div class="modern-card mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5><i class="fas fa-clipboard-list me-2"></i>Grading Queue</h5>
-                <span class="badge bg-warning">{{ pending_grading|default:0 }}</span>
-            </div>
-            <div class="card-body">
-                {% if grading_queue %}
-                    {% for attempt in grading_queue|slice:":5" %}
-                    <div class="d-flex justify-content-between align-items-center mb-3 p-2 border rounded">
-                        <div>
-                            <h6 class="mb-1">{{ attempt.student.get_full_name }}</h6>
-                            <small class="text-muted">{{ attempt.assessment.title|truncatechars:30 }}</small>
-                            <br><small class="text-info">{{ attempt.submitted_at|timesince }} ago</small>
-                        </div>
-                        <a href="{% url 'assessments:grade_assessment' attempt.id %}" 
-                           class="btn btn-sm btn-outline-primary">Grade</a>
-                    </div>
-                    {% endfor %}
-                    {% if grading_queue|length > 5 %}
-                    <div class="text-center">
-                        <a href="{% url 'assessments:grading_queue' %}" class="btn btn-sm btn-primary">View All ({{ grading_queue|length }})</a>
-                    </div>
-                    {% endif %}
-                {% else %}
-                    <div class="text-center text-muted py-3">
-                        <i class="fas fa-check-circle fa-2x mb-2"></i>
-                        <p>No assessments pending grading</p>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-
-        <!-- Recent Activity -->
+        
+        <!-- Top Performers -->
         <div class="modern-card">
-            <div class="card-header">
-                <h5><i class="fas fa-clock me-2"></i>Recent Activity</h5>
+            <div class="modern-card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-trophy me-2"></i>Top Performers
+                </h5>
             </div>
-            <div class="card-body">
-                {% if recent_attempts %}
-                    {% for attempt in recent_attempts|slice:":5" %}
-                    <div class="d-flex justify-content-between align-items-center mb-3 p-2 bg-light rounded">
-                        <div>
-                            <h6 class="mb-1">{{ attempt.student.get_full_name }}</h6>
-                            <small class="text-muted">{{ attempt.assessment.title|truncatechars:25 }}</small>
-                            <br><small class="text-success">Score: {{ attempt.score|default:"Pending" }}%</small>
+            <div class="modern-card-body p-0">
+                {% if top_students %}
+                    {% for student in top_students|slice:":5" %}
+                    <div class="student-progress-item">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="me-3" style="font-size: 1.5rem; font-weight: 700; color: var(--primary); width: 30px;">
+                                #{{ forloop.counter }}
+                            </div>
+                            <div class="flex-grow-1">
+                                <div style="font-size: 0.875rem; font-weight: 600;">
+                                    {{ student.student__first_name }} {{ student.student__last_name }}
+                                </div>
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">
+                                    Average Performance
+                                </div>
+                            </div>
+                            <div style="font-size: 1.25rem; font-weight: 700; color: var(--success);">
+                                {{ student.avg_score|floatformat:0 }}%
+                            </div>
                         </div>
-                        <div class="text-end">
-                            <small class="text-muted">{{ attempt.submitted_at|timesince }} ago</small>
-                            {% if attempt.is_graded %}
-                                <br><span class="badge bg-success">Graded</span>
-                            {% else %}
-                                <br><span class="badge bg-warning">Pending</span>
-                            {% endif %}
+                        <div class="progress-bar-custom">
+                            <div class="progress-fill" style="width: {{ student.avg_score }}%;"></div>
                         </div>
                     </div>
                     {% endfor %}
                 {% else %}
-                    <div class="text-center text-muted py-3">
-                        <i class="fas fa-history fa-2x mb-2"></i>
-                        <p>No recent activity</p>
+                    <div class="text-center py-4">
+                        <i class="fas fa-trophy fa-2x mb-2" style="color: var(--text-muted); opacity: 0.5;"></i>
+                        <p class="text-muted mb-0" style="font-size: 0.875rem;">No student data available yet</p>
                     </div>
                 {% endif %}
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Animate stat numbers on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const statNumbers = document.querySelectorAll('.stat-number');
+        statNumbers.forEach(stat => {
+            const text = stat.textContent;
+            const target = parseFloat(text);
+            if (isNaN(target)) return;
+            
+            let current = 0;
+            const increment = target / 30;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    stat.textContent = text.includes('%') ? target.toFixed(0) + '%' : target;
+                    clearInterval(timer);
+                } else {
+                    stat.textContent = Math.floor(current);
+                }
+            }, 30);
+        });
+        
+        // Animate progress bars
+        const progressFills = document.querySelectorAll('.progress-fill');
+        progressFills.forEach((fill, index) => {
+            const width = fill.style.width;
+            fill.style.width = '0';
+            setTimeout(() => {
+                fill.style.width = width;
+            }, 100 * (index + 1));
+        });
+        
+        // Animate chart bars
+        const chartBars = document.querySelectorAll('.chart-bar');
+        chartBars.forEach((bar, index) => {
+            const height = bar.style.height;
+            bar.style.height = '0';
+            setTimeout(() => {
+                bar.style.height = height;
+            }, 100 * (index + 1));
+        });
+        
+        // Real-time clock function
+        function updateClock() {
+            const now = new Date();
+            
+            // Update time
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            
+            document.getElementById('hours').textContent = hours;
+            document.getElementById('minutes').textContent = minutes;
+            
+            // Update date
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const months = ['January', 'February', 'March', 'April', 'May', 'June', 
+                          'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            const dayName = days[now.getDay()];
+            const monthName = months[now.getMonth()];
+            const date = now.getDate();
+            const year = now.getFullYear();
+            
+            document.getElementById('day-name').textContent = dayName;
+            document.getElementById('live-date').textContent = 
+                `${dayName}, ${monthName} ${date}, ${year}`;
+        }
+        
+        // Update clock immediately and then every second
+        updateClock();
+        setInterval(updateClock, 1000);
+    });
+</script>
 {% endblock %}

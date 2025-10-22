@@ -10,6 +10,7 @@ from calendar import monthrange
 import json
 
 from .models_calendar import CalendarEvent, EventCategory, UserCalendarSettings
+from .forms_calendar import CalendarEventForm
 from assessments.models import Assessment
 
 @login_required
@@ -142,62 +143,38 @@ def create_event(request):
         messages.error(request, 'You do not have permission to create events.')
         return redirect('accounts:calendar_view')
     
-    if request.method == 'POST':
-        try:
-            # Create event from form data
-            event = CalendarEvent.objects.create(
-                title=request.POST['title'],
-                description=request.POST.get('description', ''),
-                category_id=request.POST['category'],
-                event_type=request.POST['event_type'],
-                start_date=request.POST['start_date'],
-                end_date=request.POST['end_date'],
-                start_time=request.POST.get('start_time') or None,
-                end_time=request.POST.get('end_time') or None,
-                is_all_day=request.POST.get('is_all_day') == 'on',
-                location=request.POST.get('location', ''),
-                meeting_link=request.POST.get('meeting_link', ''),
-                audience=request.POST['audience'],
-                priority=request.POST['priority'],
-                created_by=request.user,
-            )
-            
-            # Handle specific courses and year levels
-            if event.audience == 'specific':
-                if request.POST.get('specific_courses'):
-                    course_ids = request.POST.getlist('specific_courses')
-                    event.specific_courses.set(course_ids)
-                
-                if request.POST.get('specific_year_levels'):
-                    event.specific_year_levels = request.POST['specific_year_levels']
-                    event.save()
-            
-            # Link to assessment if specified
-            if request.POST.get('linked_assessment'):
-                event.linked_assessment_id = request.POST['linked_assessment']
-                event.save()
-            
-            messages.success(request, f'Event "{event.title}" created successfully!')
-            return redirect('accounts:event_detail', pk=event.pk)
-            
-        except Exception as e:
-            messages.error(request, f'Error creating event: {str(e)}')
-    
-    # Get form data for rendering
-    categories = EventCategory.objects.filter(is_active=True)
-    assessments = Assessment.objects.filter(creator=request.user, status='published')
-    
     # Pre-fill date if specified in URL
     selected_date = request.GET.get('date')
-    initial_date = selected_date if selected_date else timezone.now().date()
+    initial_data = {}
+    if selected_date:
+        initial_data['start_date'] = selected_date
+        initial_data['end_date'] = selected_date
+    
+    if request.method == 'POST':
+        form = CalendarEventForm(request.POST, user=request.user)
+        if form.is_valid():
+            try:
+                event = form.save(commit=False)
+                event.created_by = request.user
+                event.save()
+                form.save_m2m()  # Save many-to-many relationships
+                
+                messages.success(request, f'Event "{event.title}" created successfully!')
+                return redirect('accounts:event_detail', pk=event.pk)
+            except Exception as e:
+                messages.error(request, f'Error creating event: {str(e)}')
+        else:
+            # Form has validation errors
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field}: {error}')
+    else:
+        form = CalendarEventForm(initial=initial_data, user=request.user)
     
     context = {
-        'categories': categories,
-        'assessments': assessments,
-        'initial_date': initial_date,
+        'form': form,
         'event_types': CalendarEvent.EVENT_TYPES,
         'priority_levels': CalendarEvent.PRIORITY_LEVELS,
-        'audience_types': CalendarEvent.AUDIENCE_TYPES,
     }
     
     return render(request, 'accounts/calendar/create_event.html', context)

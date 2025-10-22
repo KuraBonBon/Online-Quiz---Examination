@@ -5,33 +5,15 @@
 
 {% block extra_css %}
 <style>
-    :root {
-        --form-primary: #004d40;
-        --form-secondary: #00695c;
-        --form-accent: #26a69a;
-        --form-bg: #ffffff;
-        --form-border: #e0e0e0;
-        --form-text: #333333;
-    }
-
-    [data-theme="dark"] {
-        --form-primary: #26a69a;
-        --form-secondary: #4db6ac;
-        --form-accent: #80cbc4;
-        --form-bg: #2d2d2d;
-        --form-border: #444444;
-        --form-text: #ffffff;
-    }
-
     .event-form-container {
-        background: var(--form-bg);
-        border-radius: 8px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        background: var(--bg-card);
+        border-radius: 12px;
+        box-shadow: var(--shadow-lg);
         overflow: hidden;
     }
 
     .form-header {
-        background: linear-gradient(135deg, var(--form-primary), var(--form-secondary));
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
         color: white;
         padding: 2rem;
         text-align: center;
@@ -41,6 +23,11 @@
         margin: 0;
         font-size: 1.75rem;
         font-weight: 600;
+    }
+
+    .form-header p {
+        margin: 0.5rem 0 0 0;
+        opacity: 0.9;
     }
 
     .form-body {
@@ -55,36 +42,47 @@
         display: block;
         font-weight: 600;
         margin-bottom: 0.5rem;
-        color: var(--form-text);
+        color: var(--text-primary);
     }
 
-    .form-control {
+    .form-control,
+    input[type="text"],
+    input[type="date"],
+    input[type="time"],
+    textarea,
+    select {
         width: 100%;
         padding: 0.75rem;
-        border: 2px solid var(--form-border);
-        border-radius: 4px;
-        background: var(--form-bg);
-        color: var(--form-text);
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        background: var(--bg-card);
+        color: var(--text-primary);
         font-size: 1rem;
         transition: all 0.3s ease;
+        font-family: inherit;
     }
 
-    .form-control:focus {
+    .form-control:focus,
+    input:focus,
+    textarea:focus,
+    select:focus {
         outline: none;
-        border-color: var(--form-accent);
-        box-shadow: 0 0 0 3px rgba(38, 166, 154, 0.1);
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
     }
 
-    .form-select {
+    .form-select,
+    select {
         appearance: none;
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-        background-position: right 0.5rem center;
+        background-position: right 0.75rem center;
         background-repeat: no-repeat;
         background-size: 1.5em 1.5em;
         padding-right: 2.5rem;
     }
 
-    .form-textarea {
+    .form-textarea,
+    textarea {
         min-height: 100px;
         resize: vertical;
     }
@@ -113,18 +111,20 @@
     }
 
     .checkbox-item input[type="checkbox"] {
-        accent-color: var(--form-primary);
+        accent-color: var(--primary);
         transform: scale(1.2);
+        cursor: pointer;
+    }
+
+    .checkbox-item label {
+        cursor: pointer;
+        color: var(--text-secondary);
     }
 
     .help-text {
         font-size: 0.875rem;
-        color: #6c757d;
+        color: var(--text-muted);
         margin-top: 0.25rem;
-    }
-
-    [data-theme="dark"] .help-text {
-        color: #adb5bd;
     }
 
     .form-actions {
@@ -132,14 +132,14 @@
         gap: 1rem;
         justify-content: flex-end;
         padding-top: 2rem;
-        border-top: 1px solid var(--form-border);
+        border-top: 2px solid var(--border-color);
         margin-top: 2rem;
     }
 
     .btn {
         padding: 0.75rem 1.5rem;
         border: none;
-        border-radius: 4px;
+        border-radius: 8px;
         font-size: 1rem;
         font-weight: 500;
         cursor: pointer;
@@ -151,13 +151,57 @@
     }
 
     .btn-primary {
-        background: var(--form-primary);
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
         color: white;
+        box-shadow: var(--shadow-md);
     }
 
     .btn-primary:hover {
-        background: var(--form-secondary);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
         color: white;
+    }
+
+    .btn-secondary {
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        border: 2px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+    }
+
+    .error-message {
+        background: #fee;
+        color: #c33;
+        padding: 0.75rem;
+        border-radius: 8px;
+        border-left: 4px solid #c33;
+        margin-top: 0.5rem;
+    }
+
+    .success-message {
+        background: #efe;
+        color: #363;
+        padding: 0.75rem;
+        border-radius: 8px;
+        border-left: 4px solid #363;
+        margin-bottom: 1.5rem;
+    }
+
+    [data-theme="dark"] .error-message {
+        background: #3d1a1a;
+        color: #ffb4b4;
+        border-color: #c33;
+    }
+
+    [data-theme="dark"] .success-message {
+        background: #1b2d1b;
+        color: #b4f8b4;
+        border-color: #1e5c1e;
+    }
         text-decoration: none;
         transform: translateY(-1px);
     }
@@ -205,16 +249,28 @@
 
     .priority-preview {
         display: inline-block;
-        padding: 0.25rem 0.5rem;
-        border-radius: 3px;
+        padding: 0.25rem 0.75rem;
+        border-radius: 6px;
         font-size: 0.75rem;
         font-weight: 600;
         margin-left: 0.5rem;
     }
 
-    .priority-normal { background: #6c757d; color: white; }
-    .priority-high { background: #f44336; color: white; }
-    .priority-critical { background: #d32f2f; color: white; }
+    .priority-normal { 
+        background: var(--bg-secondary); 
+        color: var(--text-primary); 
+        border: 1px solid var(--border-color);
+    }
+    
+    .priority-high { 
+        background: var(--danger); 
+        color: white; 
+    }
+    
+    .priority-critical { 
+        background: var(--danger-dark); 
+        color: white; 
+    }
 
     @media (max-width: 768px) {
         .form-row {
@@ -426,50 +482,80 @@
 
                         <!-- Audience Selection -->
                         <div class="form-group">
-                            <label class="form-label">
+                            <label for="id_audience" class="form-label">
                                 <i class="fas fa-users me-1"></i>
                                 Target Audience *
                             </label>
-                            <div class="checkbox-group">
-                                <div class="checkbox-item">
-                                    {{ form.audience_all }}
-                                    <label for="id_audience_all">All Users</label>
-                                </div>
-                                <div class="checkbox-item">
-                                    {{ form.audience_students }}
-                                    <label for="id_audience_students">Students</label>
-                                </div>
-                                <div class="checkbox-item">
-                                    {{ form.audience_teachers }}
-                                    <label for="id_audience_teachers">Teachers</label>
-                                </div>
-                                <div class="checkbox-item">
-                                    {{ form.audience_staff }}
-                                    <label for="id_audience_staff">Staff</label>
-                                </div>
-                            </div>
+                            {{ form.audience }}
                             <div class="help-text">Select who should see this event</div>
-                            {% if form.audience_all.errors %}
+                            {% if form.audience.errors %}
                                 <div class="error-message mt-2">
-                                    {% for error in form.audience_all.errors %}
+                                    {% for error in form.audience.errors %}
                                         {{ error }}
                                     {% endfor %}
                                 </div>
                             {% endif %}
                         </div>
 
+                        <!-- Specific Groups (shown when audience is 'specific') -->
+                        <div id="specificGroupsContainer" style="display: none;">
+                            <div class="form-group">
+                                <label for="id_specific_courses" class="form-label">
+                                    <i class="fas fa-book me-1"></i>
+                                    Specific Courses
+                                </label>
+                                {{ form.specific_courses }}
+                                <div class="help-text">Hold Ctrl/Cmd to select multiple courses</div>
+                                {% if form.specific_courses.errors %}
+                                    <div class="error-message mt-2">
+                                        {% for error in form.specific_courses.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                <label for="id_specific_year_levels" class="form-label">
+                                    <i class="fas fa-graduation-cap me-1"></i>
+                                    Year Levels
+                                </label>
+                                {{ form.specific_year_levels }}
+                                <div class="help-text">Enter comma-separated year levels (e.g., 1,2,3)</div>
+                                {% if form.specific_year_levels.errors %}
+                                    <div class="error-message mt-2">
+                                        {% for error in form.specific_year_levels.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- All Day Event Checkbox -->
+                        <div class="form-group">
+                            <div class="checkbox-item">
+                                {{ form.is_all_day }}
+                                <label for="id_is_all_day" class="form-label mb-0">
+                                    <i class="fas fa-calendar-day me-1"></i>
+                                    All Day Event
+                                </label>
+                            </div>
+                            <div class="help-text">Check if this is an all-day event</div>
+                        </div>
+
                         <!-- Optional Settings -->
                         {% if user.user_type == 'teacher' %}
                         <div class="form-group">
-                            <label for="id_related_assessment" class="form-label">
+                            <label for="id_linked_assessment" class="form-label">
                                 <i class="fas fa-clipboard-check me-1"></i>
                                 Related Assessment
                             </label>
-                            {{ form.related_assessment }}
+                            {{ form.linked_assessment }}
                             <div class="help-text">Link this event to an assessment (optional)</div>
-                            {% if form.related_assessment.errors %}
+                            {% if form.linked_assessment.errors %}
                                 <div class="error-message mt-2">
-                                    {% for error in form.related_assessment.errors %}
+                                    {% for error in form.linked_assessment.errors %}
                                         {{ error }}
                                     {% endfor %}
                                 </div>
@@ -479,8 +565,8 @@
 
                         <div class="form-group">
                             <div class="checkbox-item">
-                                {{ form.send_notification }}
-                                <label for="id_send_notification" class="form-label mb-0">
+                                {{ form.send_notifications }}
+                                <label for="id_send_notifications" class="form-label mb-0">
                                     <i class="fas fa-bell me-1"></i>
                                     Send Notification
                                 </label>
@@ -515,6 +601,44 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeEventForm() {
+    // Audience selection - show/hide specific groups
+    const audienceSelect = document.getElementById('id_audience');
+    const specificGroupsContainer = document.getElementById('specificGroupsContainer');
+    
+    if (audienceSelect && specificGroupsContainer) {
+        audienceSelect.addEventListener('change', function() {
+            if (this.value === 'specific') {
+                specificGroupsContainer.style.display = 'block';
+            } else {
+                specificGroupsContainer.style.display = 'none';
+            }
+        });
+        
+        // Set initial state
+        if (audienceSelect.value === 'specific') {
+            specificGroupsContainer.style.display = 'block';
+        }
+    }
+    
+    // All day event - toggle time fields
+    const allDayCheckbox = document.getElementById('id_is_all_day');
+    const startTimeInput = document.getElementById('id_start_time');
+    const endTimeInput = document.getElementById('id_end_time');
+    
+    if (allDayCheckbox && startTimeInput && endTimeInput) {
+        allDayCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                startTimeInput.disabled = true;
+                endTimeInput.disabled = true;
+                startTimeInput.value = '';
+                endTimeInput.value = '';
+            } else {
+                startTimeInput.disabled = false;
+                endTimeInput.disabled = false;
+            }
+        });
+    }
+    
     // Priority preview
     const prioritySelect = document.getElementById('id_priority');
     const priorityPreview = document.getElementById('priorityPreview');

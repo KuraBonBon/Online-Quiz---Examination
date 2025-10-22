@@ -1,0 +1,266 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}SPIST - Student Dashboard{% endblock %}
+
+{% block content %}
+<!-- Feature not implemented notification -->
+{% include 'accounts/partials/feature_notification.html' %}
+<!-- Welcome Banner -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="modern-card bg-gradient" style="background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%); color: white;">
+            <div class="card-body text-center py-5">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 class="mb-3"><i class="fas fa-user-graduate me-3"></i>Welcome Back, {{ user.first_name }}!</h2>
+                        <p class="lead mb-0">{{ user.student_profile.course }} - Year {{ user.student_profile.year_level }}</p>
+                        <small class="opacity-75">Student ID: {{ user.student_profile.student_id }}</small>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="stat-card bg-white bg-opacity-20 border-0" style="backdrop-filter: blur(10px);">
+                            <div class="text-center text-white">
+                                <h3 class="mb-1">{{ current_semester|default:"No Active" }}</h3>
+                                <small>Current Semester</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Stats -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="stat-card stat-card-primary text-center">
+            <div class="stat-number">{{ student_stats.total_courses|default:0 }}</div>
+            <div class="stat-label">Enrolled Courses</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card stat-card-info text-center">
+            <div class="stat-number">{{ student_stats.available_assessments_count|default:0 }}</div>
+            <div class="stat-label">Available Tests</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card stat-card-success text-center">
+            <div class="stat-number">{{ student_stats.total_completed|default:0 }}</div>
+            <div class="stat-label">Completed</div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card stat-card-warning text-center">
+            <div class="stat-number">{{ student_stats.avg_score|floatformat:1|default:"N/A" }}%</div>
+            <div class="stat-label">Average Score</div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content Grid -->
+<div class="row">
+    <!-- Left Column -->
+    <div class="col-lg-8">
+        <!-- Quick Actions -->
+        <div class="modern-card mb-4">
+            <div class="card-header">
+                <h5><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <a href="{% url 'assessments:available_assessments' %}" class="btn btn-modern btn-primary-modern w-100">
+                            <i class="fas fa-clipboard-check"></i>Take Assessments
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{% url 'courses:student_enrollment' %}" class="btn btn-modern w-100" style="background: linear-gradient(135deg, var(--secondary-color) 0%, #1976d2 100%); color: white;">
+                            <i class="fas fa-graduation-cap"></i>My Enrollment
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <button onclick="showFeatureNotImplemented('View Grades', 'Grade viewing functionality is currently under development.')" 
+                                class="btn btn-modern w-100" style="background: linear-gradient(135deg, var(--accent-color) 0%, #f57c00 100%); color: white;">
+                            <i class="fas fa-chart-bar"></i>View Grades
+                        </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button onclick="showFeatureNotImplemented('Course Materials', 'Course materials functionality is currently under development.')" 
+                                class="btn btn-modern w-100" style="background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%); color: white;">
+                            <i class="fas fa-book-open"></i>Course Materials
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Available Assessments -->
+        <div class="modern-card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="fas fa-clipboard-list me-2"></i>Available Assessments</h5>
+                <a href="{% url 'assessments:available_assessments' %}" class="btn btn-sm btn-outline-primary">View All</a>
+            </div>
+            <div class="card-body">
+                {% if available_assessments %}
+                    {% for assessment in available_assessments|slice:":4" %}
+                    <div class="d-flex justify-content-between align-items-center mb-3 p-3 border rounded">
+                        <div>
+                            <h6 class="mb-1">{{ assessment.title }}</h6>
+                            <small class="text-muted">{{ assessment.get_subject_category_display }} • {{ assessment.creator.get_full_name }}</small>
+                            <br><small class="text-info">
+                                <i class="fas fa-clock"></i> {{ assessment.time_limit|default:"No limit" }} minutes
+                                {% if assessment.available_until %}
+                                    • Available until: {{ assessment.available_until|date:"M d, Y" }}
+                                {% endif %}
+                            </small>
+                        </div>
+                        <div class="text-end">
+                            <a href="{% url 'assessments:take_assessment' assessment.id %}" 
+                               class="btn btn-sm btn-primary">Take Now</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-clipboard-check fa-3x mb-3"></i>
+                        <h6>No Available Assessments</h6>
+                        <p class="small">All caught up! Check back later for new assessments.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Recent Results -->
+        <div class="modern-card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-line me-2"></i>Recent Results</h5>
+            </div>
+            <div class="card-body">
+                {% if completed_attempts %}
+                    {% for attempt in completed_attempts|slice:":5" %}
+                    <div class="d-flex justify-content-between align-items-center mb-3 p-2 bg-light rounded">
+                        <div>
+                            <h6 class="mb-1">{{ attempt.assessment.title }}</h6>
+                            <small class="text-muted">{{ attempt.assessment.get_subject_category_display }}</small>
+                            <br><small class="text-info">Completed: {{ attempt.completed_at|date:"M d, Y g:i A" }}</small>
+                        </div>
+                        <div class="text-end">
+                            {% if attempt.percentage is not None %}
+                                <span class="badge {% if attempt.percentage >= 75 %}bg-success{% elif attempt.percentage >= 60 %}bg-warning{% else %}bg-danger{% endif %} fs-6">
+                                    {{ attempt.percentage|floatformat:1 }}%
+                                </span>
+                            {% else %}
+                                <span class="badge bg-secondary">Pending</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-chart-bar fa-3x mb-3"></i>
+                        <h6>No Results Yet</h6>
+                        <p class="small">Take your first assessment to see results here.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="col-lg-4">
+        <!-- Student Profile -->
+        <div class="modern-card mb-4">
+            <div class="card-header">
+                <h5><i class="fas fa-user me-2"></i>Student Profile</h5>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                        <i class="fas fa-user fa-2x text-white"></i>
+                    </div>
+                </div>
+                <table class="table table-borderless small">
+                    <tr>
+                        <td><strong>Name:</strong></td>
+                        <td>{{ user.get_full_name }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Email:</strong></td>
+                        <td>{{ user.email }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Course:</strong></td>
+                        <td>{{ user.student_profile.course }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Year Level:</strong></td>
+                        <td>{{ user.student_profile.year_level }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Enrolled:</strong></td>
+                        <td>{{ user.student_profile.date_enrolled|date:"M d, Y" }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Upcoming Assessments -->
+        <div class="modern-card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5><i class="fas fa-calendar-alt me-2"></i>Upcoming</h5>
+                <span class="badge bg-info">{{ student_stats.upcoming_assessments_count|default:0 }}</span>
+            </div>
+            <div class="card-body">
+                {% if upcoming_assessments %}
+                    {% for assessment in upcoming_assessments|slice:":3" %}
+                    <div class="d-flex justify-content-between align-items-center mb-3 p-2 border rounded">
+                        <div>
+                            <h6 class="mb-1">{{ assessment.title|truncatechars:25 }}</h6>
+                            <small class="text-muted">{{ assessment.get_subject_category_display }}</small>
+                            <br><small class="text-warning">
+                                <i class="fas fa-clock"></i> {{ assessment.start_date|date:"M d, g:i A" }}
+                            </small>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center text-muted py-3">
+                        <i class="fas fa-calendar-check fa-2x mb-2"></i>
+                        <p class="small">No upcoming assessments</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Performance by Course -->
+        <div class="modern-card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-pie me-2"></i>Performance</h5>
+            </div>
+            <div class="card-body">
+                {% if performance_by_course %}
+                    {% for course_name, stats in performance_by_course.items %}
+                    <div class="d-flex justify-content-between mb-3">
+                        <div>
+                            <h6 class="mb-1">{{ course_name|truncatechars:20 }}</h6>
+                            <small class="text-muted">{{ stats.attempts_count }} attempt{{ stats.attempts_count|pluralize }}</small>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge {% if stats.avg_score >= 75 %}bg-success{% elif stats.avg_score >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
+                                {{ stats.avg_score|floatformat:1 }}%
+                            </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center text-muted py-3">
+                        <i class="fas fa-chart-line fa-2x mb-2"></i>
+                        <p class="small">Complete assessments to see performance</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

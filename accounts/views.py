@@ -70,8 +70,19 @@ def student_dashboard_view(request):
     if request.user.is_authenticated and request.user.user_type == 'student':
         from assessments.models import Assessment, StudentAttempt
         from courses.models import Course, StudentEnrollment
+        from accounts.models import UserActivityLog
         from django.db.models import Count, Avg, Q
         from django.utils import timezone
+        from datetime import datetime
+        
+        # Determine greeting based on time of day
+        current_hour = datetime.now().hour
+        if current_hour < 12:
+            greeting = "Good morning"
+        elif current_hour < 18:
+            greeting = "Good afternoon"
+        else:
+            greeting = "Good evening"
         
         # Get student's enrolled courses
         enrolled_courses = StudentEnrollment.objects.filter(
@@ -90,7 +101,7 @@ def student_dashboard_view(request):
             # Exclude assessments student has already completed
             attempts__student=request.user,
             attempts__is_completed=True
-        ).select_related('creator').order_by('-created_at')[:10]
+        ).select_related('creator').order_by('-created_at')
         
         # Get student's assessment attempts
         student_attempts = StudentAttempt.objects.filter(
@@ -127,6 +138,14 @@ def student_dashboard_view(request):
             attempts__is_completed=True
         ).select_related('creator').order_by('available_from')[:5]
         
+        # Get recent activity logs (safely handle if table doesn't exist)
+        try:
+            recent_activities = UserActivityLog.objects.filter(
+                user=request.user
+            ).order_by('-created_at')[:10]
+        except:
+            recent_activities = []
+        
         # Performance analytics by subject category
         performance_by_course = {}
         if completed_attempts.exists():
@@ -146,9 +165,20 @@ def student_dashboard_view(request):
                         'course': None  # No direct course relation in current model
                     }
         
+        # Calculate progress circle offset (circumference = 326.73)
+        # offset = circumference - (percentage * circumference / 100)
+        progress_offset = 326.73 - (float(avg_score) * 3.2673)
+        
         context = {
-            'enrolled_courses': enrolled_courses,
+            'greeting': greeting,
+            'enrolled_courses_count': total_courses,
+            'available_tests_count': available_assessments.count(),
+            'completed_tests_count': total_completed,
+            'average_score': avg_score,
+            'progress_offset': progress_offset,
             'available_assessments': available_assessments,
+            'recent_activities': recent_activities,
+            'enrolled_courses': enrolled_courses,
             'completed_attempts': completed_attempts,
             'pending_attempts': pending_attempts,
             'recent_grades': recent_grades,
@@ -214,7 +244,7 @@ def admin_dashboard_view(request):
         # Active assessments
         active_assessments = Assessment.objects.filter(
             status='published'
-        ).select_related('creator', 'course').order_by('-created_at')[:10]
+        ).select_related('creator').order_by('-created_at')[:10]
         
         # Popular courses (by enrollment)
         popular_courses = Course.objects.annotate(
@@ -300,7 +330,16 @@ def teacher_dashboard_view(request):
     """Enhanced teacher dashboard with comprehensive assessment management"""
     if request.user.is_authenticated and request.user.user_type == 'teacher':
         from assessments.models import Assessment, StudentAttempt, Question
-        from django.db.models import Count, Avg, Q
+        from courses.models import Course, CourseOffering
+        from django.db.models import Count, Avg, Q, Case, When, IntegerField
+        
+        # Get teacher's courses
+        teacher_courses = Course.objects.filter(
+            offerings__teacher=request.user
+        ).distinct().annotate(
+            enrollment_count=Count('offerings__enrollments', distinct=True),
+            assessment_count=Count('assessments', distinct=True)
+        ).order_by('-created_at')
         
         # Get comprehensive assessment data
         assessments = Assessment.objects.filter(
@@ -341,6 +380,7 @@ def teacher_dashboard_view(request):
             is_completed=True
         ).count()
         total_questions = Question.objects.filter(assessment__creator=request.user).count()
+        pending_grading_count = assessments_needing_grading.count()
         
         # Calculate average scores
         avg_score = StudentAttempt.objects.filter(
@@ -348,9 +388,45 @@ def teacher_dashboard_view(request):
             is_completed=True
         ).aggregate(avg=Avg('percentage'))['avg'] or 0
         
-        # Get assessment counts for dashboard stats
+        # Calculate grade distribution
+        completed_attempts_with_scores = StudentAttempt.objects.filter(
+            assessment__creator=request.user,
+            is_completed=True,
+            percentage__isnull=False
+        )
+        
+        total_graded = completed_attempts_with_scores.count()
+        grade_distribution = {
+            'A': 0, 'B': 0, 'C': 0, 'D': 0, 'F': 0
+        }
+        
+        if total_graded > 0:
+            for letter_grade in ['A', 'B', 'C', 'D', 'F']:
+                if letter_grade == 'A':
+                    count = completed_attempts_with_scores.filter(percentage__gte=90).count()
+                elif letter_grade == 'B':
+                    count = completed_attempts_with_scores.filter(percentage__gte=80, percentage__lt=90).count()
+                elif letter_grade == 'C':
+                    count = completed_attempts_with_scores.filter(percentage__gte=70, percentage__lt=80).count()
+                elif letter_grade == 'D':
+                    count = completed_attempts_with_scores.filter(percentage__gte=60, percentage__lt=70).count()
+                else:  # F
+                    count = completed_attempts_with_scores.filter(percentage__lt=60).count()
+                
+                grade_distribution[letter_grade] = round((count / total_graded) * 100, 1)
+        
+        # Get top performing students
+        top_students = completed_attempts_with_scores.values(
+            'student__id', 
+            'student__first_name', 
+            'student__last_name'
+        ).annotate(
+            avg_score=Avg('percentage')
+        ).order_by('-avg_score')[:10]
+        
+        # Get assessment stats
         assessment_stats = {
-            'total_assessments': Assessment.objects.filter(creator=request.user).count(),
+            'total_assessments': total_assessments,
             'published_assessments': Assessment.objects.filter(
                 creator=request.user, status='published'
             ).count(),
@@ -362,8 +438,11 @@ def teacher_dashboard_view(request):
         context = {
             'total_assessments': total_assessments,
             'total_attempts': total_attempts,
-            'pending_grading': assessments_needing_grading.count(),
-            'avg_score': avg_score,
+            'pending_grading_count': pending_grading_count,
+            'average_class_score': avg_score,
+            'grade_distribution': grade_distribution,
+            'top_students': top_students,
+            'teacher_courses': teacher_courses,
             'grading_queue': assessments_needing_grading,
             'recent_attempts': recent_attempts,
             'active_assessments_list': recent_assessments,

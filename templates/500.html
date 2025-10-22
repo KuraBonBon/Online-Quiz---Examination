@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500 - Server Error | SPIST</title>
+    <style>
+        :root {
+            --primary-color: #2c7a7b;
+            --primary-light: #38b2ac;
+            --danger-color: #e53e3e;
+            --text-color: #2d3748;
+            --bg-color: #f7fafc;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fff5f5 0%, #fed7d7 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .error-container {
+            text-align: center;
+            max-width: 600px;
+        }
+        
+        .error-code {
+            font-size: 120px;
+            font-weight: bold;
+            color: var(--danger-color);
+            text-shadow: 3px 3px 0 #fc8181;
+            margin-bottom: 20px;
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .error-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 32px;
+            color: var(--text-color);
+            margin-bottom: 15px;
+        }
+        
+        .error-message {
+            font-size: 18px;
+            color: #718096;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .alert-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 30px 0;
+            border-left: 5px solid var(--danger-color);
+        }
+        
+        .alert-box h3 {
+            color: var(--danger-color);
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .alert-box p {
+            text-align: left;
+            line-height: 1.8;
+            color: #4a5568;
+        }
+        
+        .btn-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-danger {
+            background: white;
+            color: var(--danger-color);
+            border: 2px solid var(--danger-color);
+        }
+        
+        .btn-danger:hover {
+            background: var(--danger-color);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .footer {
+            margin-top: 40px;
+            color: #718096;
+            font-size: 14px;
+        }
+        
+        .footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .reference-id {
+            background: #f7fafc;
+            padding: 10px;
+            border-radius: 6px;
+            font-family: monospace;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-code">500</div>
+        <div class="error-icon">⚠️</div>
+        <h1>Internal Server Error</h1>
+        <p class="error-message">
+            We're sorry, but something went wrong on our end. 
+            Our team has been automatically notified and is working to fix the issue.
+        </p>
+        
+        <div class="alert-box">
+            <h3>What happened?</h3>
+            <p>
+                An unexpected error occurred while processing your request. 
+                This could be due to a temporary issue with our servers or a problem with your specific request.
+            </p>
+            <p style="margin-top: 15px;">
+                <strong>Please try again in a few minutes.</strong> If the problem persists, contact our support team with the reference ID below.
+            </p>
+            <div class="reference-id">
+                Error Reference: {{ exception_id|default:"N/A" }}
+            </div>
+        </div>
+        
+        <div class="btn-container">
+            <a href="/" class="btn btn-primary">
+                🏠 Go to Homepage
+            </a>
+            <a href="mailto:support@spist.edu.ph?subject=Error Report - {{ exception_id }}" class="btn btn-danger">
+                📧 Report This Error
+            </a>
+        </div>
+        
+        <div class="footer">
+            <p>
+                <a href="mailto:support@spist.edu.ph">Contact Technical Support</a> | 
+                <a href="javascript:location.reload()">Refresh Page</a>
+            </p>
+            <p style="margin-top: 10px;">
+                <small>&copy; 2025 SPIST School Management System</small>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

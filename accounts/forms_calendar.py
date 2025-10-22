@@ -13,9 +13,9 @@ class CalendarEventForm(forms.ModelForm):
         fields = [
             'title', 'description', 'start_date', 'end_date', 
             'start_time', 'end_time', 'location', 'category',
-            'priority', 'event_type', 'audience_all', 'audience_students',
-            'audience_teachers', 'audience_staff', 'related_assessment',
-            'send_notification'
+            'priority', 'event_type', 'audience',
+            'specific_courses', 'specific_year_levels',
+            'linked_assessment', 'send_notifications', 'is_all_day'
         ]
         
         widgets = {
@@ -58,22 +58,23 @@ class CalendarEventForm(forms.ModelForm):
             'event_type': forms.Select(attrs={
                 'class': 'form-control form-select'
             }),
-            'related_assessment': forms.Select(attrs={
+            'audience': forms.Select(attrs={
                 'class': 'form-control form-select'
             }),
-            'audience_all': forms.CheckboxInput(attrs={
+            'specific_courses': forms.SelectMultiple(attrs={
+                'class': 'form-control'
+            }),
+            'specific_year_levels': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'e.g., 1,2,3,4'
+            }),
+            'linked_assessment': forms.Select(attrs={
+                'class': 'form-control form-select'
+            }),
+            'is_all_day': forms.CheckboxInput(attrs={
                 'class': 'form-check-input'
             }),
-            'audience_students': forms.CheckboxInput(attrs={
-                'class': 'form-check-input'
-            }),
-            'audience_teachers': forms.CheckboxInput(attrs={
-                'class': 'form-check-input'
-            }),
-            'audience_staff': forms.CheckboxInput(attrs={
-                'class': 'form-check-input'
-            }),
-            'send_notification': forms.CheckboxInput(attrs={
+            'send_notifications': forms.CheckboxInput(attrs={
                 'class': 'form-check-input'
             }),
         }
@@ -89,12 +90,12 @@ class CalendarEventForm(forms.ModelForm):
             'category': 'Category',
             'priority': 'Priority',
             'event_type': 'Event Type',
-            'related_assessment': 'Related Assessment',
-            'audience_all': 'All Users',
-            'audience_students': 'Students',
-            'audience_teachers': 'Teachers',
-            'audience_staff': 'Staff',
-            'send_notification': 'Send Notification',
+            'audience': 'Target Audience',
+            'specific_courses': 'Specific Courses',
+            'specific_year_levels': 'Year Levels',
+            'linked_assessment': 'Related Assessment',
+            'is_all_day': 'All Day Event',
+            'send_notifications': 'Send Notification',
         }
 
     def __init__(self, *args, **kwargs):
@@ -103,21 +104,25 @@ class CalendarEventForm(forms.ModelForm):
         
         # Limit related assessments based on user permissions
         if user:
-            if user.user_type == 'teacher':
+            if user.user_type == 'teacher' and hasattr(user, 'teacherprofile'):
                 # Teachers can link to their own assessments
-                self.fields['related_assessment'].queryset = Assessment.objects.filter(
+                self.fields['linked_assessment'].queryset = Assessment.objects.filter(
                     course__teacher=user.teacherprofile
                 )
             elif user.user_type == 'admin' or user.is_staff:
                 # Admins can link to any assessment
-                self.fields['related_assessment'].queryset = Assessment.objects.all()
+                self.fields['linked_assessment'].queryset = Assessment.objects.all()
             else:
-                # Students cannot link assessments
-                self.fields['related_assessment'].widget = forms.HiddenInput()
+                # Students or users without teacher profile cannot link assessments
+                self.fields['linked_assessment'].queryset = Assessment.objects.none()
+                self.fields['linked_assessment'].widget = forms.HiddenInput()
         
         # Set empty label for optional fields
-        self.fields['end_date'].empty_label = "Same as start date"
-        self.fields['related_assessment'].empty_label = "No assessment"
+        self.fields['end_date'].required = False
+        self.fields['linked_assessment'].required = False
+        self.fields['linked_assessment'].empty_label = "No assessment"
+        self.fields['specific_courses'].required = False
+        self.fields['specific_year_levels'].required = False
         
         # Make certain fields required
         self.fields['title'].required = True
@@ -125,6 +130,7 @@ class CalendarEventForm(forms.ModelForm):
         self.fields['category'].required = True
         self.fields['priority'].required = True
         self.fields['event_type'].required = True
+        self.fields['audience'].required = True
 
     def clean(self):
         cleaned_data = super().clean()
@@ -132,6 +138,7 @@ class CalendarEventForm(forms.ModelForm):
         end_date = cleaned_data.get('end_date')
         start_time = cleaned_data.get('start_time')
         end_time = cleaned_data.get('end_time')
+        is_all_day = cleaned_data.get('is_all_day')
         
         # Validate date range
         if start_date and end_date:
@@ -139,19 +146,10 @@ class CalendarEventForm(forms.ModelForm):
                 raise forms.ValidationError("End date cannot be before start date.")
         
         # Validate time range for same-day events
-        if start_date and end_date and start_date == end_date:
+        if start_date and end_date and start_date == end_date and not is_all_day:
             if start_time and end_time:
                 if end_time <= start_time:
                     raise forms.ValidationError("End time must be after start time for same-day events.")
-        
-        # Ensure at least one audience is selected
-        audience_all = cleaned_data.get('audience_all')
-        audience_students = cleaned_data.get('audience_students')
-        audience_teachers = cleaned_data.get('audience_teachers')
-        audience_staff = cleaned_data.get('audience_staff')
-        
-        if not any([audience_all, audience_students, audience_teachers, audience_staff]):
-            raise forms.ValidationError("Please select at least one target audience.")
         
         return cleaned_data
 
@@ -164,6 +162,7 @@ class CalendarEventForm(forms.ModelForm):
         
         if commit:
             instance.save()
+            self.save_m2m()
         
         return instance
 
@@ -205,8 +204,9 @@ class UserCalendarSettingsForm(forms.ModelForm):
     class Meta:
         model = UserCalendarSettings
         fields = [
-            'default_view', 'week_start_day', 'show_weekends',
-            'default_event_duration', 'notification_preferences',
+            'default_view', 'show_weekends', 'start_week_on_monday',
+            'show_event_details', 'email_notifications', 
+            'browser_notifications', 'notification_time',
             'hidden_categories'
         ]
         
@@ -214,21 +214,24 @@ class UserCalendarSettingsForm(forms.ModelForm):
             'default_view': forms.Select(attrs={
                 'class': 'form-control form-select'
             }),
-            'week_start_day': forms.Select(attrs={
-                'class': 'form-control form-select'
-            }),
             'show_weekends': forms.CheckboxInput(attrs={
                 'class': 'form-check-input'
             }),
-            'default_event_duration': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'min': 15,
-                'max': 480,
-                'step': 15
+            'start_week_on_monday': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'
             }),
-            'notification_preferences': forms.Textarea(attrs={
+            'show_event_details': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'
+            }),
+            'email_notifications': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'
+            }),
+            'browser_notifications': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'
+            }),
+            'notification_time': forms.TimeInput(attrs={
                 'class': 'form-control',
-                'rows': 3
+                'type': 'time'
             }),
             'hidden_categories': forms.CheckboxSelectMultiple(attrs={
                 'class': 'form-check-input'
@@ -237,10 +240,12 @@ class UserCalendarSettingsForm(forms.ModelForm):
         
         labels = {
             'default_view': 'Default Calendar View',
-            'week_start_day': 'Week Starts On',
             'show_weekends': 'Show Weekends',
-            'default_event_duration': 'Default Event Duration (minutes)',
-            'notification_preferences': 'Notification Preferences',
+            'start_week_on_monday': 'Start Week on Monday',
+            'show_event_details': 'Show Event Details',
+            'email_notifications': 'Email Notifications',
+            'browser_notifications': 'Browser Notifications',
+            'notification_time': 'Notification Time',
             'hidden_categories': 'Hidden Categories',
         }
 
@@ -254,8 +259,8 @@ class EventFilterForm(forms.Form):
         ('day', 'Day'),
     ]
     
-    PRIORITY_CHOICES = CalendarEvent.PRIORITY_CHOICES
-    EVENT_TYPE_CHOICES = CalendarEvent.EVENT_TYPE_CHOICES
+    PRIORITY_CHOICES = CalendarEvent.PRIORITY_LEVELS
+    EVENT_TYPE_CHOICES = CalendarEvent.EVENT_TYPES
     
     view = forms.ChoiceField(
         choices=VIEW_CHOICES,

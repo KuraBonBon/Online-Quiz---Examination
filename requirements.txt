@@ -1,4 +1,53 @@
+# ============================================================================
+# CORE DJANGO
+# ============================================================================
 Django==5.2.6
 asgiref==3.9.1
 sqlparse==0.5.3
 tzdata==2025.2
+
+# ============================================================================
+# DATABASE (Production)
+# ============================================================================
+psycopg2-binary==2.9.9  # PostgreSQL adapter
+
+# ============================================================================
+# CONFIGURATION MANAGEMENT
+# ============================================================================
+python-decouple==3.8  # Environment variables management
+
+# ============================================================================
+# SECURITY & AUTHENTICATION
+# ============================================================================
+# django-axes==6.1.1  # Brute force protection (install when implementing)
+# django-ratelimit==4.1.0  # Rate limiting (install when implementing)
+# django-recaptcha==4.0.0  # CAPTCHA (install when implementing)
+
+# ============================================================================
+# PERFORMANCE & CACHING
+# ============================================================================
+whitenoise==6.6.0  # Static file serving with compression
+# django-redis==5.4.0  # Redis caching (install when setting up Redis)
+# redis==5.0.1  # Redis client (install when setting up Redis)
+
+# ============================================================================
+# MONITORING & ERROR TRACKING (Optional)
+# ============================================================================
+# sentry-sdk==1.39.2  # Error tracking service (install for production monitoring)
+
+# ============================================================================
+# FILE HANDLING
+# ============================================================================
+Pillow==10.1.0  # Image processing for avatars
+
+# ============================================================================
+# PRODUCTION SERVER
+# ============================================================================
+gunicorn==21.2.0  # WSGI HTTP server for production deployment
+
+# ============================================================================
+# DEVELOPMENT TOOLS (Remove in production)
+# ============================================================================
+# Uncomment for development only:
+# django-debug-toolbar==4.2.0  # Debug toolbar
+# django-extensions==3.2.3  # Useful extensions
