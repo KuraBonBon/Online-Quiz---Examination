@@ -6661,3 +6661,8 @@ Watching for file changes with StatReloader
 "GET /student/dashboard/ HTTP/1.1" 200 56824
 C:\Users\shizu\Desktop\Online Quiz & Examination\accounts\forms_calendar.py changed, reloading.
 Watching for file changes with StatReloader
+"GET /student/dashboard/ HTTP/1.1" 200 56823
+"GET /student/dashboard/ HTTP/1.1" 200 56823
+"GET /courses/my-enrollment/ HTTP/1.1" 200 65445
+"GET /dashboard/ HTTP/1.1" 302 0
+"GET /student/dashboard/ HTTP/1.1" 200 56823
